@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Hearthpick — Curated Home Finds</title>
+<meta name="description" content="Handpicked home finds from Amazon, Wayfair, IKEA and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap">
+<style>
+/* ══════════════════════════════════════════
+   HEARTHPICK — SINGLE FILE BUILD
+   All CSS, JS, and HTML in one file.
+   Uses hash-based routing: #home, #shop,
+   #blog, #post, #category, #about,
+   #privacy, #terms, #disclaimer, #admin
+══════════════════════════════════════════ */
+
+/* ── RESET & ROOT ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --terra:#C1603A;--terra-l:#E8957A;--terra-d:#8B3E22;
+  --ivory:#F5EFE6;--ivory-d:#EDE3D5;
+  --sage:#7A9E7E;--sage-l:#A8C4AB;--sage-d:#4E7252;
+  --charcoal:#2C2825;--warm-gray:#9B8F85;--linen:#FAF7F2;
+  --fd:'Playfair Display',Georgia,serif;--fb:'Jost',system-ui,sans-serif;
+  --nav:70px;--max:1280px;--r:4px;--tr:0.25s ease;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--linen);color:var(--charcoal);overflow-x:hidden;line-height:1.6}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none;cursor:pointer}
+button{cursor:pointer;font-family:var(--fb)}
+input,textarea,select{font-family:var(--fb)}
+
+/* ── LAYOUT ── */
+.container{max-width:var(--max);margin:0 auto;padding:0 5%}
+.sp{padding:6rem 0}
+.tag-label{font-size:.68rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--terra);display:flex;align-items:center;gap:.6rem}
+.tag-label::before{content:'';display:block;width:28px;height:1px;background:var(--terra)}
+.sec-title{font-family:var(--fd);font-size:clamp(2rem,3.5vw,3rem);font-weight:400;line-height:1.12;color:var(--charcoal)}
+.sec-title em{font-style:italic;color:var(--terra)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 2rem;font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;border:none;transition:var(--tr);border-radius:var(--r);cursor:pointer}
+.btn-dark{background:var(--charcoal);color:white}.btn-dark:hover{background:var(--terra);transform:translateY(-1px)}
+.btn-terra{background:var(--terra);color:white}.btn-terra:hover{background:var(--terra-d);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--charcoal);border:1.5px solid var(--charcoal)}.btn-outline:hover{background:var(--charcoal);color:white}
+.btn-ghost{background:transparent;color:var(--charcoal);padding:0;font-size:.82rem;letter-spacing:.06em;text-transform:none;font-weight:400}.btn-ghost:hover{color:var(--terra)}
+.btn-ghost .arrow{transition:transform .2s}.btn-ghost:hover .arrow{transform:translateX(4px)}
+
+/* ── NAV ── */
+#main-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav);background:rgba(250,247,242,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--ivory-d);transition:box-shadow .3s}
+#main-nav.scrolled{box-shadow:0 2px 24px rgba(44,40,37,.08)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:0 5%;height:100%;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--fd);font-size:1.7rem;font-weight:700;color:var(--charcoal)}
+.nav-logo span{color:var(--terra)}
+.nav-links{display:flex;align-items:center;gap:2.2rem;list-style:none}
+.nav-links a{font-size:.8rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--charcoal);transition:color var(--tr)}
+.nav-links a:hover,.nav-links a.active{color:var(--terra)}
+.nav-dd{position:relative}
+.dd-menu{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%) translateY(-6px);background:white;border:1px solid var(--ivory-d);min-width:200px;padding:.5rem 0;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 8px 32px rgba(44,40,37,.1)}
+.nav-dd:hover .dd-menu{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0)}
+.dd-menu a{display:block;padding:.6rem 1.25rem;font-size:.82rem;font-weight:400;letter-spacing:.04em;text-transform:none;transition:background var(--tr)}
+.dd-menu a:hover{background:var(--ivory);color:var(--terra)}
+.nav-cta{background:var(--terra)!important;color:white!important;padding:.5rem 1.25rem!important;border-radius:var(--r);font-size:.75rem!important;font-weight:600!important}
+.nav-cta:hover{background:var(--terra-d)!important}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:24px;height:1.5px;background:var(--charcoal);transition:var(--tr)}
+.mob-nav{display:none;position:fixed;top:var(--nav);left:0;right:0;bottom:0;background:var(--linen);z-index:999;padding:2.5rem 5%;flex-direction:column;overflow-y:auto}
+.mob-nav.open{display:flex}
+.mob-nav a{font-size:1rem;font-weight:400;padding:.85rem 0;border-bottom:1px solid var(--ivory-d);color:var(--charcoal)}
+.mob-nav a:hover{color:var(--terra)}
+.mob-sec{font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-gray);margin-top:1.25rem;padding-bottom:.5rem}
+
+/* ── MARQUEE ── */
+.marquee-bar{background:var(--charcoal);padding:.9rem 0;overflow:hidden;white-space:nowrap}
+.mq-track{display:inline-flex;animation:mq 32s linear infinite}
+.mq-item{display:inline-flex;align-items:center;gap:1.25rem;padding:0 2rem;font-size:.7rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ivory)}
+.mq-dot{width:4px;height:4px;border-radius:50%;background:var(--terra-l);flex-shrink:0}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── HERO ── */
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;padding-top:var(--nav)}
+.hero-txt{display:flex;flex-direction:column;justify-content:center;padding:5rem 5% 5rem 8%}
+.h-eye{font-size:.68rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--terra);margin-bottom:1.5rem;display:flex;align-items:center;gap:.6rem}
+.h-eye::before{content:'';width:28px;height:1px;background:var(--terra)}
+.h-title{font-family:var(--fd);font-size:clamp(3.2rem,5.5vw,5.2rem);font-weight:400;line-height:1.06;margin-bottom:1.75rem}
+.h-title em{font-style:italic;color:var(--terra)}
+.h-sub{font-size:.95rem;font-weight:300;color:var(--warm-gray);line-height:1.8;max-width:400px;margin-bottom:2.75rem}
+.h-acts{display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
+.hero-vis{background:var(--ivory-d);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px}
+.mc{display:flex;align-items:center;justify-content:center;position:relative}
+.mc-lbl{position:absolute;bottom:1rem;left:1rem;font-family:var(--fd);font-size:.9rem;font-style:italic;color:rgba(44,40,37,.5)}
+.mc1{background:#D6C9B8}.mc2{background:#B8BFAD;grid-row:span 2}.mc3{background:#C5B5A0}
+.stats-bar{background:var(--ivory);padding:2.5rem 0;border-top:1px solid var(--ivory-d);border-bottom:1px solid var(--ivory-d)}
+.stats-inner{display:flex;justify-content:center;gap:5rem;flex-wrap:wrap}
+.s-item{text-align:center}
+.s-num{font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--charcoal)}
+.s-lbl{font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-gray);margin-top:.2rem}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3.5rem}
+.cat-card{position:relative;aspect-ratio:3/4;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;text-decoration:none;cursor:pointer}
+.cc-bg{position:absolute;inset:0;transition:transform .6s ease}
+.cat-card:hover .cc-bg{transform:scale(1.06)}
+.cc-info{position:relative;z-index:2;padding:1.75rem 1.5rem;background:linear-gradient(to top,rgba(30,22,15,.72) 0%,transparent 100%);color:white}
+.cc-name{font-family:var(--fd);font-size:1.5rem;font-weight:400;font-style:italic;margin-bottom:.2rem}
+.cc-cnt{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.finds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem}
+
+/* ── PINTEREST STRIP ── */
+.pint-strip{background:var(--ivory-d);padding:5rem 0;text-align:center}
+.pint-ico{width:52px;height:52px;background:#E60023;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+.pint-ico svg{width:26px;height:26px;fill:white}
+.pint-h{font-family:var(--fd);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:400;margin-bottom:.75rem}
+.pint-p{font-size:.9rem;font-weight:300;color:var(--warm-gray);max-width:440px;margin:0 auto 2rem;line-height:1.7}
+@keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.h-eye{animation:fu .6s ease .1s both}.h-title{animation:fu .6s ease .25s both}.h-sub{animation:fu .6s ease .4s both}.h-acts{animation:fu .6s ease .55s both}
+
+/* ── PRODUCT CARD ── */
+.product-card{background:white;border:1px solid var(--ivory-d);transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column}
+.product-card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(44,40,37,.1)}
+.card-img{aspect-ratio:4/3;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.product-card:hover .card-img img{transform:scale(1.05)}
+.card-badge{position:absolute;top:1rem;left:1rem;background:var(--terra);color:white;font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem}
+.card-body{padding:1.4rem;flex:1;display:flex;flex-direction:column}
+.card-source{font-size:.65rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:.4rem}
+.card-name{font-family:var(--fd);font-size:1.15rem;font-weight:500;line-height:1.3;margin-bottom:.4rem}
+.card-desc{font-size:.82rem;font-weight:300;color:var(--warm-gray);line-height:1.65;margin-bottom:1rem;flex:1}
+.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--ivory-d)}
+.card-price{font-family:var(--fd);font-size:1.3rem;font-weight:700;color:var(--terra)}
+.card-cta{font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--charcoal);display:flex;align-items:center;gap:.35rem;transition:color var(--tr)}
+.card-cta:hover{color:var(--terra)}
+
+/* ── BLOG CARD ── */
+.blog-card{background:white;border:1px solid var(--ivory-d);transition:transform .3s,box-shadow .3s;display:block;color:inherit;cursor:pointer}
+.blog-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(44,40,37,.08)}
+.blog-img{overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;min-height:180px}
+.blog-body{padding:1.5rem}
+.blog-cat{display:inline-block;font-size:.65rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--terra);margin-bottom:.6rem}
+.blog-title{font-family:var(--fd);font-size:1.2rem;font-weight:500;line-height:1.3;margin-bottom:.75rem}
+.blog-excerpt{font-size:.85rem;font-weight:300;color:var(--warm-gray);line-height:1.7;margin-bottom:1.25rem}
+.blog-meta{font-size:.72rem;color:var(--warm-gray);display:flex;align-items:center;gap:.75rem}
+.meta-dot{width:3px;height:3px;border-radius:50%;background:var(--warm-gray)}
+
+/* ── NEWSLETTER ── */
+.nl-wrap{background:var(--charcoal);padding:6rem 0}
+.nl-inner{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.nl-eye{font-size:.68rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--terra-l);margin-bottom:1.25rem;display:flex;align-items:center;gap:.6rem}
+.nl-eye::before{content:'';width:28px;height:1px;background:var(--terra-l)}
+.nl-title{font-family:var(--fd);font-size:clamp(2rem,3vw,2.8rem);font-weight:400;line-height:1.15;color:var(--ivory);margin-bottom:1.25rem}
+.nl-title em{font-style:italic;color:var(--terra-l)}
+.nl-desc{font-size:.9rem;font-weight:300;color:rgba(245,239,230,.55);line-height:1.8}
+.nl-form{display:flex;flex-direction:column;gap:1rem}
+.nl-input{background:rgba(255,255,255,.07);border:1px solid rgba(245,239,230,.15);color:var(--ivory);padding:.95rem 1.4rem;font-size:.9rem;outline:none;transition:border-color .2s;border-radius:var(--r)}
+.nl-input::placeholder{color:rgba(245,239,230,.3)}
+.nl-input:focus{border-color:var(--terra-l)}
+.nl-note{font-size:.7rem;color:rgba(245,239,230,.3)}
+
+/* ── FOOTER ── */
+#footer{background:var(--charcoal);padding:5rem 0 2.5rem}
+.ft-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;margin-bottom:4rem;padding-bottom:4rem;border-bottom:1px solid rgba(245,239,230,.08)}
+.ft-logo{font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--ivory);margin-bottom:1rem;display:block}
+.ft-logo span{color:var(--terra-l)}
+.ft-tag{font-size:.85rem;font-weight:300;color:rgba(245,239,230,.45);line-height:1.75;margin-bottom:1.5rem}
+.ft-soc{display:flex;gap:.6rem}
+.soc-btn{width:38px;height:38px;border:1px solid rgba(245,239,230,.15);display:flex;align-items:center;justify-content:center;color:rgba(245,239,230,.4);font-size:.72rem;font-weight:600;transition:var(--tr);border-radius:var(--r)}
+.soc-btn:hover{border-color:var(--terra-l);color:var(--terra-l)}
+.ft-col h4{font-size:.68rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--ivory);margin-bottom:1.25rem}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.ft-col ul a{font-size:.83rem;font-weight:300;color:rgba(245,239,230,.45);transition:color var(--tr)}
+.ft-col ul a:hover{color:var(--terra-l)}
+.ft-bot{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap}
+.ft-copy{font-size:.75rem;color:rgba(245,239,230,.3)}
+.ft-disc{font-size:.7rem;color:rgba(245,239,230,.22);max-width:520px;line-height:1.65}
+
+/* ── BREADCRUMB ── */
+.breadcrumb{padding:1.5rem 0;font-size:.78rem;color:var(--warm-gray);display:flex;align-items:center;gap:.5rem}
+.breadcrumb a{color:var(--warm-gray);transition:color var(--tr);cursor:pointer}
+.breadcrumb a:hover{color:var(--terra)}
+.bc-sep{color:var(--ivory-d)}
+
+/* ── PAGE HEADER ── */
+.pg-hdr{padding:calc(var(--nav) + 4rem) 0 3rem;background:var(--ivory);text-align:center}
+.pg-hdr h1{font-family:var(--fd);font-size:clamp(2.5rem,4vw,3.5rem);font-weight:400;margin-bottom:.75rem}
+.pg-hdr p{font-size:.95rem;font-weight:300;color:var(--warm-gray);max-width:480px;margin:0 auto;line-height:1.7}
+
+/* ── SHOP ── */
+.shop-layout{display:grid;grid-template-columns:230px 1fr;gap:3rem;padding:3rem 0 6rem}
+.fsb h3{font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-gray);margin:1.75rem 0 .75rem}
+.fsb h3:first-child{margin-top:0}
+.fopt{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;cursor:pointer;font-size:.85rem;font-weight:300;color:var(--charcoal);padding:.3rem 0}
+.fopt input[type=checkbox]{accent-color:var(--terra);width:14px;height:14px}
+.fopt:hover{color:var(--terra)}
+.fdiv{height:1px;background:var(--ivory-d);margin:1.25rem 0}
+.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem}
+.shop-ctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.shop-cnt{font-size:.85rem;color:var(--warm-gray);font-weight:300}
+.sort-sel{background:white;border:1px solid var(--ivory-d);padding:.5rem .75rem;font-size:.82rem;font-family:var(--fb);color:var(--charcoal);outline:none;border-radius:var(--r);cursor:pointer}
+.no-res{grid-column:1/-1;text-align:center;padding:4rem;color:var(--warm-gray);font-family:var(--fd);font-size:1.2rem;font-style:italic}
+
+/* ── BLOG PAGE ── */
+.featured-post{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:3rem 0 4rem;background:white;border:1px solid var(--ivory-d);cursor:pointer}
+.fp-visual{aspect-ratio:1;display:flex;align-items:center;justify-content:center;min-height:360px}
+.fp-body{padding:3.5rem;display:flex;flex-direction:column;justify-content:center}
+.fp-badge{display:inline-block;background:var(--terra);color:white;font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:.3rem .8rem;margin-bottom:1.25rem}
+.fp-title{font-family:var(--fd);font-size:clamp(1.6rem,2.5vw,2rem);font-weight:500;line-height:1.25;margin-bottom:1rem}
+.fp-excerpt{font-size:.9rem;font-weight:300;color:var(--warm-gray);line-height:1.8;margin-bottom:1.75rem}
+.filter-pill{padding:.45rem 1.1rem;border:1px solid var(--ivory-d);background:white;border-radius:20px;font-size:.78rem;color:var(--charcoal);cursor:pointer;transition:var(--tr)}
+.filter-pill:hover,.filter-pill.active{background:var(--charcoal);color:white;border-color:var(--charcoal)}
+.blog-grid-full{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+
+/* ── POST PAGE ── */
+.post-layout{display:grid;grid-template-columns:1fr 320px;gap:4rem;padding:3rem 0 6rem}
+.post-header{padding:calc(var(--nav) + 4rem) 0 3rem;background:var(--ivory)}
+.post-content{font-size:.95rem;font-weight:300;line-height:1.9;color:#4A433E}
+.post-content h2{font-family:var(--fd);font-size:1.6rem;font-weight:500;color:var(--charcoal);margin:2.5rem 0 1rem}
+.post-content h3{font-family:var(--fd);font-size:1.2rem;font-weight:500;color:var(--charcoal);margin:2rem 0 .75rem}
+.post-content p{margin-bottom:1.4rem}
+.post-content ul,.post-content ol{padding-left:1.5rem;margin-bottom:1.4rem}
+.post-content li{margin-bottom:.5rem}
+.post-content a{color:var(--terra);text-decoration:underline}
+.post-content blockquote{border-left:3px solid var(--terra);padding:.75rem 1.5rem;margin:2rem 0;background:var(--ivory);font-family:var(--fd);font-style:italic;font-size:1.05rem}
+.sidebar-card{background:white;border:1px solid var(--ivory-d);padding:1.5rem;margin-bottom:1.5rem}
+.sidebar-card h4{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--ivory-d)}
+.sidebar-prod{display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--ivory);cursor:pointer}
+.sidebar-prod:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.post-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--ivory-d)}
+.post-tag{padding:.3rem .8rem;background:var(--ivory);font-size:.73rem;color:var(--warm-gray);border-radius:20px}
+
+/* ── CATEGORY PAGE ── */
+.cat-hero-section{padding:calc(var(--nav) + 4rem) 0 3.5rem}
+.cat-hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+.cat-hero-visual{aspect-ratio:4/3;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:2.5rem}
+
+/* ── ABOUT PAGE ── */
+.about-hero{padding:calc(var(--nav) + 4rem) 0 4rem;background:var(--ivory)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.about-visual{width:100%;aspect-ratio:1;max-width:420px;border-radius:50%;background:var(--ivory-d);display:flex;align-items:center;justify-content:center;position:relative}
+.about-inner{width:72%;height:72%;border-radius:50%;background:var(--sage-l);opacity:.45;display:flex;align-items:center;justify-content:center}
+.about-badge{position:absolute;bottom:8%;right:8%;width:100px;height:100px;background:var(--terra);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:1rem}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem}
+.value-card{background:white;border:1px solid var(--ivory-d);padding:2rem}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3.5rem}
+
+/* ── LEGAL PAGES ── */
+.legal-page{padding-top:calc(var(--nav) + 3rem);padding-bottom:6rem}
+.legal-hdr{margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--ivory-d)}
+.legal-hdr h1{font-family:var(--fd);font-size:clamp(2rem,3vw,2.8rem);font-weight:400;margin-bottom:.75rem}
+.legal-date{font-size:.8rem;color:var(--warm-gray)}
+.legal-body h2{font-family:var(--fd);font-size:1.4rem;font-weight:500;margin:2.5rem 0 1rem}
+.legal-body h3{font-family:var(--fd);font-size:1.1rem;font-weight:500;margin:1.75rem 0 .75rem}
+.legal-body p{font-size:.92rem;font-weight:300;line-height:1.85;color:#5A524C;margin-bottom:1.25rem}
+.legal-body ul,.legal-body ol{padding-left:1.5rem;margin-bottom:1.25rem}
+.legal-body li{font-size:.92rem;font-weight:300;line-height:1.85;color:#5A524C;margin-bottom:.4rem}
+.legal-body a{color:var(--terra);text-decoration:underline}
+.legal-hl{background:var(--ivory);border-left:3px solid var(--terra);padding:1.25rem 1.5rem;margin:1.5rem 0;border-radius:0 var(--r) var(--r) 0}
+.legal-hl p{margin-bottom:0;font-weight:400}
+
+/* ── ADMIN ── */
+.admin-wrap{min-height:100vh;background:#F4F1EC;display:none}
+.admin-sb{width:260px;background:var(--charcoal);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+.sb-logo{padding:1.75rem 1.5rem;border-bottom:1px solid rgba(245,239,230,.08);font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--ivory)}
+.sb-logo span{color:var(--terra-l)}
+.sb-sub{font-size:.65rem;font-family:var(--fb);font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,239,230,.3);display:block;margin-top:.2rem}
+.sb-nav{padding:1.5rem 0;flex:1}
+.sb-sec{font-size:.6rem;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,239,230,.25);padding:1rem 1.5rem .4rem}
+.sb-nav a{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.5rem;font-size:.85rem;font-weight:400;color:rgba(245,239,230,.55);transition:var(--tr);border-left:2px solid transparent}
+.sb-nav a:hover,.sb-nav a.active{color:var(--ivory);background:rgba(255,255,255,.06);border-left-color:var(--terra-l)}
+.admin-main{margin-left:260px;padding:2.5rem;flex:1;min-height:100vh;background:#F4F1EC}
+.admin-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--ivory-d)}
+.admin-top h1{font-family:var(--fd);font-size:1.75rem;font-weight:500}
+.acard{background:white;border:1px solid var(--ivory-d);border-radius:6px;padding:1.75rem;margin-bottom:1.5rem}
+.acard h3{font-family:var(--fd);font-size:1.15rem;font-weight:500;margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--ivory-d)}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem}
+.stat-box{background:white;border:1px solid var(--ivory-d);border-radius:6px;padding:1.5rem}
+.stat-box .sl{font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:.6rem}
+.stat-box .sn{font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--charcoal)}
+.stat-box .ss{font-size:.75rem;color:var(--sage);margin-top:.25rem}
+.atable{width:100%;border-collapse:collapse;font-size:.85rem}
+.atable th{text-align:left;font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--warm-gray);padding:0 1rem .75rem;border-bottom:1px solid var(--ivory-d)}
+.atable td{padding:.9rem 1rem;border-bottom:1px solid var(--ivory);color:var(--charcoal);font-weight:300;vertical-align:middle}
+.atable tr:last-child td{border-bottom:none}
+.atable tr:hover td{background:var(--linen)}
+.spill{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.68rem;font-weight:600}
+.s-pub{background:#EAF4EC;color:#2A6E36}.s-dft{background:#FFF3E0;color:#8A5700}
+.fg{margin-bottom:1.25rem}
+.fg label{display:block;font-size:.78rem;font-weight:600;letter-spacing:.06em;color:var(--charcoal);margin-bottom:.45rem}
+.fi,.fs,.ft{width:100%;background:var(--linen);border:1px solid var(--ivory-d);padding:.8rem 1rem;font-size:.88rem;font-family:var(--fb);color:var(--charcoal);outline:none;transition:border-color .2s;border-radius:var(--r)}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--terra);background:white}
+.ft{resize:vertical;min-height:160px;line-height:1.7}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.abtn{padding:.45rem 1rem;font-size:.75rem;font-weight:600;letter-spacing:.06em;border:1px solid;border-radius:var(--r);transition:var(--tr);background:transparent;cursor:pointer}
+.ab-edit{border-color:var(--charcoal);color:var(--charcoal)}.ab-edit:hover{background:var(--charcoal);color:white}
+.ab-del{border-color:#c0392b;color:#c0392b}.ab-del:hover{background:#c0392b;color:white}
+.alert{padding:1rem 1.25rem;border-radius:var(--r);font-size:.85rem;margin-bottom:1.25rem}
+.a-ok{background:#EAF4EC;border:1px solid #A8D5B0;color:#2A6E36}
+.a-err{background:#FDECEA;border:1px solid #F5B7B1;color:#922B21}
+.a-inf{background:#EBF5FF;border:1px solid #AED6F1;color:#1A5276}
+
+/* ── ROUTER PAGES ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .nav-links{display:none}.hamburger{display:flex}
+  .admin-sb{transform:translateX(-100%);transition:transform .3s}.admin-sb.open{transform:translateX(0)}
+  .admin-main{margin-left:0;padding:1.5rem}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .nl-inner{grid-template-columns:1fr;gap:3rem}
+  .ft-grid{grid-template-columns:1fr 1fr;gap:2.5rem}
+  .post-layout{grid-template-columns:1fr}
+  .cat-hero-inner{grid-template-columns:1fr}
+  .shop-layout{grid-template-columns:1fr}
+  .fsb{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+  .fsb h3{margin:0;white-space:nowrap}
+  .shop-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr}.hero-vis{min-height:50vh}
+  .cat-grid{grid-template-columns:repeat(2,1fr)}
+  .finds-grid{grid-template-columns:repeat(2,1fr)}
+  .blog-grid{grid-template-columns:1fr}
+  .stats-inner{gap:3rem}
+  .featured-post{grid-template-columns:1fr}
+  .blog-grid-full{grid-template-columns:repeat(2,1fr)}
+  .values-grid{grid-template-columns:repeat(2,1fr)}
+  .process-steps{grid-template-columns:repeat(2,1fr)}
+  .about-grid{grid-template-columns:1fr}
+  .products-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  .stat-grid{grid-template-columns:1fr}.frow{grid-template-columns:1fr}
+  .ft-grid{grid-template-columns:1fr}.ft-bot{flex-direction:column}
+}
+@media(max-width:600px){
+  .cat-grid{grid-template-columns:1fr}.finds-grid{grid-template-columns:1fr}
+  .shop-grid{grid-template-columns:1fr}
+  .blog-grid-full{grid-template-columns:1fr}
+  .values-grid{grid-template-columns:1fr}
+  .process-steps{grid-template-columns:1fr}
+  .products-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav id="main-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="goto('home')">Hearth<span>pick</span></a>
+    <ul class="nav-links">
+      <li class="nav-dd"><a href="#">Shop ▾</a>
+        <div class="dd-menu" id="nav-cat-dd"></div>
+      </li>
+      <li><a onclick="goto('blog')" id="nav-blog">The Edit</a></li>
+      <li><a onclick="goto('about')" id="nav-about">About</a></li>
+      <li><a onclick="goto('home');setTimeout(()=>document.getElementById('newsletter')?.scrollIntoView({behavior:'smooth'}),300)" class="nav-cta">Get the Edit</a></li>
+    </ul>
+    <button class="hamburger" id="hbg"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-nav" id="mob-nav">
+  <a onclick="goto('home');closeMob()">Home</a>
+  <div class="mob-sec">Shop by Room</div>
+  <div id="mob-cat-links"></div>
+  <a onclick="goto('shop');closeMob()">All Finds</a>
+  <div class="mob-sec">Explore</div>
+  <a onclick="goto('blog');closeMob()">The Edit (Blog)</a>
+  <a onclick="goto('about');closeMob()">About</a>
+</div>
+
+<!-- ══ PAGES ══ -->
+<div id="app">
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+<section class="hero">
+  <div class="hero-txt">
+    <div class="h-eye">Curated Home Finds</div>
+    <h1 class="h-title">Homes that<br><em>breathe</em><br>beautifully.</h1>
+    <p class="h-sub">We find the pieces that make a house feel like home — sourced from Amazon, Wayfair, IKEA and beyond. No endless scrolling. Just the finds that matter.</p>
+    <div class="h-acts">
+      <button class="btn btn-dark" onclick="goto('shop')">Shop All Finds</button>
+      <button class="btn btn-ghost" onclick="goto('blog')">Read the Edit <span class="arrow">→</span></button>
+    </div>
+  </div>
+  <div class="hero-vis">
+    <div class="mc mc1"><span class="mc-lbl">Living</span></div>
+    <div class="mc mc2"><span class="mc-lbl">Bedroom</span></div>
+    <div class="mc mc3"><span class="mc-lbl">Kitchen</span></div>
+  </div>
+</section>
+<div class="marquee-bar"><div class="mq-track" id="mq"></div></div>
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="s-item"><div class="s-num">500+</div><div class="s-lbl">Finds Curated</div></div>
+    <div class="s-item"><div class="s-num">6</div><div class="s-lbl">Room Categories</div></div>
+    <div class="s-item"><div class="s-num">Weekly</div><div class="s-lbl">New Drops</div></div>
+    <div class="s-item"><div class="s-num">100%</div><div class="s-lbl">Honest Reviews</div></div>
+  </div>
+</div>
+<section class="sp" style="background:var(--linen)">
+  <div class="container">
+    <div class="tag-label">Browse by room</div>
+    <h2 class="sec-title" style="margin-top:1rem">Find your <em>perfect</em> space</h2>
+    <div class="cat-grid" id="home-cat-grid"></div>
+    <div style="text-align:center;margin-top:2.5rem"><button class="btn btn-outline" onclick="goto('shop')">View All Categories</button></div>
+  </div>
+</section>
+<section class="sp" style="background:var(--ivory)">
+  <div class="container">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div><div class="tag-label">This week's edit</div><h2 class="sec-title" style="margin-top:1rem">Handpicked <em>just for you</em></h2></div>
+      <button class="btn btn-ghost" onclick="goto('shop')">See all finds <span class="arrow">→</span></button>
+    </div>
+    <div class="finds-grid" id="home-finds-grid"></div>
+  </div>
+</section>
+<section class="sp" style="background:var(--linen)">
+  <div class="container">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div><div class="tag-label">From the blog</div><h2 class="sec-title" style="margin-top:1rem">The <em>Hearthpick</em> Edit</h2></div>
+      <button class="btn btn-ghost" onclick="goto('blog')">All articles <span class="arrow">→</span></button>
+    </div>
+    <div class="blog-grid" id="home-blog-grid"></div>
+  </div>
+</section>
+<div class="pint-strip">
+  <div class="pint-ico"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
+  <h2 class="pint-h">Follow us on <em style="font-family:var(--fd);font-style:italic;color:var(--terra)">Pinterest</em></h2>
+  <p class="pint-p">50+ boards. Daily pins. The home inspiration feed you actually want to wake up to.</p>
+  <a id="home-pint-btn" class="btn btn-terra" target="_blank">Follow Hearthpick on Pinterest</a>
+</div>
+<div id="home-nl"></div>
+<div id="home-ft"></div>
+</div><!-- /page-home -->
+
+<!-- SHOP -->
+<div class="page" id="page-shop">
+<div class="pg-hdr">
+  <div class="container">
+    <div class="tag-label" style="justify-content:center;margin-bottom:1rem">All Finds</div>
+    <h1>The Complete <em style="font-family:var(--fd);font-style:italic;color:var(--terra)">Edit</em></h1>
+    <p>Every piece we've curated, filtered to find exactly what your home needs.</p>
+  </div>
+</div>
+<div class="container">
+  <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><span>Shop All</span></nav>
+  <div class="shop-layout">
+    <aside class="fsb">
+      <h3>Room</h3><div id="shop-cat-filters"></div>
+      <div class="fdiv"></div>
+      <h3>Source</h3><div id="shop-src-filters"></div>
+      <div class="fdiv"></div>
+      <h3>Price</h3>
+      <label class="fopt"><input type="checkbox" data-price="0-50" onchange="renderShop()"> Under $50</label>
+      <label class="fopt"><input type="checkbox" data-price="50-150" onchange="renderShop()"> $50 – $150</label>
+      <label class="fopt"><input type="checkbox" data-price="150-400" onchange="renderShop()"> $150 – $400</label>
+      <label class="fopt"><input type="checkbox" data-price="400-9999" onchange="renderShop()"> $400+</label>
+      <div class="fdiv"></div>
+      <button class="btn btn-outline" onclick="clearShopFilters()" style="width:100%;font-size:.75rem">Clear Filters</button>
+    </aside>
+    <div>
+      <div class="shop-ctrl">
+        <span class="shop-cnt" id="shop-cnt"></span>
+        <select class="sort-sel" id="shop-sort" onchange="renderShop()">
+          <option value="new">Newest First</option>
+          <option value="asc">Price: Low to High</option>
+          <option value="desc">Price: High to Low</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+      <div class="shop-grid" id="shop-grid"></div>
+    </div>
+  </div>
+</div>
+<div id="shop-nl"></div>
+<div id="shop-ft"></div>
+</div><!-- /page-shop -->
+
+<!-- BLOG -->
+<div class="page" id="page-blog">
+<div style="background:var(--ivory);padding:calc(var(--nav) + 4rem) 0 3.5rem;text-align:center">
+  <div class="container">
+    <div class="tag-label" style="justify-content:center;margin-bottom:1rem">Editorial</div>
+    <h1 style="font-family:var(--fd);font-size:clamp(2.8rem,5vw,4.5rem);font-weight:400;margin-bottom:.75rem">The <em style="font-style:italic;color:var(--terra)">Edit</em></h1>
+    <p style="font-size:.95rem;font-weight:300;color:var(--warm-gray);max-width:480px;margin:0 auto;line-height:1.75">Home styling guides, curated room breakdowns, and the stories behind our favourite finds.</p>
+  </div>
+</div>
+<div class="container" style="padding-bottom:6rem">
+  <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><span>The Edit</span></nav>
+  <div id="blog-featured"></div>
+  <div style="display:flex;gap:.75rem;margin-bottom:2.5rem;flex-wrap:wrap" id="blog-filters"></div>
+  <div class="blog-grid-full" id="blog-grid-full"></div>
+</div>
+<div id="blog-nl"></div>
+<div id="blog-ft"></div>
+</div><!-- /page-blog -->
+
+<!-- POST -->
+<div class="page" id="page-post">
+<div class="post-header" id="post-hero-bg">
+  <div class="container">
+    <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><a onclick="goto('blog')">The Edit</a><span class="bc-sep">›</span><span id="post-bc">Article</span></nav>
+    <div style="max-width:720px">
+      <a class="blog-cat" id="post-cat-lbl" onclick="goto('blog')">Editorial</a>
+      <h1 id="post-title-el" style="font-family:var(--fd);font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.12;margin:1rem 0">Loading…</h1>
+      <div style="font-size:.8rem;color:var(--warm-gray);display:flex;align-items:center;gap:.75rem">
+        <span id="post-author-el"></span><span style="width:3px;height:3px;border-radius:50%;background:var(--warm-gray)"></span><span id="post-date-el"></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="post-layout">
+    <article>
+      <div class="post-content" id="post-content-el"></div>
+      <div class="post-tags" id="post-tags-el"></div>
+    </article>
+    <aside>
+      <div class="sidebar-card">
+        <h4>Featured Finds</h4>
+        <div id="post-sidebar-finds"></div>
+      </div>
+      <div class="sidebar-card" style="background:var(--charcoal);border-color:var(--charcoal)">
+        <h4 style="color:rgba(245,239,230,.4);border-color:rgba(245,239,230,.1)">Get The Edit</h4>
+        <p style="font-size:.82rem;color:rgba(245,239,230,.55);font-weight:300;line-height:1.7;margin-bottom:1rem">Weekly finds in your inbox. No spam.</p>
+        <div id="post-sidebar-msg" style="display:none;margin-bottom:.75rem"></div>
+        <input type="email" class="nl-input" id="post-sidebar-email" placeholder="Your email" style="margin-bottom:.75rem">
+        <button class="btn btn-terra" style="width:100%;justify-content:center" onclick="sidebarSub()">Subscribe Free</button>
+      </div>
+    </aside>
+  </div>
+</div>
+<div id="post-nl"></div>
+<div id="post-ft"></div>
+</div><!-- /page-post -->
+
+<!-- CATEGORY -->
+<div class="page" id="page-category">
+<section class="cat-hero-section" id="cat-hero-section" style="background:var(--ivory)">
+  <div class="container">
+    <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><a onclick="goto('shop')">Shop</a><span class="bc-sep">›</span><span id="cat-bc">Category</span></nav>
+    <div class="cat-hero-inner">
+      <div>
+        <div class="tag-label" id="cat-tag-lbl">Room</div>
+        <h1 id="cat-title-el" style="font-family:var(--fd);font-size:clamp(2.5rem,4vw,3.5rem);font-weight:400;margin:1rem 0">Category</h1>
+        <p id="cat-desc-el" style="font-size:.95rem;font-weight:300;color:var(--warm-gray);line-height:1.8;max-width:420px"></p>
+      </div>
+      <div class="cat-hero-visual" id="cat-hero-visual"></div>
+    </div>
+  </div>
+</section>
+<section style="padding:4rem 0 6rem;background:var(--linen)">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <span id="cat-prod-count" style="font-size:.85rem;color:var(--warm-gray)"></span>
+      <select class="sort-sel" id="cat-sort" onchange="renderCatProducts()">
+        <option value="newest">Newest First</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+      </select>
+    </div>
+    <div class="products-grid" id="cat-products-grid"></div>
+  </div>
+</section>
+<div id="cat-nl"></div>
+<div id="cat-ft"></div>
+</div><!-- /page-category -->
+
+<!-- ABOUT -->
+<div class="page" id="page-about">
+<section class="about-hero">
+  <div class="container">
+    <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><span>About</span></nav>
+    <div class="about-grid">
+      <div class="about-visual">
+        <div class="about-inner"><span style="font-family:var(--fd);font-size:6rem;font-weight:400;font-style:italic;color:var(--sage-d);opacity:.7">H</span></div>
+        <div class="about-badge"><div style="font-family:var(--fd);font-size:1.8rem;font-weight:700;color:white;line-height:1">500+</div><div style="font-size:.58rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);margin-top:.2rem">Finds Curated</div></div>
+      </div>
+      <div>
+        <div class="tag-label">Our story</div>
+        <h1 style="font-family:var(--fd);font-size:clamp(2.2rem,4vw,3.2rem);font-weight:400;line-height:1.12;margin:1rem 0 1.5rem">We <em style="font-style:italic;color:var(--terra)">obsess</em> so you don't have to.</h1>
+        <p style="font-size:.93rem;font-weight:300;color:var(--warm-gray);line-height:1.85;margin-bottom:1.25rem">Hearthpick started as a personal Pinterest board — a place to save the home finds that were actually worth buying, not just saving. It grew into something bigger when people started asking where we found things.</p>
+        <p style="font-size:.93rem;font-weight:300;color:var(--warm-gray);line-height:1.85;margin-bottom:1.25rem">Every item on this site has been researched, vetted, and chosen because it genuinely makes a home better. No paid placements. No filler. No recommendations we wouldn't make to a close friend.</p>
+        <p style="font-size:.93rem;font-weight:300;color:var(--warm-gray);line-height:1.85;margin-bottom:2rem">We earn a small commission when you shop through our links, at no extra cost to you. That's what keeps the lights on and the finds coming every week.</p>
+        <button class="btn btn-dark" onclick="document.getElementById('about-contact').scrollIntoView({behavior:'smooth'})">Get in Touch</button>
+      </div>
+    </div>
+  </div>
+</section>
+<section style="padding:6rem 0;background:var(--linen)">
+  <div class="container">
+    <div class="tag-label">What we stand for</div>
+    <h2 class="sec-title" style="margin-top:1rem">Our <em>principles</em></h2>
+    <div class="values-grid">
+      <div class="value-card"><div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.25rem">✦</div><h3 style="font-family:var(--fd);font-size:1.15rem;font-weight:500;margin-bottom:.75rem">Honest Curation</h3><p style="font-size:.85rem;font-weight:300;color:var(--warm-gray);line-height:1.75">We never feature something we wouldn't buy ourselves. Poor reviews, flimsy quality, or style over substance — it doesn't make the cut.</p></div>
+      <div class="value-card"><div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.25rem">◎</div><h3 style="font-family:var(--fd);font-size:1.15rem;font-weight:500;margin-bottom:.75rem">Full Transparency</h3><p style="font-size:.85rem;font-weight:300;color:var(--warm-gray);line-height:1.75">Every affiliate link is clearly disclosed. Commissions never influence our recommendations — we've turned down sponsored placements.</p></div>
+      <div class="value-card"><div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.25rem">◈</div><h3 style="font-family:var(--fd);font-size:1.15rem;font-weight:500;margin-bottom:.75rem">Every Budget</h3><p style="font-size:.85rem;font-weight:300;color:var(--warm-gray);line-height:1.75">Great homes aren't built on big budgets. We curate from $15 accent pieces to investment sofas — real life isn't one-size-fits-all.</p></div>
+      <div class="value-card"><div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.25rem">❋</div><h3 style="font-family:var(--fd);font-size:1.15rem;font-weight:500;margin-bottom:.75rem">Weekly Freshness</h3><p style="font-size:.85rem;font-weight:300;color:var(--warm-gray);line-height:1.75">Every Thursday we drop new finds across all categories, with a newsletter edit that goes to subscribers first.</p></div>
+      <div class="value-card"><div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.25rem">◇</div><h3 style="font-family:var(--fd);font-size:1.15rem;font-weight:500;margin-bottom:.75rem">Real Research</h3><p style="font-size:.85rem;font-weight:300;color:var(--warm-gray);line-height:1.75">We read reviews, check return rates, compare materials, and often order before recommending. We retire finds with poor long-term feedback.</p></div>
+      <div class="value-card"><div style="width:44px;height:44px;background:var(--ivory);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.25rem">○</div><h3 style="font-family:var(--fd);font-size:1.15rem;font-weight:500;margin-bottom:.75rem">Privacy First</h3><p style="font-size:.85rem;font-weight:300;color:var(--warm-gray);line-height:1.75">We collect only what we need. We don't sell subscriber data. Ever. <a onclick="goto('privacy')" style="color:var(--terra);cursor:pointer">See our Privacy Policy</a>.</p></div>
+    </div>
+  </div>
+</section>
+<section style="padding:5rem 0;background:var(--charcoal);text-align:center" id="about-contact">
+  <div class="container">
+    <h2 style="font-family:var(--fd);font-size:2rem;font-weight:400;color:var(--ivory);margin-bottom:.75rem">Get in <em style="font-style:italic">touch</em></h2>
+    <p style="font-size:.9rem;font-weight:300;color:rgba(245,239,230,.5);margin-bottom:1.75rem">Questions, collaborations, or just want to say hello? We read every email.</p>
+    <a id="about-contact-email" href="/cdn-cgi/l/email-protection#573f323b3b38173f323625233f273e343c7934383a" class="btn btn-terra"><span class="__cf_email__" data-cfemail="224a474e4e4d624a474350564a524b41490c414d4f">[email&#160;protected]</span></a>
+  </div>
+</section>
+<div id="about-nl"></div>
+<div id="about-ft"></div>
+</div><!-- /page-about -->
+
+<!-- PRIVACY -->
+<div class="page" id="page-privacy">
+<div class="legal-page"><div class="container" style="max-width:760px">
+  <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><span>Privacy Policy</span></nav>
+  <div class="legal-hdr"><h1>Privacy Policy</h1><p class="legal-date">Last updated: March 18, 2026</p></div>
+  <div class="legal-body">
+    <div class="legal-hl"><p><strong>Plain English summary:</strong> We collect only your name and email if you subscribe to our newsletter. We do not sell your data. We use standard analytics. We are an affiliate site and disclose that clearly.</p></div>
+    <h2>1. Who We Are</h2><p>Hearthpick ("we," "us," or "our") operates this website — a curated home finds and affiliate marketing platform. Contact us at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="177f727b7b78577f727665637f677e747c3974787a">[email&#160;protected]</a>.</p>
+    <h2>2. What Information We Collect</h2><h3>2.1 Information You Provide</h3><p>We collect the following only when you voluntarily provide it:</p><ul><li><strong>Newsletter subscriptions:</strong> Your first name and email address.</li><li><strong>Contact inquiries:</strong> Any information included when you email us directly.</li></ul>
+    <h3>2.2 Information Collected Automatically</h3><p>When you visit our site, we may automatically receive: browser type and version, pages visited and time spent, referring website, approximate geographic location (country/region only), and device type.</p>
+    <h3>2.3 Cookies</h3><p>We use cookies for basic site functionality and analytics. We do not use advertising cookies. You can disable cookies in your browser settings.</p>
+    <h2>3. How We Use Your Information</h2><p>We use the information we collect to: send our weekly newsletter to opted-in subscribers, respond to contact inquiries, analyse site traffic and improve content, and comply with legal obligations.</p>
+    <h2>4. How We Share Your Information</h2><p>We do not sell, rent, or trade your personal information to third parties.</p>
+    <h2>5. Affiliate Links and Third-Party Sites</h2><p>Our site contains affiliate links to third-party retailers. When you click these links and make purchases, we may earn a commission. These third-party sites have their own privacy policies.</p>
+    <h2>6. Your Rights</h2><p>You may have the right to access, correct, or delete the personal data we hold about you. Email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f676a6363604f676a6e7d7b677f666c64216c6062">[email&#160;protected]</a> to exercise these rights. We respond within 30 days.</p>
+    <h2>7. Contact Us</h2><p>Questions? Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e28a878e8e8da28a878390968a928b8189cc818d8f">[email&#160;protected]</a></p>
+  </div>
+</div></div>
+<div id="privacy-ft"></div>
+</div><!-- /page-privacy -->
+
+<!-- TERMS -->
+<div class="page" id="page-terms">
+<div class="legal-page"><div class="container" style="max-width:760px">
+  <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><span>Terms of Service</span></nav>
+  <div class="legal-hdr"><h1>Terms of Service</h1><p class="legal-date">Last updated: March 18, 2026</p></div>
+  <div class="legal-body">
+    <h2>1. Acceptance of Terms</h2><p>By accessing or using this website, you agree to be bound by these Terms of Service. If you do not agree, please do not use the site.</p>
+    <h2>2. Description of Service</h2><p>Hearthpick is a curated home finds and content platform. We earn commissions through affiliate marketing programs when visitors purchase products through links on our site.</p>
+    <h2>3. Intellectual Property</h2><p>All content on this site is the property of Hearthpick or its content suppliers and is protected by applicable copyright laws.</p>
+    <h2>4. Third-Party Links and Affiliate Relationships</h2><p>Our site contains affiliate links to third-party websites. See our full <a onclick="goto('disclaimer')" style="color:var(--terra);cursor:pointer">Affiliate Disclaimer</a> for details.</p>
+    <h2>5. Disclaimer of Warranties</h2><p>The site and its content are provided on an "as is" basis without warranties of any kind.</p>
+    <h2>6. Limitation of Liability</h2><p>Hearthpick shall not be liable for any indirect, incidental, or consequential damages arising from your use of the site.</p>
+    <h2>7. Contact Information</h2><p>Questions? Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5f373a3333301f373a3e2d2b372f363c34713c3032">[email&#160;protected]</a></p>
+  </div>
+</div></div>
+<div id="terms-ft"></div>
+</div><!-- /page-terms -->
+
+<!-- AFFILIATE DISCLAIMER -->
+<div class="page" id="page-disclaimer">
+<div class="legal-page"><div class="container" style="max-width:760px">
+  <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><span>Affiliate Disclaimer</span></nav>
+  <div class="legal-hdr"><h1>Affiliate Disclaimer</h1><p class="legal-date">Last updated: March 18, 2026</p></div>
+  <div class="legal-body">
+    <div class="legal-hl"><p><strong>In plain English:</strong> Some links on this site pay us a small commission if you buy through them. It costs you nothing extra and never changes what we recommend.</p></div>
+    <h2>FTC Disclosure</h2><p>In accordance with FTC guidelines (16 C.F.R. Part 255), Hearthpick discloses that it participates in affiliate marketing programs. When you click certain links and make a purchase, we may receive a commission at no additional cost to you.</p>
+    <h2>Affiliate Programs We Participate In</h2><ul><li><strong>Amazon Associates:</strong> As an Amazon Associate, we earn from qualifying purchases.</li><li><strong>Wayfair Affiliate Program</strong></li><li><strong>Target Affiliate Program</strong></li><li><strong>IKEA Affiliate Program</strong></li></ul>
+    <h2>Our Editorial Independence</h2><p>Affiliate relationships do not influence our editorial decisions. Products are selected based on quality, value, and relevance — not commission rate.</p>
+    <h2>No Additional Cost to You</h2><p>When you purchase through our affiliate links, the price you pay is identical to what you would pay navigating directly to the retailer.</p>
+    <h2>Contact</h2><p>Questions? Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="254d4049494a654d404457514d554c464e0b464a48">[email&#160;protected]</a></p>
+  </div>
+</div></div>
+<div id="disclaimer-ft"></div>
+</div><!-- /page-disclaimer -->
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+<div id="admin-login" style="position:fixed;inset:0;background:var(--charcoal);display:flex;align-items:center;justify-content:center;z-index:9999">
+  <div style="background:white;padding:2.5rem;width:360px;max-width:90%">
+    <div style="font-family:var(--fd);font-size:1.6rem;font-weight:700;color:var(--charcoal);margin-bottom:.3rem">Hearth<span style="color:var(--terra)">pick</span></div>
+    <div style="font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:2rem">Admin Panel</div>
+    <div id="admin-login-err" style="background:#FDECEA;color:#922B21;font-size:.78rem;padding:.65rem .85rem;margin-bottom:.85rem;display:none">Incorrect PIN.</div>
+    <div class="fg"><label>Admin PIN</label><input type="password" class="fi" id="admin-pin-input" placeholder="Enter PIN" onkeydown="if(event.key==='Enter')adminLogin()"></div>
+    <button class="btn btn-terra" style="width:100%;justify-content:center;margin-top:.5rem" onclick="adminLogin()">Sign In</button>
+    <p style="font-size:.7rem;color:var(--warm-gray);text-align:center;margin-top:.75rem">Default PIN: 1234</p>
+  </div>
+</div>
+<div id="admin-app" style="display:none">
+  <div class="admin-sb" id="admin-sb">
+    <div class="sb-logo">Hearth<span>pick</span><span class="sb-sub">Admin</span></div>
+    <nav class="sb-nav">
+      <div class="sb-sec">Overview</div>
+      <a onclick="adminPage('dashboard')" id="asb-dashboard" class="active">📊 Dashboard</a>
+      <div class="sb-sec">Content</div>
+      <a onclick="adminPage('products')" id="asb-products">📦 Products / Finds</a>
+      <a onclick="adminPage('posts')" id="asb-posts">📝 Blog Posts</a>
+      <a onclick="adminPage('categories')" id="asb-categories">🗂 Categories</a>
+      <div class="sb-sec">Audience</div>
+      <a onclick="adminPage('subscribers')" id="asb-subscribers">👥 Subscribers</a>
+      <div class="sb-sec">Site</div>
+      <a onclick="adminPage('settings')" id="asb-settings">⚙️ Settings</a>
+    </nav>
+    <div style="padding:1rem 1.5rem;border-top:1px solid rgba(245,239,230,.06);font-size:.73rem;color:rgba(245,239,230,.22)">
+      <a onclick="goto('home')" style="color:var(--terra-l);cursor:pointer">← View Site</a> &nbsp;·&nbsp;
+      <span onclick="adminLogout()" style="cursor:pointer">Logout</span>
+    </div>
+  </div>
+  <div class="admin-main">
+    <div class="admin-top"><h1 id="admin-page-title">Dashboard</h1></div>
+    <!-- Dashboard -->
+    <div id="apg-dashboard">
+      <div class="stat-grid" id="admin-stats"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="acard"><h3>Recent Finds</h3><table class="atable"><thead><tr><th>Product</th><th>Price</th><th>Status</th></tr></thead><tbody id="admin-dash-prods"></tbody></table></div>
+        <div class="acard"><h3>Recent Posts</h3><table class="atable"><thead><tr><th>Title</th><th>Date</th><th>Status</th></tr></thead><tbody id="admin-dash-posts"></tbody></table></div>
+      </div>
+    </div>
+    <!-- Products -->
+    <div id="apg-products" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h2 style="font-family:var(--fd);font-size:1.4rem;font-weight:500">Products / Finds</h2>
+        <button class="btn btn-terra" onclick="openProdModal()">+ Add New Find</button>
+      </div>
+      <div class="acard"><h3>All Finds <input type="text" class="fi" id="prod-search" placeholder="Search…" style="width:200px;float:right;padding:.4rem .7rem;font-size:.82rem" oninput="renderAdminProds()"></h3>
+        <table class="atable"><thead><tr><th>Title</th><th>Category</th><th>Price</th><th>Source</th><th>Status</th><th>Actions</th></tr></thead><tbody id="admin-prod-rows"></tbody></table>
+      </div>
+    </div>
+    <!-- Posts -->
+    <div id="apg-posts" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h2 style="font-family:var(--fd);font-size:1.4rem;font-weight:500">Blog Posts</h2>
+        <button class="btn btn-terra" onclick="openPostModal()">+ New Post</button>
+      </div>
+      <div class="acard"><h3>All Posts</h3>
+        <table class="atable"><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="admin-post-rows"></tbody></table>
+      </div>
+    </div>
+    <!-- Categories -->
+    <div id="apg-categories" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h2 style="font-family:var(--fd);font-size:1.4rem;font-weight:500">Categories</h2>
+        <button class="btn btn-terra" onclick="openCatModal()">+ Add Category</button>
+      </div>
+      <div class="acard"><h3>All Categories</h3>
+        <table class="atable"><thead><tr><th>Name</th><th>Slug</th><th>Description</th><th>Actions</th></tr></thead><tbody id="admin-cat-rows"></tbody></table>
+      </div>
+    </div>
+    <!-- Subscribers -->
+    <div id="apg-subscribers" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h2 style="font-family:var(--fd);font-size:1.4rem;font-weight:500">Subscribers</h2>
+        <button class="btn btn-outline" onclick="exportSubsCSV()">Export CSV</button>
+      </div>
+      <div class="acard"><h3>All Subscribers</h3>
+        <table class="atable"><thead><tr><th>Name</th><th>Email</th><th>Date</th><th>Actions</th></tr></thead><tbody id="admin-sub-rows"></tbody></table>
+      </div>
+    </div>
+    <!-- Settings -->
+    <div id="apg-settings" style="display:none">
+      <h2 style="font-family:var(--fd);font-size:1.4rem;font-weight:500;margin-bottom:1.5rem">Site Settings</h2>
+      <div class="acard"><h3>General</h3>
+        <div class="frow"><div class="fg"><label>Site Name</label><input class="fi" id="s-name"></div><div class="fg"><label>Tagline</label><input class="fi" id="s-tagline"></div></div>
+        <div class="frow"><div class="fg"><label>Admin Email</label><input class="fi" id="s-email" type="email"></div><div class="fg"><label>Pinterest URL</label><input class="fi" id="s-pin" type="url"></div></div>
+        <div class="frow"><div class="fg"><label>Instagram URL</label><input class="fi" id="s-ig" type="url"></div><div class="fg"><label>Admin PIN</label><input class="fi" id="s-adminpin"></div></div>
+      </div>
+      <div class="acard"><h3>Legal</h3>
+        <div class="fg"><label>Affiliate Disclosure (footer text)</label><textarea class="ft" id="s-disc" style="min-height:90px"></textarea></div>
+      </div>
+      <button class="btn btn-terra" onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
+</div>
+<!-- Product Modal -->
+<div id="prod-modal" style="display:none;position:fixed;inset:0;background:rgba(44,40,37,.55);z-index:2000;align-items:center;justify-content:center">
+  <div style="background:white;padding:2rem;width:620px;max-width:95%;max-height:90vh;overflow-y:auto;border-radius:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem"><h3 id="prod-modal-title" style="font-family:var(--fd);font-size:1.2rem;font-weight:500">Add New Find</h3><button onclick="closeProdModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--warm-gray)">×</button></div>
+    <input type="hidden" id="pm-id">
+    <div class="frow"><div class="fg"><label>Title *</label><input class="fi" id="pm-title" placeholder="Linen Tufted Sofa"></div><div class="fg"><label>Category</label><select class="fs" id="pm-cat"></select></div></div>
+    <div class="frow"><div class="fg"><label>Price (USD)</label><input class="fi" id="pm-price" type="number" placeholder="149"></div><div class="fg"><label>Source / Retailer</label><input class="fi" id="pm-src" placeholder="Amazon"></div></div>
+    <div class="fg"><label>Affiliate URL *</label><input class="fi" id="pm-url" type="url" placeholder="https://amazon.com/dp/..."></div>
+    <div class="fg"><label>Description</label><textarea class="ft" id="pm-desc" style="min-height:80px"></textarea></div>
+    <div class="frow"><div class="fg"><label>Badge</label><input class="fi" id="pm-badge" placeholder="New Find / Under $50"></div><div class="fg"><label>Status</label><select class="fs" id="pm-status"><option value="published">Published</option><option value="draft">Draft</option></select></div></div>
+    <div class="fg" style="flex-direction:row;align-items:center;gap:.5rem;display:flex"><input type="checkbox" id="pm-feat" style="width:16px;height:16px"><label for="pm-feat" style="font-size:.82rem;margin:0;font-weight:400">Feature on homepage</label></div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
+      <button class="abtn ab-edit" onclick="closeProdModal()">Cancel</button>
+      <button class="btn btn-terra" onclick="saveProd()">Save Find</button>
+    </div>
+  </div>
+</div>
+<!-- Post Modal -->
+<div id="post-modal-admin" style="display:none;position:fixed;inset:0;background:rgba(44,40,37,.55);z-index:2000;align-items:center;justify-content:center">
+  <div style="background:white;padding:2rem;width:700px;max-width:95%;max-height:90vh;overflow-y:auto;border-radius:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem"><h3 id="post-modal-title" style="font-family:var(--fd);font-size:1.2rem;font-weight:500">New Blog Post</h3><button onclick="closePostModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--warm-gray)">×</button></div>
+    <input type="hidden" id="bm-id">
+    <div class="fg"><label>Title *</label><input class="fi" id="bm-title" placeholder="10 Amazon Home Finds Under $50…"></div>
+    <div class="frow"><div class="fg"><label>Category</label><select class="fs" id="bm-cat"></select></div><div class="fg"><label>Status</label><select class="fs" id="bm-status"><option value="published">Published</option><option value="draft">Draft</option></select></div></div>
+    <div class="fg"><label>Excerpt</label><textarea class="ft" id="bm-excerpt" style="min-height:72px" placeholder="Short summary…"></textarea></div>
+    <div class="fg"><label>Content (HTML)</label><textarea class="ft" id="bm-content" style="min-height:200px" placeholder="<p>Article content…</p>"></textarea></div>
+    <div class="fg" style="flex-direction:row;align-items:center;gap:.5rem;display:flex"><input type="checkbox" id="bm-feat" style="width:16px;height:16px"><label for="bm-feat" style="font-size:.82rem;margin:0;font-weight:400">Feature on homepage</label></div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
+      <button class="abtn ab-edit" onclick="closePostModal()">Cancel</button>
+      <button class="btn btn-terra" onclick="savePost()">Save Post</button>
+    </div>
+  </div>
+</div>
+<!-- Cat Modal -->
+<div id="cat-modal-admin" style="display:none;position:fixed;inset:0;background:rgba(44,40,37,.55);z-index:2000;align-items:center;justify-content:center">
+  <div style="background:white;padding:2rem;width:460px;max-width:95%;border-radius:6px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem"><h3 id="cat-modal-title" style="font-family:var(--fd);font-size:1.2rem;font-weight:500">Add Category</h3><button onclick="closeCatModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--warm-gray)">×</button></div>
+    <input type="hidden" id="cm-id">
+    <div class="fg"><label>Name *</label><input class="fi" id="cm-name" oninput="document.getElementById('cm-slug').value=slug(this.value)"></div>
+    <div class="fg"><label>Slug</label><input class="fi" id="cm-slug"></div>
+    <div class="fg"><label>Description</label><textarea class="ft" id="cm-desc" style="min-height:80px"></textarea></div>
+    <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
+      <button class="abtn ab-edit" onclick="closeCatModal()">Cancel</button>
+      <button class="btn btn-terra" onclick="saveCat()">Save</button>
+    </div>
+  </div>
+</div>
+</div><!-- /page-admin -->
+
+</div><!-- /app -->
+
+<script>
+/* ══════════════════════════════════════════
+   ⚙️  SUPABASE CONFIG — PASTE YOUR VALUES HERE
+   After creating your project at supabase.com:
+   Project Settings → API → copy URL and anon key
+══════════════════════════════════════════ */
+const SUPA_URL = 'https://dkyfsapzvvqptxfqxxyc.supabase.co';       // e.g. https://xyzxyz.supabase.co
+const SUPA_KEY = 'sb_publishable_rhJs7qvp6l0S3OtvjA6-5g_RpPghOyC';  // long string starting with eyJ...
+
+/* ══════════════════════════════════════════
+   SUPABASE CLIENT (no npm needed)
+══════════════════════════════════════════ */
+// Supabase client — supports both new sb_publishable_ and legacy eyJ... key formats
+const sb = {
+  get headers() {
+    const h = { 'Content-Type': 'application/json' };
+    if (SUPA_KEY.startsWith('sb_publishable_')) {
+      h['Authorization'] = `Bearer ${SUPA_KEY}`;
+      h['apikey'] = SUPA_KEY;
+    } else {
+      h['apikey'] = SUPA_KEY;
+      h['Authorization'] = `Bearer ${SUPA_KEY}`;
+    }
+    return h;
+  },
+  async q(table, select='*', filter='') {
+    let url = `${SUPA_URL}/rest/v1/${table}?select=${select}`;
+    if (filter) url += `&${filter}`;
+    const r = await fetch(url, { headers: this.headers });
+    if (!r.ok) { console.error('Supabase fetch error', r.status, await r.text()); return []; }
+    return r.json();
+  },
+  async insert(table, data) {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: { ...this.headers, Prefer: 'return=representation' },
+      body: JSON.stringify(data)
+    });
+    return r.json();
+  },
+  async upsert(table, data) {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: { ...this.headers, Prefer: 'resolution=merge-duplicates,return=representation' },
+      body: JSON.stringify(data)
+    });
+    return r.json();
+  },
+  async update(table, id, data) {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { ...this.headers, Prefer: 'return=representation' },
+      body: JSON.stringify(data)
+    });
+    return r.json();
+  },
+  async del(table, id) {
+    await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: this.headers
+    });
+  }
+};
+
+/* ══════════════════════════════════════════
+   FALLBACK SEED (used if Supabase not configured)
+══════════════════════════════════════════ */
+const SEED={
+  cats:[
+    {id:'c1',name:'Living Room',slug:'living-room',desc:'Sofas, rugs, lighting and accent pieces that anchor your living space.',color:'#C5B5A0',cnt:148,on:true},
+    {id:'c2',name:'Bedroom',slug:'bedroom',desc:'Bedding, nightstands, lamps and everything for your most personal space.',color:'#B8BFAD',cnt:203,on:true},
+    {id:'c3',name:'Kitchen',slug:'kitchen',desc:'Serveware, organisers, small appliances and countertop finds.',color:'#C1603A',cnt:91,on:true},
+    {id:'c4',name:'Outdoor',slug:'outdoor',desc:'Patio furniture, planters and garden accessories worth splurging on.',color:'#7A9E7E',cnt:67,on:true},
+    {id:'c5',name:'Home Office',slug:'home-office',desc:'Desks, chairs, storage and décor for a workspace you want to be in.',color:'#9B8F85',cnt:54,on:true},
+    {id:'c6',name:'Bathroom',slug:'bathroom',desc:'Vanity trays, towels, storage and spa-worthy additions.',color:'#A8C4AB',cnt:39,on:true},
+  ],
+  prods:[
+    {id:'p1',name:'Linen Channel Tufted Sofa',cat:'c1',src:'Amazon',price:649,badge:'New Find',desc:'Soft bouclé texture, solid wood legs, 8 earthy tone options.',url:'https://amazon.com',img:'',feat:true,status:'published',date:'2026-03-01'},
+    {id:'p2',name:'Rattan Arc Floor Lamp',cat:'c1',src:'Wayfair',price:189,badge:'',desc:'Warm woven shade, adjustable arm, pairs with any boho or Japandi palette.',url:'https://wayfair.com',img:'',feat:true,status:'published',date:'2026-03-02'},
+    {id:'p3',name:'STOCKHOLM Woven Rug',cat:'c1',src:'IKEA',price:49,badge:'Under $50',desc:'Flat-woven, reversible, handcrafted texture in natural wool colours.',url:'https://ikea.com',img:'',feat:true,status:'published',date:'2026-03-03'},
+    {id:'p4',name:'Travertine Side Table',cat:'c2',src:'Amazon',price:128,badge:'',desc:'Natural stone top with powder-coated matte black frame.',url:'https://amazon.com',img:'',feat:true,status:'published',date:'2026-03-04'},
+    {id:'p5',name:'Stoneware Vase Set — Sage',cat:'c1',src:'Target',price:38,badge:"Editor's Pick",desc:'Set of 3 in graduating heights. Matte sage glaze.',url:'https://target.com',img:'',feat:true,status:'published',date:'2026-03-05'},
+    {id:'p6',name:'Solid Wood Bookcase — Oak',cat:'c5',src:'Wayfair',price:299,badge:'',desc:'5-shelf, adjustable, sustainably sourced.',url:'https://wayfair.com',img:'',feat:true,status:'published',date:'2026-03-06'},
+    {id:'p7',name:'Linen Duvet Cover Set',cat:'c2',src:'Amazon',price:89,badge:'Bestseller',desc:'Stone-washed linen, gets softer with every wash. 12 colour options.',url:'https://amazon.com',img:'',feat:false,status:'published',date:'2026-03-07'},
+    {id:'p8',name:'Cast Iron Skillet Set',cat:'c3',src:'Amazon',price:75,badge:'',desc:'Pre-seasoned, oven-safe to 500°F, lasts decades.',url:'https://amazon.com',img:'',feat:false,status:'published',date:'2026-03-08'},
+    {id:'p9',name:'Velvet Accent Chair',cat:'c1',src:'Wayfair',price:349,badge:'',desc:'Deep forest green velvet, tapered brass legs.',url:'https://wayfair.com',img:'',feat:false,status:'published',date:'2026-03-09'},
+    {id:'p10',name:'Bamboo Bath Caddy',cat:'c6',src:'Amazon',price:35,badge:'Under $50',desc:'Expandable, holds a book, wine glass, and phone.',url:'https://amazon.com',img:'',feat:false,status:'published',date:'2026-03-10'},
+  ],
+  posts:[
+    {id:'b1',title:'10 Amazon Home Finds Under $50 That Look Expensive',slug:'amazon-finds-under-50',cat:'c1',excerpt:"You don't need a designer budget to have a beautiful home.",content:'<p>Finding affordable home décor that actually looks good is harder than it should be. We spent weeks testing and returning before landing on these 10 pieces that consistently photograph well, hold up to daily use, and cost less than a dinner out.</p><h2>1. The Linen Throw</h2><p>The single item that transforms any sofa from flat to editorial is a good throw. This pre-washed linen option comes in 14 muted tones and drapes naturally without looking staged.</p><h2>2. Woven Seagrass Basket</h2><p>Storage that looks intentional. Use it for throws, magazines, or plant pots.</p>',tags:'amazon,budget,living room',author:'Hearthpick Editorial',status:'published',feat:true,date:'2026-03-10'},
+    {id:'b2',title:'The Japandi Bedroom: A Starter Guide',slug:'japandi-bedroom-guide',cat:'c2',excerpt:"Japandi is not a trend — it's a philosophy. Here's how to bring its principles into your bedroom.",content:'<p>Japandi — the design philosophy that blends Japanese minimalism with Scandinavian warmth — has moved from Pinterest boards into mainstream interiors for good reason.</p><h2>Start with the Palette</h2><p>Warm whites, oat tones, charcoal, and muted sage. The palette should feel like a sigh of relief when you walk in.</p><h2>The Bed is the Anchor</h2><p>A low-profile platform bed in natural wood is the centrepiece. Linen bedding in undyed or stone-washed tones. Two pillows maximum.</p>',tags:'japandi,bedroom,style guide',author:'Hearthpick Editorial',status:'published',feat:true,date:'2026-03-08'},
+    {id:'b3',title:'How We Curate: The Hearthpick Selection Process',slug:'how-we-curate',cat:'c1',excerpt:"Every find on this site went through a real test. Here's exactly how we decide what makes the cut.",content:'<p>We get this question a lot: how do you decide what to feature? The answer is more rigorous than most people expect from an affiliate site.</p><h2>Step 1: The Longlist</h2><p>We monitor Pinterest trending boards, retailer new arrivals, and reader suggestions.</p><h2>Step 2: The Review Deep-Dive</h2><p>We read the 1-star and 2-star reviews first. This tells you more about a product than the 5-star ones.</p>',tags:'about,curation,process',author:'Hearthpick Editorial',status:'published',feat:false,date:'2026-03-05'},
+  ],
+  cfg:{name:'Hearthpick',tag:'Curated Home Finds, Pinned with Love',email:'hello@hearthpick.com',pin:'https://pinterest.com/hearthpick',ig:'#',tk:'#',adminPin:'1234',disc:'Hearthpick is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.'},
+  subs:[],
+};
+
+/* ══════════════════════════════════════════
+   DATA LAYER — Supabase with localStorage fallback
+   If SUPA_URL is not configured, falls back to seed data
+══════════════════════════════════════════ */
+const USE_SUPA = SUPA_URL !== 'YOUR_SUPABASE_URL';
+
+// In-memory cache so we don't re-fetch on every render
+const CACHE = { cats:null, prods:null, posts:null, cfg:null, subs:null };
+
+function gs(k){try{return JSON.parse(localStorage.getItem('hp_'+k))}catch{return null}}
+function ss(k,v){localStorage.setItem('hp_'+k,JSON.stringify(v))}
+
+// Seed localStorage fallback once
+function initFallback(){if(!gs('ok')){ss('cats',SEED.cats);ss('prods',SEED.prods);ss('posts',SEED.posts);ss('cfg',SEED.cfg);ss('subs',SEED.subs);ss('ok',1);}}
+initFallback();
+
+async function getCats(){
+  if(!USE_SUPA){return gs('cats')||SEED.cats}
+  if(CACHE.cats)return CACHE.cats;
+  const d=await sb.q('categories','*');
+  CACHE.cats=Array.isArray(d)?d:SEED.cats;
+  return CACHE.cats;
+}
+async function getProds(f={}){
+  if(!USE_SUPA){let p=gs('prods')||SEED.prods;if(f.cat)p=p.filter(x=>x.cat===f.cat);if(f.status)p=p.filter(x=>x.status===f.status);if(f.feat)p=p.filter(x=>x.feat);return p}
+  if(!CACHE.prods){const d=await sb.q('products','*');CACHE.prods=Array.isArray(d)?d:SEED.prods;}
+  let p=[...CACHE.prods];
+  if(f.cat)p=p.filter(x=>x.cat===f.cat);
+  if(f.status)p=p.filter(x=>x.status===f.status);
+  if(f.feat)p=p.filter(x=>x.feat);
+  return p;
+}
+async function getPosts(f={}){
+  if(!USE_SUPA){let p=gs('posts')||SEED.posts;if(f.status)p=p.filter(x=>x.status===f.status);if(f.feat)p=p.filter(x=>x.feat);return p}
+  if(!CACHE.posts){const d=await sb.q('posts','*');CACHE.posts=Array.isArray(d)?d:SEED.posts;}
+  let p=[...CACHE.posts];
+  if(f.status)p=p.filter(x=>x.status===f.status);
+  if(f.feat)p=p.filter(x=>x.feat);
+  return p;
+}
+async function getCfg(){
+  if(!USE_SUPA)return gs('cfg')||SEED.cfg;
+  if(CACHE.cfg)return CACHE.cfg;
+  const d=await sb.q('config','*');
+  CACHE.cfg=Array.isArray(d)&&d[0]?d[0]:SEED.cfg;
+  return CACHE.cfg;
+}
+async function getSubs(){
+  if(!USE_SUPA)return gs('subs')||[];
+  const d=await sb.q('subscribers','*');
+  return Array.isArray(d)?d:[];
+}
+async function addSub(name,email){
+  if(!USE_SUPA){const a=gs('subs')||[];if(a.find(s=>s.email===email))return false;a.push({id:'s'+Date.now(),name,email,date:new Date().toISOString().split('T')[0]});ss('subs',a);return true}
+  try{await sb.insert('subscribers',{id:'s'+Date.now(),name,email,date:new Date().toISOString().split('T')[0]});return true}catch{return false}
+}
+function invalidateCache(){CACHE.cats=null;CACHE.prods=null;CACHE.posts=null;CACHE.cfg=null;CACHE.subs=null;}
+
+// Sync catName helper — uses cache if available
+function catName(id){
+  const cats=CACHE.cats||gs('cats')||SEED.cats;
+  const c=cats.find(x=>x.id===id);return c?c.name:'—';
+}
+const PALETTE=['#EDE0D0','#D5DDD0','#F0E0D5','#D8D0C8','#C8D5C5','#E8D8C5','#D5C8D5','#C8DDE0'];
+function pc(i){return PALETTE[i%PALETTE.length]}
+function uid(){return 'x'+Date.now()+Math.random().toString(36).substr(2,5)}
+function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}
+
+/* ══════════════════════════════════════════
+   ROUTER
+══════════════════════════════════════════ */
+let currentPage='home';
+let currentCatId=null;
+let currentPostId=null;
+let currentBlogFilter='all';
+
+function goto(page,extra){
+  // hide all
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  // show target
+  const el=document.getElementById('page-'+page);
+  if(!el)return;
+  el.classList.add('active');
+  currentPage=page;
+  window.scrollTo(0,0);
+  // update nav
+  ['nav-blog','nav-about'].forEach(id=>{
+    const a=document.getElementById(id);
+    if(a)a.classList.remove('active');
+  });
+  if(page==='blog'&&document.getElementById('nav-blog'))document.getElementById('nav-blog').classList.add('active');
+  if(page==='about'&&document.getElementById('nav-about'))document.getElementById('nav-about').classList.add('active');
+  // render
+  if(page==='home')renderHome();
+  if(page==='shop')renderShopPage();
+  if(page==='blog')renderBlogPage();
+  if(page==='post'){currentPostId=extra;renderPostPage(extra)}
+  if(page==='category'){currentCatId=extra;renderCategoryPage(extra)}
+  if(page==='about')renderAboutPage();
+  if(page==='admin')renderAdminLoginPage();
+  if(page==='privacy'||page==='terms'||page==='disclaimer'){renderFooter('footer-'+page.replace('disclaimer','disclaimer'));renderFooterInto(page+'-ft')}
+  updateHash(page,extra);
+}
+
+function updateHash(page,extra){
+  let h='#'+page;
+  if(extra)h+='/'+extra;
+  history.replaceState(null,'',h);
+}
+
+window.addEventListener('load',()=>{
+  const h=location.hash.replace('#','');
+  if(!h||h==='home'){goto('home');return}
+  const parts=h.split('/');
+  if(parts[0]==='category'&&parts[1]){goto('category',parts[1]);return}
+  if(parts[0]==='post'&&parts[1]){goto('post',parts[1]);return}
+  if(['shop','blog','about','privacy','terms','disclaimer','admin'].includes(parts[0])){goto(parts[0]);return}
+  goto('home');
+});
+
+/* ══════════════════════════════════════════
+   COMPONENT HELPERS
+══════════════════════════════════════════ */
+function renderProdCard(p,i){
+  const color=pc(i);
+  const imgHtml=p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy">`:`<div style="position:absolute;inset:0;background:${color};display:flex;align-items:center;justify-content:center"><span style="font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:rgba(44,40,37,.35)">${catName(p.cat)}</span></div>`;
+  return`<div class="product-card"><div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div><div class="card-body"><div class="card-source">${p.src}</div><div class="card-name">${p.name}</div><div class="card-desc">${p.desc||p.description}</div><div class="card-footer"><div class="card-price">$${p.price}</div><a href="${p.url}" target="_blank" rel="noopener sponsored" class="card-cta">Shop Now →</a></div></div></div>`;
+}
+
+function renderBlogCardHtml(post){
+  const cat=getCats().find(c=>c.id===post.cat);
+  return`<div class="blog-card" onclick="goto('post','${post.id}')"><div class="blog-img" style="background:${cat?cat.color:'#C5B5A0'}"><span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:rgba(255,255,255,.35)">${cat?cat.name:'Editorial'}</span></div><div class="blog-body"><span class="blog-cat">${cat?cat.name:'Editorial'}</span><h3 class="blog-title">${post.title}</h3><p class="blog-excerpt">${post.excerpt}</p><div class="blog-meta"><span>${post.author}</span><span class="meta-dot"></span><span>${new Date(post.date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span></div></div></div>`;
+}
+
+function renderNewsletter(){
+  return`<section class="nl-wrap" id="newsletter"><div class="container"><div class="nl-inner"><div><div class="nl-eye">The Weekly Edit</div><h2 class="nl-title">Get the <em>best finds</em><br>before everyone else.</h2><p class="nl-desc">Every Thursday — 5 hand-picked home finds, exclusive deals, one styling tip, and the one piece worth splurging on this week.</p></div><div><div class="nl-form"><div id="nl-msg" style="display:none"></div><input type="text" class="nl-input" id="nl-name" placeholder="Your first name"><input type="email" class="nl-input" id="nl-email" placeholder="Your email address"><button class="btn btn-terra" onclick="subscribe()" style="align-self:flex-start">Subscribe — it's free</button><p class="nl-note">No spam. Unsubscribe anytime.</p></div></div></div></div></section>`;
+}
+
+function renderFooterHtml(){
+  const cfg=getCfg();
+  return`<footer id="footer"><div class="container"><div class="ft-grid"><div><span class="ft-logo" onclick="goto('home')" style="cursor:pointer">Hearth<span>pick</span></span><p class="ft-tag">Curated home finds for every room, budget, and aesthetic. Pinned with love, linked with honesty.</p><div class="ft-soc"><a href="${cfg.pin||'#'}" class="soc-btn" target="_blank">P</a><a href="${cfg.ig||'#'}" class="soc-btn" target="_blank">IG</a></div></div><div class="ft-col"><h4>Shop</h4><ul>${getCats().filter(c=>c.on).map(c=>`<li><a onclick="goto('category','${c.id}')">${c.name}</a></li>`).join('')}</ul></div><div class="ft-col"><h4>Hearthpick</h4><ul><li><a onclick="goto('about')">About</a></li><li><a onclick="goto('blog')">The Edit</a></li><li><a href="${cfg.pin||'#'}" target="_blank">Pinterest</a></li><li><a href="mailto:${cfg.email||'hello@hearthpick.com'}">Contact</a></li></ul></div><div class="ft-col"><h4>Legal</h4><ul><li><a onclick="goto('privacy')">Privacy Policy</a></li><li><a onclick="goto('disclaimer')">Affiliate Disclaimer</a></li><li><a onclick="goto('terms')">Terms of Service</a></li></ul></div></div><div class="ft-bot"><p class="ft-copy">© ${new Date().getFullYear()} Hearthpick. All rights reserved.</p><p class="ft-disc">${cfg.disc||''}</p></div></div></footer>`;
+}
+
+function renderFooterInto(id){
+  const el=document.getElementById(id);
+  if(el)el.innerHTML=renderFooterHtml();
+}
+function renderNLInto(id){
+  const el=document.getElementById(id);
+  if(el)el.innerHTML=renderNewsletter();
+}
+
+/* ══════════════════════════════════════════
+   RENDER PAGES
+══════════════════════════════════════════ */
+async function renderHome(){
+  const cfg=await getCfg();
+  // marquee
+  const mqItems=['Amazon Finds','Wayfair Picks','IKEA Hacks','Budget Style','Cozy Living','Home Refresh','Trending Décor','Pinned & Loved'];
+  const t=[...mqItems,...mqItems];
+  document.getElementById('mq').innerHTML=t.map(i=>`<span class="mq-item"><span class="mq-dot"></span>${i}</span>`).join('');
+  // cat grid
+  const cats=await getCats();
+  const activeCats=cats.filter(c=>c.on).slice(0,6);
+  document.getElementById('home-cat-grid').innerHTML=activeCats.map(c=>`<div class="cat-card" onclick="goto('category','${c.id}')"><div class="cc-bg" style="background:${c.color}"></div><div class="cc-info"><div class="cc-name">${c.name}</div><div class="cc-cnt">${c.cnt} curated finds</div></div></div>`).join('');
+  // finds grid
+  document.getElementById('home-finds-grid').innerHTML=(await getProds({status:'published',feat:true})).slice(0,6).map((p,i)=>renderProdCard(p,i)).join('');
+  // blog grid
+  document.getElementById('home-blog-grid').innerHTML=(await getPosts({status:'published'})).slice(0,3).map(p=>renderBlogCardHtml(p)).join('');
+  // pinterest
+  const pb=document.getElementById('home-pint-btn');
+  if(pb)pb.href=cfg.pin||'#';
+  renderNLInto('home-nl');
+  renderFooterInto('home-ft');
+  buildNav();
+}
+
+async function renderShopPage(){
+  const cats=(await getCats()).filter(c=>c.on);
+  const allProds=await getProds();
+  cats.forEach(c=>{
+    const d=document.getElementById('shop-cat-filters');
+    if(d&&!d.querySelector(`[data-cat="${c.id}"]`)){
+      d.insertAdjacentHTML('beforeend',`<label class="fopt"><input type="checkbox" data-cat="${c.id}" onchange="renderShop()"> ${c.name}</label>`);
+    }
+  });
+  [...new Set(allProds.map(p=>p.src))].forEach(s=>{
+    const d=document.getElementById('shop-src-filters');
+    if(d&&!d.querySelector(`[data-src="${s}"]`)){
+      d.insertAdjacentHTML('beforeend',`<label class="fopt"><input type="checkbox" data-src="${s}" onchange="renderShop()"> ${s}</label>`);
+    }
+  });
+  renderShop();
+  renderNLInto('shop-nl');
+  renderFooterInto('shop-ft');
+}
+
+async function renderShop(){
+  let p=await getProds({status:'published'});
+  const cats=[...document.querySelectorAll('[data-cat]:checked')].map(e=>e.dataset.cat);
+  const srcs=[...document.querySelectorAll('[data-src]:checked')].map(e=>e.dataset.src);
+  const prices=[...document.querySelectorAll('[data-price]:checked')].map(e=>e.dataset.price);
+  if(cats.length)p=p.filter(x=>cats.includes(x.cat));
+  if(srcs.length)p=p.filter(x=>srcs.includes(x.src));
+  if(prices.length)p=p.filter(x=>prices.some(r=>{const[mn,mx]=r.split('-').map(Number);return x.price>=mn&&x.price<=mx}));
+  const s=document.getElementById('shop-sort')?.value||'new';
+  if(s==='asc')p.sort((a,b)=>a.price-b.price);
+  else if(s==='desc')p.sort((a,b)=>b.price-a.price);
+  else if(s==='name')p.sort((a,b)=>a.name.localeCompare(b.name));
+  else p.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const cnt=document.getElementById('shop-cnt');
+  if(cnt)cnt.textContent=`${p.length} find${p.length!==1?'s':''}`;
+  const grid=document.getElementById('shop-grid');
+  if(grid)grid.innerHTML=p.length?p.map((x,i)=>renderProdCard(x,i)):`<div class="no-res">No finds match your filters.</div>`;
+}
+
+function clearShopFilters(){document.querySelectorAll('#page-shop input[type=checkbox]').forEach(c=>c.checked=false);renderShop()}
+
+async function renderBlogPage(){
+  const allPosts=await getPosts({status:'published'});
+  const allCats=await getCats();
+  // featured post
+  const featured=allPosts.find(p=>p.feat)||allPosts[0];
+  if(featured){
+    const cat=allCats.find(c=>c.id===featured.cat);
+    document.getElementById('blog-featured').innerHTML=`<div class="featured-post" onclick="goto('post','${featured.id}')"><div class="fp-visual" style="background:${cat?cat.color:'#C5B5A0'}"><span style="font-family:'Playfair Display',serif;font-size:1.5rem;font-style:italic;color:rgba(255,255,255,.35)">${cat?cat.name:''}</span></div><div class="fp-body"><span class="fp-badge">Featured</span><h2 class="fp-title">${featured.title}</h2><p class="fp-excerpt">${featured.excerpt}</p><span class="btn btn-dark" style="align-self:flex-start;pointer-events:none">Read Article</span></div></div>`;
+  }
+  // filters
+  const filterCats=allCats.filter(c=>allPosts.some(p=>p.cat===c.id));
+  document.getElementById('blog-filters').innerHTML='<button class="filter-pill active" onclick="setBlogFilter(\'all\',this)">All</button>'+filterCats.map(c=>`<button class="filter-pill" onclick="setBlogFilter('${c.id}',this)">${c.name}</button>`).join('');
+  await renderBlogGrid();
+  renderNLInto('blog-nl');
+  renderFooterInto('blog-ft');
+}
+
+function setBlogFilter(id,btn){
+  currentBlogFilter=id;
+  document.querySelectorAll('#page-blog .filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderBlogGrid();
+}
+
+async function renderBlogGrid(){
+  let posts=await getPosts({status:'published'});
+  if(currentBlogFilter!=='all')posts=posts.filter(p=>p.cat===currentBlogFilter);
+  document.getElementById('blog-grid-full').innerHTML=posts.length?posts.map(p=>renderBlogCardHtml(p)).join(''):`<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--warm-gray);font-style:italic">No articles yet.</div>`;
+}
+
+async function renderPostPage(id){
+  const posts=await getPosts();
+  const post=posts.find(p=>p.id===id);
+  if(!post){document.getElementById('post-content-el').innerHTML='<p>Post not found.</p>';return}
+  document.title=post.title+' — Hearthpick';
+  const cats=await getCats();
+  const cat=cats.find(c=>c.id===post.cat);
+  document.getElementById('post-bc').textContent=post.title.substring(0,40)+'…';
+  document.getElementById('post-cat-lbl').textContent=cat?cat.name:'Editorial';
+  document.getElementById('post-title-el').textContent=post.title;
+  document.getElementById('post-author-el').textContent=post.author||'Hearthpick Editorial';
+  document.getElementById('post-date-el').textContent=new Date(post.date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('post-content-el').innerHTML=post.content||'<p>'+post.excerpt+'</p>';
+  if(cat)document.getElementById('post-hero-bg').style.background=cat.color+'22';
+  const tags=(post.tags||'').split(',').filter(Boolean);
+  document.getElementById('post-tags-el').innerHTML=tags.map(t=>`<span class="post-tag">${t.trim()}</span>`).join('');
+  const finds=(await getProds({status:'published',feat:true})).slice(0,3);
+  document.getElementById('post-sidebar-finds').innerHTML=finds.map((p,i)=>`<a href="${p.url}" target="_blank" rel="noopener sponsored" class="sidebar-prod"><div style="width:56px;height:56px;flex-shrink:0;border-radius:3px;background:${pc(i)}"></div><div><div style="font-size:.83rem;font-weight:400;line-height:1.35;margin-bottom:.2rem">${p.name}</div><div style="font-family:'Playfair Display',serif;font-size:.9rem;font-weight:600;color:var(--terra)">$${p.price}</div></div></a>`).join('');
+  renderNLInto('post-nl');
+  renderFooterInto('post-ft');
+}
+
+let _catId=null;
+async function renderCategoryPage(id){
+  _catId=id;
+  const cats=await getCats();
+  const cat=cats.find(c=>c.id===id);
+  if(cat){
+    document.title=cat.name+' Finds — Hearthpick';
+    document.getElementById('cat-bc').textContent=cat.name;
+    document.getElementById('cat-tag-lbl').textContent='Shop '+cat.name;
+    document.getElementById('cat-title-el').innerHTML=cat.name+'<br><em style="font-style:italic;color:var(--terra)">Finds</em>';
+    document.getElementById('cat-desc-el').textContent=cat.desc||cat.description;
+    document.getElementById('cat-hero-visual').style.background=cat.color;
+    document.getElementById('cat-hero-visual').innerHTML=`<span style="font-family:'Playfair Display',serif;font-size:2rem;font-style:italic;color:rgba(255,255,255,.35)">${cat.name}</span>`;
+    document.getElementById('cat-hero-section').style.background=cat.color+'22';
+  }
+  await renderCatProducts();
+  renderNLInto('cat-nl');
+  renderFooterInto('cat-ft');
+}
+
+async function renderCatProducts(){
+  let prods=await getProds({status:'published',cat:_catId});
+  const sort=document.getElementById('cat-sort')?.value||'newest';
+  if(sort==='price-asc')prods.sort((a,b)=>a.price-b.price);
+  else if(sort==='price-desc')prods.sort((a,b)=>b.price-a.price);
+  else prods.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const cats=await getCats();
+  const cat=cats.find(c=>c.id===_catId);
+  document.getElementById('cat-prod-count').textContent=`${prods.length} find${prods.length!==1?'s':''} in ${cat?cat.name:'this category'}`;
+  document.getElementById('cat-products-grid').innerHTML=prods.length?prods.map((p,i)=>renderProdCard(p,i)).join(''):`<div class="no-res">No finds in this category yet.</div>`;
+}
+
+async function renderAboutPage(){
+  const cfg=await getCfg();
+  const el=document.getElementById('about-contact-email');
+  if(el){el.href='mailto:'+(cfg.email||'hello@hearthpick.com');el.textContent=cfg.email||'hello@hearthpick.com'}
+  renderNLInto('about-nl');
+  renderFooterInto('about-ft');
+}
+
+/* ══════════════════════════════════════════
+   NAV BUILD
+══════════════════════════════════════════ */
+async function buildNav(){
+  const cats=(await getCats()).filter(c=>c.on);
+  const dd=document.getElementById('nav-cat-dd');
+  if(dd)dd.innerHTML=cats.map(c=>`<a onclick="goto('category','${c.id}')">${c.name}</a>`).join('')+`<a onclick="goto('shop')" style="border-top:1px solid #EDE3D5;margin-top:4px;padding-top:10px;font-weight:500">All Finds →</a>`;
+  const mob=document.getElementById('mob-cat-links');
+  if(mob)mob.innerHTML=cats.map(c=>`<a onclick="goto('category','${c.id}');closeMob()">${c.name}</a>`).join('');
+}
+buildNav();
+
+// Fix "Get the Edit" nav CTA — smooth scroll to newsletter on any page
+document.querySelector('.nav-cta').addEventListener('click', e => {
+  e.preventDefault();
+  const nl = document.getElementById('newsletter');
+  if(nl){ nl.scrollIntoView({behavior:'smooth'}); }
+  else {
+    goto('home');
+    setTimeout(()=>{ const n=document.getElementById('newsletter'); if(n)n.scrollIntoView({behavior:'smooth'}); }, 400);
+  }
+});
+
+// scroll
+window.addEventListener('scroll',()=>document.getElementById('main-nav').classList.toggle('scrolled',scrollY>30));
+// hamburger
+document.getElementById('hbg').addEventListener('click',()=>document.getElementById('mob-nav').classList.toggle('open'));
+function closeMob(){document.getElementById('mob-nav').classList.remove('open')}
+
+/* ══════════════════════════════════════════
+   NEWSLETTER SUBSCRIBE
+══════════════════════════════════════════ */
+function subscribe(){
+  const name=document.getElementById('nl-name').value.trim();
+  const email=document.getElementById('nl-email').value.trim();
+  const msg=document.getElementById('nl-msg');
+  if(!name||!email){msg.style.display='block';msg.className='alert a-err';msg.textContent='Please fill in both fields.';return}
+  if(!email.includes('@')){msg.style.display='block';msg.className='alert a-err';msg.textContent='Please enter a valid email.';return}
+  const ok=addSub(name,email);
+  msg.style.display='block';
+  if(ok){msg.className='alert a-ok';msg.textContent=`Welcome, ${name}! The Thursday edit is coming your way.`;document.getElementById('nl-name').value='';document.getElementById('nl-email').value='';}
+  else{msg.className='alert a-inf';msg.textContent="You're already on the list — thank you!"}
+}
+
+function sidebarSub(){
+  const email=document.getElementById('post-sidebar-email').value.trim();
+  const msg=document.getElementById('post-sidebar-msg');
+  msg.style.display='block';
+  if(!email.includes('@')){msg.className='alert a-err';msg.textContent='Valid email required.';return}
+  addSub('Reader',email);
+  msg.className='alert a-ok';msg.textContent='Subscribed!';
+  document.getElementById('post-sidebar-email').value='';
+}
+
+/* ══════════════════════════════════════════
+   ADMIN
+══════════════════════════════════════════ */
+function renderAdminLoginPage(){
+  // just show page, login handled by button
+}
+
+function adminLogin(){
+  const pin=document.getElementById('admin-pin-input').value;
+  const cfg=getCfg();
+  if(pin===(cfg.adminPin||'1234')){
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-app').style.display='flex';
+    adminPage('dashboard');
+  } else {
+    document.getElementById('admin-login-err').style.display='block';
+  }
+}
+document.getElementById('admin-pin-input').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin()});
+
+function adminLogout(){
+  document.getElementById('admin-login').style.display='flex';
+  document.getElementById('admin-app').style.display='none';
+  document.getElementById('admin-pin-input').value='';
+}
+
+function adminPage(p){
+  ['dashboard','products','posts','categories','subscribers','settings'].forEach(n=>{
+    const el=document.getElementById('apg-'+n);
+    const lnk=document.getElementById('asb-'+n);
+    if(el)el.style.display=n===p?'block':'none';
+    if(lnk){lnk.classList.toggle('active',n===p)}
+  });
+  const titles={dashboard:'Dashboard',products:'Products / Finds',posts:'Blog Posts',categories:'Categories',subscribers:'Subscribers',settings:'Site Settings'};
+  document.getElementById('admin-page-title').textContent=titles[p]||p;
+  if(p==='dashboard')renderAdminDash();
+  if(p==='products')renderAdminProds();
+  if(p==='posts')renderAdminPosts();
+  if(p==='categories')renderAdminCats();
+  if(p==='subscribers')renderAdminSubs();
+  if(p==='settings')loadAdminSettings();
+}
+
+async function renderAdminDash(){
+  const prods=await getProds();const posts=await getPosts();const subs=await getSubs();const cats=await getCats();
+  document.getElementById('admin-stats').innerHTML=`
+    <div class="stat-box"><div class="sl">Published Finds</div><div class="sn">${prods.filter(p=>p.status==='published').length}</div><div class="ss">↑ ${prods.length} total</div></div>
+    <div class="stat-box"><div class="sl">Blog Posts</div><div class="sn">${posts.filter(p=>p.status==='published').length}</div><div class="ss">↑ ${posts.length} total</div></div>
+    <div class="stat-box"><div class="sl">Categories</div><div class="sn">${cats.length}</div><div class="ss">Active rooms</div></div>
+    <div class="stat-box"><div class="sl">Subscribers</div><div class="sn">${subs.length}</div><div class="ss">↑ Growing</div></div>`;
+  document.getElementById('admin-dash-prods').innerHTML=prods.slice(0,5).map(p=>`<tr><td><strong>${p.name}</strong></td><td>$${p.price}</td><td><span class="spill ${p.status==='published'?'s-pub':'s-dft'}">${p.status}</span></td></tr>`).join('');
+  document.getElementById('admin-dash-posts').innerHTML=posts.slice(0,5).map(p=>`<tr><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.title}</td><td>${p.date}</td><td><span class="spill ${p.status==='published'?'s-pub':'s-dft'}">${p.status}</span></td></tr>`).join('');
+}
+
+async function renderAdminProds(){
+  const filter=(document.getElementById('prod-search')?.value||'').toLowerCase();
+  invalidateCache();
+  let prods=await getProds();
+  if(filter)prods=prods.filter(p=>p.name.toLowerCase().includes(filter)||(p.src||'').toLowerCase().includes(filter));
+  document.getElementById('admin-prod-rows').innerHTML=prods.map(p=>`<tr><td><strong>${p.name}</strong>${p.feat?'<span class="spill s-dft" style="margin-left:6px">Featured</span>':''}</td><td>${catName(p.cat)}</td><td>$${p.price}</td><td>${p.src||'—'}</td><td><span class="spill ${p.status==='published'?'s-pub':'s-dft'}">${p.status}</span></td><td><button class="abtn ab-edit" onclick="editProd('${p.id}')">Edit</button> <button class="abtn ab-del" onclick="deleteProd('${p.id}')">Del</button></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--warm-gray)">No finds found.</td></tr>';
+}
+
+async function renderAdminPosts(){
+  invalidateCache();
+  const posts=await getPosts();
+  document.getElementById('admin-post-rows').innerHTML=posts.map(p=>`<tr><td style="max-width:280px"><strong>${p.title}</strong></td><td>${catName(p.cat)}</td><td>${p.date}</td><td><span class="spill ${p.status==='published'?'s-pub':'s-dft'}">${p.status}</span></td><td><button class="abtn ab-edit" onclick="editPost('${p.id}')">Edit</button> <button class="abtn ab-del" onclick="deletePost('${p.id}')">Del</button></td></tr>`).join('');
+}
+
+async function renderAdminCats(){
+  invalidateCache();
+  const cats=await getCats();
+  document.getElementById('admin-cat-rows').innerHTML=cats.map(c=>`<tr><td><strong>${c.name}</strong></td><td><code style="font-size:.75rem;background:var(--linen);padding:.15rem .4rem">${c.slug}</code></td><td style="max-width:280px;color:var(--warm-gray);font-size:.82rem">${c.desc||c.description}</td><td><button class="abtn ab-edit" onclick="editCat('${c.id}')">Edit</button> <button class="abtn ab-del" onclick="deleteCat('${c.id}')">Del</button></td></tr>`).join('');
+}
+
+async function renderAdminSubs(){
+  const subs=await getSubs();
+  document.getElementById('admin-sub-rows').innerHTML=subs.map(s=>`<tr><td>${s.name||'—'}</td><td>${s.email}</td><td>${s.date}</td><td><button class="abtn ab-del" onclick="deleteSub('${s.id}')">Remove</button></td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--warm-gray)">No subscribers yet.</td></tr>';
+}
+
+// ── PRODUCT CRUD ──
+async function openProdModal(p){
+  document.getElementById('prod-modal-title').textContent=p?'Edit Find':'Add New Find';
+  document.getElementById('pm-id').value=p?p.id:'';
+  document.getElementById('pm-title').value=p?p.name:'';
+  document.getElementById('pm-price').value=p?p.price:'';
+  document.getElementById('pm-src').value=p?p.src:'';
+  document.getElementById('pm-url').value=p?p.url:'';
+  document.getElementById('pm-desc').value=p?(p.desc||p.description||''):'';
+  document.getElementById('pm-badge').value=p?p.badge:'';
+  document.getElementById('pm-status').value=p?p.status:'published';
+  document.getElementById('pm-feat').checked=p?!!p.feat:false;
+  const cats=await getCats();
+  document.getElementById('pm-cat').innerHTML=cats.map(c=>`<option value="${c.id}" ${p&&p.cat===c.id?'selected':''}>${c.name}</option>`).join('');
+  document.getElementById('prod-modal').style.display='flex';
+}
+function closeProdModal(){document.getElementById('prod-modal').style.display='none'}
+async function editProd(id){const prods=await getProds();openProdModal(prods.find(p=>p.id===id))}
+async function saveProd(){
+  const title=document.getElementById('pm-title').value.trim();
+  const url=document.getElementById('pm-url').value.trim();
+  if(!title||!url){alert('Title and URL required.');return}
+  const id=document.getElementById('pm-id').value;
+  const prod={id:id||uid(),name:title,price:parseFloat(document.getElementById('pm-price').value)||0,src:document.getElementById('pm-src').value.trim(),url,description:document.getElementById('pm-desc').value.trim(),badge:document.getElementById('pm-badge').value.trim(),cat:document.getElementById('pm-cat').value,status:document.getElementById('pm-status').value,feat:document.getElementById('pm-feat').checked,date:new Date().toISOString().split('T')[0],img:''};
+  if(USE_SUPA){await sb.upsert('products',prod);}
+  else{const prods=gs('prods')||[];if(id){const i=prods.findIndex(p=>p.id===id);prods[i]=prod}else prods.unshift(prod);ss('prods',prods);}
+  invalidateCache();closeProdModal();await renderAdminProds();
+  showAdminToast(id?'Find updated!':'Find added!');
+}
+async function deleteProd(id){
+  if(!confirm('Delete this find?'))return;
+  if(USE_SUPA)await sb.del('products',id);
+  else ss('prods',(gs('prods')||[]).filter(p=>p.id!==id));
+  invalidateCache();renderAdminProds();showAdminToast('Find deleted.');
+}
+
+// ── POST CRUD ──
+async function openPostModal(p){
+  document.getElementById('post-modal-title').textContent=p?'Edit Post':'New Blog Post';
+  document.getElementById('bm-id').value=p?p.id:'';
+  document.getElementById('bm-title').value=p?p.title:'';
+  document.getElementById('bm-excerpt').value=p?p.excerpt:'';
+  document.getElementById('bm-content').value=p?p.content:'';
+  document.getElementById('bm-status').value=p?p.status:'published';
+  document.getElementById('bm-feat').checked=p?!!p.feat:false;
+  const cats=await getCats();
+  document.getElementById('bm-cat').innerHTML=cats.map(c=>`<option value="${c.id}" ${p&&p.cat===c.id?'selected':''}>${c.name}</option>`).join('');
+  document.getElementById('post-modal-admin').style.display='flex';
+}
+function closePostModal(){document.getElementById('post-modal-admin').style.display='none'}
+async function editPost(id){const posts=await getPosts();openPostModal(posts.find(p=>p.id===id))}
+async function savePost(){
+  const title=document.getElementById('bm-title').value.trim();
+  if(!title){alert('Title required.');return}
+  const id=document.getElementById('bm-id').value;
+  const post={id:id||uid(),title,slug:slug(title),excerpt:document.getElementById('bm-excerpt').value.trim(),content:document.getElementById('bm-content').value.trim(),cat:document.getElementById('bm-cat').value,status:document.getElementById('bm-status').value,feat:document.getElementById('bm-feat').checked,author:'Hearthpick Editorial',date:new Date().toISOString().split('T')[0],tags:''};
+  if(USE_SUPA){await sb.upsert('posts',post);}
+  else{const posts=gs('posts')||[];if(id){const i=posts.findIndex(p=>p.id===id);posts[i]=post}else posts.unshift(post);ss('posts',posts);}
+  invalidateCache();closePostModal();await renderAdminPosts();
+  showAdminToast(id?'Post updated!':'Post published!');
+}
+async function deletePost(id){
+  if(!confirm('Delete this post?'))return;
+  if(USE_SUPA)await sb.del('posts',id);
+  else ss('posts',(gs('posts')||[]).filter(p=>p.id!==id));
+  invalidateCache();renderAdminPosts();showAdminToast('Post deleted.');
+}
+
+// ── CAT CRUD ──
+async function openCatModal(c){
+  document.getElementById('cat-modal-title').textContent=c?'Edit Category':'Add Category';
+  document.getElementById('cm-id').value=c?c.id:'';
+  document.getElementById('cm-name').value=c?c.name:'';
+  document.getElementById('cm-slug').value=c?c.slug:'';
+  document.getElementById('cm-desc').value=c?(c.desc||c.description||''):'';
+  document.getElementById('cat-modal-admin').style.display='flex';
+}
+function closeCatModal(){document.getElementById('cat-modal-admin').style.display='none'}
+async function editCat(id){const cats=await getCats();openCatModal(cats.find(c=>c.id===id))}
+async function saveCat(){
+  const name=document.getElementById('cm-name').value.trim();
+  if(!name){alert('Name required.');return}
+  const id=document.getElementById('cm-id').value;
+  const cats=await getCats();
+  const cat={id:id||uid(),name,slug:document.getElementById('cm-slug').value||slug(name),description:document.getElementById('cm-desc').value.trim(),color:PALETTE[cats.length%PALETTE.length],cnt:0,on:true,on_site:true};
+  if(USE_SUPA){await sb.upsert('categories',cat);}
+  else{if(id){const i=cats.findIndex(c=>c.id===id);cats[i]=cat}else cats.push(cat);ss('cats',cats);}
+  invalidateCache();closeCatModal();await renderAdminCats();buildNav();
+  showAdminToast(id?'Category updated!':'Category added!');
+}
+async function deleteCat(id){
+  if(!confirm('Delete this category?'))return;
+  if(USE_SUPA)await sb.del('categories',id);
+  else{const cats=await getCats();ss('cats',cats.filter(c=>c.id!==id));}
+  invalidateCache();renderAdminCats();
+}
+
+// ── SUBSCRIBERS ──
+async function deleteSub(id){
+  if(USE_SUPA)await sb.del('subscribers',id);
+  else ss('subs',(gs('subs')||[]).filter(s=>s.id!==id));
+  renderAdminSubs();showAdminToast('Subscriber removed.');
+}
+async function exportSubsCSV(){
+  const subs=await getSubs();
+  const rows=[['Name','Email','Date'],...subs.map(s=>[s.name||'',s.email,s.date])];
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='hearthpick-subscribers.csv';a.click();
+  showAdminToast('CSV exported!');
+}
+
+// ── SETTINGS ──
+async function loadAdminSettings(){
+  const cfg=await getCfg();
+  document.getElementById('s-name').value=cfg.name||'';
+  document.getElementById('s-tagline').value=cfg.tag||cfg.tagline||'';
+  document.getElementById('s-email').value=cfg.email||'';
+  document.getElementById('s-pin').value=cfg.pin||'';
+  document.getElementById('s-ig').value=cfg.ig||'';
+  document.getElementById('s-adminpin').value=cfg.adminPin||cfg.admin_pin||'1234';
+  document.getElementById('s-disc').value=cfg.disc||cfg.disclosure||'';
+}
+async function saveSettings(){
+  const updates={name:document.getElementById('s-name').value,tag:document.getElementById('s-tagline').value,email:document.getElementById('s-email').value,pin:document.getElementById('s-pin').value,ig:document.getElementById('s-ig').value,adminPin:document.getElementById('s-adminpin').value||'1234',admin_pin:document.getElementById('s-adminpin').value||'1234',disc:document.getElementById('s-disc').value};
+  if(USE_SUPA){await sb.update('config',1,updates);}
+  else{ss('cfg',{...getCfg(),...updates});}
+  invalidateCache();showAdminToast('Settings saved!');
+}
+
+// ── ADMIN LOGIN (async for cfg check) ──
+async function adminLogin(){
+  const pin=document.getElementById('admin-pin-input').value;
+  const cfg=await getCfg();
+  if(pin===(cfg.adminPin||cfg.admin_pin||'1234')){
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-app').style.display='flex';
+    adminPage('dashboard');
+  } else {
+    document.getElementById('admin-login-err').style.display='block';
+  }
+}
+
+// ── TOAST ──
+function showAdminToast(msg){
+  let t=document.getElementById('admin-toast');
+  if(!t){t=document.createElement('div');t.id='admin-toast';t.style.cssText='position:fixed;bottom:2rem;right:2rem;background:var(--charcoal);color:white;padding:.85rem 1.5rem;border-radius:4px;font-size:.85rem;z-index:9999;border-left:3px solid var(--sage);transition:opacity .3s';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',3000);
+}
+
+// ── NEWSLETTER SUBSCRIBE (async) ──
+async function subscribe(){
+  const name=document.getElementById('nl-name').value.trim();
+  const email=document.getElementById('nl-email').value.trim();
+  const msg=document.getElementById('nl-msg');
+  if(!name||!email){msg.style.display='block';msg.className='alert a-err';msg.textContent='Please fill in both fields.';return}
+  if(!email.includes('@')){msg.style.display='block';msg.className='alert a-err';msg.textContent='Please enter a valid email.';return}
+  const ok=await addSub(name,email);
+  msg.style.display='block';
+  if(ok){msg.className='alert a-ok';msg.textContent=`Welcome, ${name}! The Thursday edit is coming your way.`;document.getElementById('nl-name').value='';document.getElementById('nl-email').value='';}
+  else{msg.className='alert a-inf';msg.textContent="You're already on the list — thank you!"}
+}
+
+async function sidebarSub(){
+  const email=document.getElementById('post-sidebar-email').value.trim();
+  const msg=document.getElementById('post-sidebar-msg');
+  msg.style.display='block';
+  if(!email.includes('@')){msg.className='alert a-err';msg.textContent='Valid email required.';return}
+  await addSub('Reader',email);
+  msg.className='alert a-ok';msg.textContent='Subscribed!';
+  document.getElementById('post-sidebar-email').value='';
+}
+
+// ── INIT ──
+renderHome();
+['privacy','terms','disclaimer'].forEach(p=>renderFooterInto(p+'-ft'));
+</script>
+</body>
+</html>
