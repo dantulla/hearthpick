@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Edit — Hearthpick Blog</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.blog-hero{padding:calc(var(--nav-height)+4rem) 0 3.5rem;background:var(--ivory);text-align:center}
+.blog-hero h1{font-family:var(--font-display);font-size:clamp(2.8rem,5vw,4.5rem);font-weight:400;margin-bottom:.75rem}
+.featured-post{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:3rem 0 4rem;background:white;border:1px solid var(--ivory-dark);text-decoration:none;color:inherit}
+.fp-visual{aspect-ratio:1;display:flex;align-items:center;justify-content:center;min-height:360px}
+.fp-body{padding:3.5rem;display:flex;flex-direction:column;justify-content:center}
+.fp-badge{display:inline-block;background:var(--terra);color:white;font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:.3rem .8rem;margin-bottom:1.25rem}
+.fp-title{font-family:var(--font-display);font-size:clamp(1.6rem,2.5vw,2rem);font-weight:500;line-height:1.25;margin-bottom:1rem}
+.fp-excerpt{font-size:.9rem;font-weight:300;color:var(--warm-gray);line-height:1.8;margin-bottom:1.75rem}
+.filter-pill{padding:.45rem 1.1rem;border:1px solid var(--ivory-dark);background:white;border-radius:20px;font-size:.78rem;color:var(--charcoal);cursor:pointer;transition:var(--transition)}
+.filter-pill:hover,.filter-pill.active{background:var(--charcoal);color:white;border-color:var(--charcoal)}
+.blog-grid-full{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+@media(max-width:900px){.featured-post{grid-template-columns:1fr}.blog-grid-full{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.blog-grid-full{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="nav-mount"></div>
+<div class="blog-hero">
+  <div class="container">
+    <div class="tag-label" style="justify-content:center;margin-bottom:1rem">Editorial</div>
+    <h1>The <em style="font-style:italic;color:var(--terra)">Edit</em></h1>
+    <p style="font-size:.95rem;font-weight:300;color:var(--warm-gray);max-width:480px;margin:0 auto;line-height:1.75">Home styling guides, curated room breakdowns, and the stories behind our favourite finds.</p>
+  </div>
+</div>
+<div class="container" style="padding-bottom:6rem">
+  <nav class="breadcrumb"><a href="../index.html">Home</a><span class="breadcrumb-sep">›</span><span>The Edit</span></nav>
+  <div id="featured-mount"></div>
+  <div style="display:flex;gap:.75rem;margin-bottom:2.5rem;flex-wrap:wrap" id="filters"></div>
+  <div class="blog-grid-full" id="blog-grid"></div>
+</div>
+<div id="nl-mount"></div>
+<div id="footer-mount"></div>
+<script src="../js/data.js"></script>
+<script src="../js/components.js"></script>
+<script>
+document.getElementById('nav-mount').innerHTML = Components.renderNav('blog');
+document.getElementById('nl-mount').innerHTML = Components.renderNewsletter();
+document.getElementById('footer-mount').innerHTML = Components.renderFooter('../');
+Components.initNav();
+let activeFilter = 'all';
+const allPosts = HP.getPosts({status:'published'});
+const featured = allPosts.find(p=>p.featured)||allPosts[0];
+if(featured){
+  const cat = HP.getCategories().find(c=>c.id===featured.category);
+  document.getElementById('featured-mount').innerHTML = `<a href="post.html?id=${featured.id}" class="featured-post"><div class="fp-visual" style="background:${cat?cat.color:'#C5B5A0'}"><span style="font-family:'Playfair Display',serif;font-size:1.5rem;font-style:italic;color:rgba(255,255,255,0.35)">${cat?cat.name:''}</span></div><div class="fp-body"><span class="fp-badge">Featured</span><h2 class="fp-title">${featured.title}</h2><p class="fp-excerpt">${featured.excerpt}</p><span class="btn btn-dark" style="align-self:flex-start">Read Article</span></div></a>`;
+}
+const cats = HP.getCategories();
+document.getElementById('filters').innerHTML = '<button class="filter-pill active" onclick="setFilter(\'all\',this)">All</button>'+
+  cats.filter(c=>allPosts.some(p=>p.category===c.id)).map(c=>`<button class="filter-pill" onclick="setFilter('${c.id}',this)">${c.name}</button>`).join('');
+function setFilter(id,btn){
+  activeFilter=id;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+function renderGrid(){
+  let posts = HP.getPosts({status:'published'});
+  if(activeFilter!=='all') posts=posts.filter(p=>p.category===activeFilter);
+  document.getElementById('blog-grid').innerHTML = posts.length
+    ? posts.map(p=>Components.renderBlogCard(p,'../')).join('')
+    : '<div style="grid-column:1/-1;text-align:center;padding:4rem;color:var(--warm-gray);font-style:italic">No articles yet.</div>';
+}
+renderGrid();
+</script>
+</body>
+</html>

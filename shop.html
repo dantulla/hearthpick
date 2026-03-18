@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Shop All Finds — Hearthpick</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.shop-layout{display:grid;grid-template-columns:230px 1fr;gap:3rem;padding:3rem 0 6rem}
+.fsb h3{font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--warm-gray);margin:1.75rem 0 .75rem}
+.fsb h3:first-child{margin-top:0}
+.fopt{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;cursor:pointer;font-size:.85rem;font-weight:300;color:var(--charcoal);padding:.3rem 0}
+.fopt input[type=checkbox]{accent-color:var(--terra);width:14px;height:14px}
+.fopt:hover{color:var(--terra)}
+.fdiv{height:1px;background:var(--ivory-d);margin:1.25rem 0}
+.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.75rem}
+.shop-ctrl{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+.shop-cnt{font-size:.85rem;color:var(--warm-gray);font-weight:300}
+@media(max-width:900px){.shop-layout{grid-template-columns:1fr}.fsb{display:flex;gap:1rem;flex-wrap:wrap;align-items:center}.fsb h3{margin:0;white-space:nowrap}.shop-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.shop-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="nav-root"></div>
+<div class="pg-hdr">
+  <div class="container">
+    <div class="tag-label" style="justify-content:center;margin-bottom:1rem">All Finds</div>
+    <h1>The Complete <em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--terra)">Edit</em></h1>
+    <p>Every piece we've curated, filtered to find exactly what your home needs.</p>
+  </div>
+</div>
+<div class="container">
+  <nav class="breadcrumb"><a href="../index.html">Home</a><span class="bc-sep">›</span><span>Shop All</span></nav>
+  <div class="shop-layout">
+    <aside class="fsb">
+      <h3>Room</h3><div id="cat-filters"></div>
+      <div class="fdiv"></div>
+      <h3>Source</h3><div id="src-filters"></div>
+      <div class="fdiv"></div>
+      <h3>Price</h3>
+      <label class="fopt"><input type="checkbox" data-price="0-50" onchange="render()"> Under $50</label>
+      <label class="fopt"><input type="checkbox" data-price="50-150" onchange="render()"> $50 – $150</label>
+      <label class="fopt"><input type="checkbox" data-price="150-400" onchange="render()"> $150 – $400</label>
+      <label class="fopt"><input type="checkbox" data-price="400-9999" onchange="render()"> $400+</label>
+      <div class="fdiv"></div>
+      <button class="btn btn-outline" onclick="clearF()" style="width:100%;font-size:.75rem">Clear Filters</button>
+    </aside>
+    <div>
+      <div class="shop-ctrl">
+        <span class="shop-cnt" id="cnt"></span>
+        <select class="sort-sel" id="sort" onchange="render()">
+          <option value="new">Newest First</option>
+          <option value="asc">Price: Low to High</option>
+          <option value="desc">Price: High to Low</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+      <div class="shop-grid" id="grid"></div>
+    </div>
+  </div>
+</div>
+<div id="nl-root"></div><div id="ft-root"></div>
+<script src="../js/data.js"></script><script src="../js/components.js"></script>
+<script>
+document.getElementById('nav-root').innerHTML=C.nav('shop');
+document.getElementById('nl-root').innerHTML=C.newsletter();
+document.getElementById('ft-root').innerHTML=C.footer();
+C.initNav();
+
+HP.getCats().filter(c=>c.on).forEach(c=>{
+  document.getElementById('cat-filters').insertAdjacentHTML('beforeend',`<label class="fopt"><input type="checkbox" data-cat="${c.id}" onchange="render()"> ${c.name}</label>`);
+});
+[...new Set(HP.getProds().map(p=>p.src))].forEach(s=>{
+  document.getElementById('src-filters').insertAdjacentHTML('beforeend',`<label class="fopt"><input type="checkbox" data-src="${s}" onchange="render()"> ${s}</label>`);
+});
+
+function checked(attr){return[...document.querySelectorAll(`[${attr}]:checked`)].map(e=>e.getAttribute(attr))}
+function clearF(){document.querySelectorAll('.fsb input[type=checkbox]').forEach(c=>c.checked=false);render()}
+
+function render(){
+  let p=HP.getProds({status:'published'});
+  const cats=checked('data-cat'),srcs=checked('data-src'),prices=checked('data-price');
+  if(cats.length)p=p.filter(x=>cats.includes(x.cat));
+  if(srcs.length)p=p.filter(x=>srcs.includes(x.src));
+  if(prices.length)p=p.filter(x=>prices.some(r=>{const[mn,mx]=r.split('-').map(Number);return x.price>=mn&&x.price<=mx}));
+  const s=document.getElementById('sort').value;
+  if(s==='asc')p.sort((a,b)=>a.price-b.price);
+  else if(s==='desc')p.sort((a,b)=>b.price-a.price);
+  else if(s==='name')p.sort((a,b)=>a.name.localeCompare(b.name));
+  else p.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  document.getElementById('cnt').textContent=`${p.length} find${p.length!==1?'s':''}`;
+  document.getElementById('grid').innerHTML=p.length?p.map((x,i)=>C.prodCard(x,i)).join(''):`<div class="no-res">No finds match your filters.</div>`;
+}
+const pre=new URLSearchParams(location.search).get('cat');
+if(pre){const cb=document.querySelector(`[data-cat="${pre}"]`);if(cb)cb.checked=true}
+render();
+</script>
+</body>
+</html>

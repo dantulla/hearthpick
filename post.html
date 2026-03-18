@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post — Hearthpick</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.post-layout{display:grid;grid-template-columns:1fr 320px;gap:4rem;padding:3rem 0 6rem}
+.post-header{padding:calc(var(--nav-height)+4rem) 0 3rem}
+.post-content{font-size:.95rem;font-weight:300;line-height:1.9;color:#4A433E}
+.post-content h2{font-family:var(--font-display);font-size:1.6rem;font-weight:500;color:var(--charcoal);margin:2.5rem 0 1rem}
+.post-content h3{font-family:var(--font-display);font-size:1.2rem;font-weight:500;color:var(--charcoal);margin:2rem 0 .75rem}
+.post-content p{margin-bottom:1.4rem}
+.post-content ul,.post-content ol{padding-left:1.5rem;margin-bottom:1.4rem}
+.post-content li{margin-bottom:.5rem}
+.post-content a{color:var(--terra);text-decoration:underline}
+.post-content blockquote{border-left:3px solid var(--terra);padding:.75rem 1.5rem;margin:2rem 0;background:var(--ivory);font-family:var(--font-display);font-style:italic;font-size:1.05rem}
+.sidebar-card{background:white;border:1px solid var(--ivory-dark);padding:1.5rem;margin-bottom:1.5rem}
+.sidebar-card h4{font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--ivory-dark)}
+.sidebar-prod{display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--ivory);text-decoration:none;color:inherit}
+.sidebar-prod:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.post-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--ivory-dark)}
+.post-tag{padding:.3rem .8rem;background:var(--ivory);font-size:.73rem;color:var(--warm-gray);border-radius:20px}
+@media(max-width:900px){.post-layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="nav-mount"></div>
+<div id="post-hero" style="background:var(--ivory)">
+  <div class="container post-header">
+    <nav class="breadcrumb"><a href="../index.html">Home</a><span class="breadcrumb-sep">›</span><a href="blog.html">The Edit</a><span class="breadcrumb-sep">›</span><span id="bc-title">Article</span></nav>
+    <div style="max-width:720px">
+      <a href="blog.html" id="post-cat-link" style="font-size:.7rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--terra)">Editorial</a>
+      <h1 id="post-title" style="font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:400;line-height:1.12;margin:1rem 0">Loading...</h1>
+      <div style="font-size:.8rem;color:var(--warm-gray);display:flex;align-items:center;gap:.75rem">
+        <span id="post-author"></span><span style="width:3px;height:3px;border-radius:50%;background:var(--warm-gray)"></span><span id="post-date"></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="post-layout">
+    <article>
+      <div class="post-content" id="post-content"></div>
+      <div class="post-tags" id="post-tags"></div>
+    </article>
+    <aside>
+      <div class="sidebar-card">
+        <h4>Featured Finds</h4>
+        <div id="sidebar-finds"></div>
+      </div>
+      <div class="sidebar-card" style="background:var(--charcoal);border-color:var(--charcoal)">
+        <h4 style="color:rgba(245,239,230,.4);border-color:rgba(245,239,230,.1)">Get The Edit</h4>
+        <p style="font-size:.82rem;color:rgba(245,239,230,.55);font-weight:300;line-height:1.7;margin-bottom:1rem">Weekly finds in your inbox. No spam.</p>
+        <div id="sidebar-msg" style="display:none;margin-bottom:.75rem"></div>
+        <input type="email" class="nl-input" id="sidebar-email" placeholder="Your email" style="margin-bottom:.75rem">
+        <button class="btn btn-terra" style="width:100%;justify-content:center" onclick="sidebarSub()">Subscribe Free</button>
+      </div>
+    </aside>
+  </div>
+</div>
+<div id="nl-mount"></div>
+<div id="footer-mount"></div>
+<script src="../js/data.js"></script>
+<script src="../js/components.js"></script>
+<script>
+document.getElementById('nav-mount').innerHTML = Components.renderNav('blog');
+document.getElementById('nl-mount').innerHTML = Components.renderNewsletter();
+document.getElementById('footer-mount').innerHTML = Components.renderFooter('../');
+Components.initNav();
+const postId = new URLSearchParams(location.search).get('id');
+const post = HP.getPosts().find(p=>p.id===postId);
+if(post){
+  document.title = post.title+' — Hearthpick';
+  const cat = HP.getCategories().find(c=>c.id===post.category);
+  document.getElementById('bc-title').textContent = post.title.substring(0,40)+'...';
+  document.getElementById('post-cat-link').textContent = cat?cat.name:'Editorial';
+  document.getElementById('post-title').textContent = post.title;
+  document.getElementById('post-author').textContent = post.author;
+  document.getElementById('post-date').textContent = new Date(post.createdAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('post-content').innerHTML = post.content||'<p>'+post.excerpt+'</p>';
+  if(cat) document.getElementById('post-hero').style.background = cat.color+'15';
+  const tags = (post.tags||'').split(',').filter(Boolean);
+  document.getElementById('post-tags').innerHTML = tags.map(t=>'<span class="post-tag">'+t.trim()+'</span>').join('');
+  const finds = HP.getProducts({status:'published',featured:true}).slice(0,3);
+  document.getElementById('sidebar-finds').innerHTML = finds.map((p,i)=>`<a href="${p.affiliateUrl}" target="_blank" rel="noopener sponsored" class="sidebar-prod"><div style="width:56px;height:56px;flex-shrink:0;border-radius:3px;background:${HP.getPlaceholderColor(i)}"></div><div><div style="font-size:.83rem;font-weight:400;line-height:1.35;margin-bottom:.2rem">${p.name}</div><div style="font-family:'Playfair Display',serif;font-size:.9rem;font-weight:600;color:var(--terra)">$${p.price}</div></div></a>`).join('');
+} else {
+  document.getElementById('post-content').innerHTML='<p>Post not found.</p>';
+}
+function sidebarSub(){
+  const email = document.getElementById('sidebar-email').value.trim();
+  const msg = document.getElementById('sidebar-msg');
+  msg.style.display='block';
+  if(!email.includes('@')){msg.className='alert alert-error';msg.textContent='Valid email required.';return;}
+  HP.addSubscriber('Reader',email);
+  msg.className='alert alert-success';msg.textContent='Subscribed!';
+  document.getElementById('sidebar-email').value='';
+}
+</script>
+</body>
+</html>
