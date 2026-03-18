@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Dynamic sitemap — auto-updates when you add products or posts
+Sitemap: https://dkyfsapzvvqptxfqxxyc.supabase.co/functions/v1/sitemap
