@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Hearthpick — Curated Home Finds</title>
+<meta name="description" content="Handpicked home finds from Amazon, Wayfair, IKEA and more. Follow us on Pinterest for daily home inspiration.">
+<link rel="stylesheet" href="css/style.css">
+<style>
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;padding-top:var(--nav)}
+.hero-txt{display:flex;flex-direction:column;justify-content:center;padding:5rem 5% 5rem 8%}
+.h-eye{font-size:.68rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--terra);margin-bottom:1.5rem;display:flex;align-items:center;gap:.6rem}
+.h-eye::before{content:'';width:28px;height:1px;background:var(--terra)}
+.h-title{font-family:'Playfair Display',serif;font-size:clamp(3.2rem,5.5vw,5.2rem);font-weight:400;line-height:1.06;margin-bottom:1.75rem}
+.h-title em{font-style:italic;color:var(--terra)}
+.h-sub{font-size:.95rem;font-weight:300;color:var(--warm-gray);line-height:1.8;max-width:400px;margin-bottom:2.75rem}
+.h-acts{display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
+.hero-vis{background:var(--ivory-d);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px}
+.mc{display:flex;align-items:center;justify-content:center;position:relative}
+.mc-lbl{position:absolute;bottom:1rem;left:1rem;font-family:'Playfair Display',serif;font-size:.9rem;font-style:italic;color:rgba(44,40,37,.5)}
+.mc1{background:#D6C9B8}.mc2{background:#B8BFAD;grid-row:span 2}.mc3{background:#C5B5A0}
+.stats-bar{background:var(--ivory);padding:2.5rem 0;border-top:1px solid var(--ivory-d);border-bottom:1px solid var(--ivory-d)}
+.stats-inner{display:flex;justify-content:center;gap:5rem;flex-wrap:wrap}
+.s-item{text-align:center}
+.s-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--charcoal)}
+.s-lbl{font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-gray);margin-top:.2rem}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3.5rem}
+.cat-card{position:relative;aspect-ratio:3/4;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;text-decoration:none}
+.cc-bg{position:absolute;inset:0;transition:transform .6s ease}
+.cat-card:hover .cc-bg{transform:scale(1.06)}
+.cc-info{position:relative;z-index:2;padding:1.75rem 1.5rem;background:linear-gradient(to top,rgba(30,22,15,.72) 0%,transparent 100%);color:white}
+.cc-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;font-style:italic;margin-bottom:.2rem}
+.cc-cnt{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+.finds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem}
+.pint-strip{background:var(--ivory-d);padding:5rem 0;text-align:center}
+.pint-ico{width:52px;height:52px;background:#E60023;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+.pint-ico svg{width:26px;height:26px;fill:white}
+.pint-h{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:400;margin-bottom:.75rem}
+.pint-p{font-size:.9rem;font-weight:300;color:var(--warm-gray);max-width:440px;margin:0 auto 2rem;line-height:1.7}
+@keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.h-eye{animation:fu .6s ease .1s both}.h-title{animation:fu .6s ease .25s both}.h-sub{animation:fu .6s ease .4s both}.h-acts{animation:fu .6s ease .55s both}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.hero-vis{min-height:50vh}.cat-grid{grid-template-columns:repeat(2,1fr)}.finds-grid{grid-template-columns:repeat(2,1fr)}.blog-grid{grid-template-columns:1fr}.stats-inner{gap:3rem}}
+@media(max-width:600px){.cat-grid{grid-template-columns:1fr}.finds-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="nav-root"></div>
+
+<section class="hero">
+  <div class="hero-txt">
+    <div class="h-eye">Curated Home Finds</div>
+    <h1 class="h-title">Homes that<br><em>breathe</em><br>beautifully.</h1>
+    <p class="h-sub">We find the pieces that make a house feel like home — sourced from Amazon, Wayfair, IKEA and beyond. No endless scrolling. Just the finds that matter.</p>
+    <div class="h-acts">
+      <a href="pages/shop.html" class="btn btn-dark">Shop All Finds</a>
+      <a href="pages/blog.html" class="btn btn-ghost">Read the Edit <span class="arrow">→</span></a>
+    </div>
+  </div>
+  <div class="hero-vis">
+    <div class="mc mc1"><span class="mc-lbl">Living</span></div>
+    <div class="mc mc2"><span class="mc-lbl">Bedroom</span></div>
+    <div class="mc mc3"><span class="mc-lbl">Kitchen</span></div>
+  </div>
+</section>
+
+<div class="marquee-bar"><div class="mq-track" id="mq"></div></div>
+
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="s-item"><div class="s-num">500+</div><div class="s-lbl">Finds Curated</div></div>
+    <div class="s-item"><div class="s-num">6</div><div class="s-lbl">Room Categories</div></div>
+    <div class="s-item"><div class="s-num">Weekly</div><div class="s-lbl">New Drops</div></div>
+    <div class="s-item"><div class="s-num">100%</div><div class="s-lbl">Honest Reviews</div></div>
+  </div>
+</div>
+
+<section class="sp" style="background:var(--linen)">
+  <div class="container">
+    <div class="tag-label">Browse by room</div>
+    <h2 class="sec-title" style="margin-top:1rem">Find your <em>perfect</em> space</h2>
+    <div class="cat-grid" id="cat-grid"></div>
+    <div style="text-align:center;margin-top:2.5rem"><a href="pages/shop.html" class="btn btn-outline">View All Categories</a></div>
+  </div>
+</section>
+
+<section class="sp" style="background:var(--ivory)">
+  <div class="container">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div><div class="tag-label">This week's edit</div><h2 class="sec-title" style="margin-top:1rem">Handpicked <em>just for you</em></h2></div>
+      <a href="pages/shop.html" class="btn btn-ghost">See all finds <span class="arrow">→</span></a>
+    </div>
+    <div class="finds-grid" id="finds-grid"></div>
+  </div>
+</section>
+
+<section class="sp" style="background:var(--linen)">
+  <div class="container">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+      <div><div class="tag-label">From the blog</div><h2 class="sec-title" style="margin-top:1rem">The <em>Hearthpick</em> Edit</h2></div>
+      <a href="pages/blog.html" class="btn btn-ghost">All articles <span class="arrow">→</span></a>
+    </div>
+    <div class="blog-grid" id="blog-grid"></div>
+  </div>
+</section>
+
+<div class="pint-strip">
+  <div class="pint-ico"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
+  <h2 class="pint-h">Follow us on <em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--terra)">Pinterest</em></h2>
+  <p class="pint-p">50+ boards. Daily pins. The home inspiration feed you actually want to wake up to.</p>
+  <a href="#" id="pint-btn" class="btn btn-terra" target="_blank">Follow Hearthpick on Pinterest</a>
+</div>
+
+<div id="nl-root"></div>
+<div id="ft-root"></div>
+
+<script src="js/data.js"></script><script src="js/components.js"></script>
+<script>
+document.getElementById('nav-root').innerHTML=C.nav('','./');
+document.getElementById('nl-root').innerHTML=C.newsletter();
+document.getElementById('ft-root').innerHTML=C.footer('./');
+C.initNav();
+
+const cfg=HP.getCfg();
+document.getElementById('pint-btn').href=cfg.pin||'#';
+
+const mqItems=['Amazon Finds','Wayfair Picks','IKEA Hacks','Budget Style','Cozy Living','Home Refresh','Trending Décor','Pinned & Loved'];
+const t=[...mqItems,...mqItems];
+document.getElementById('mq').innerHTML=t.map(i=>`<span class="mq-item"><span class="mq-dot"></span>${i}</span>`).join('');
+
+const cats=HP.getCats().filter(c=>c.on).slice(0,6);
+document.getElementById('cat-grid').innerHTML=cats.map(c=>`
+<a href="pages/category.html?id=${c.id}" class="cat-card">
+  <div class="cc-bg" style="background:${c.color}"></div>
+  <div class="cc-info"><div class="cc-name">${c.name}</div><div class="cc-cnt">${c.cnt} curated finds</div></div>
+</a>`).join('');
+
+const prods=HP.getProds({status:'published',feat:true}).slice(0,6);
+document.getElementById('finds-grid').innerHTML=prods.map((p,i)=>C.prodCard(p,i,'./')).join('');
+
+const posts=HP.getPosts({status:'published'}).slice(0,3);
+document.getElementById('blog-grid').innerHTML=posts.map(p=>C.blogCard(p,'./')).join('');
+</script>
+</body>
+</html>
