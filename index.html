@@ -1,144 +1,826 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Hearthpick — Curated Home Finds</title>
-<meta name="description" content="Handpicked home finds from Amazon, Wayfair, IKEA and more. Follow us on Pinterest for daily home inspiration.">
-<link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Hearthpick</title>
 <style>
-.hero{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;padding-top:var(--nav)}
-.hero-txt{display:flex;flex-direction:column;justify-content:center;padding:5rem 5% 5rem 8%}
-.h-eye{font-size:.68rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--terra);margin-bottom:1.5rem;display:flex;align-items:center;gap:.6rem}
-.h-eye::before{content:'';width:28px;height:1px;background:var(--terra)}
-.h-title{font-family:'Playfair Display',serif;font-size:clamp(3.2rem,5.5vw,5.2rem);font-weight:400;line-height:1.06;margin-bottom:1.75rem}
-.h-title em{font-style:italic;color:var(--terra)}
-.h-sub{font-size:.95rem;font-weight:300;color:var(--warm-gray);line-height:1.8;max-width:400px;margin-bottom:2.75rem}
-.h-acts{display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
-.hero-vis{background:var(--ivory-d);display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3px}
-.mc{display:flex;align-items:center;justify-content:center;position:relative}
-.mc-lbl{position:absolute;bottom:1rem;left:1rem;font-family:'Playfair Display',serif;font-size:.9rem;font-style:italic;color:rgba(44,40,37,.5)}
-.mc1{background:#D6C9B8}.mc2{background:#B8BFAD;grid-row:span 2}.mc3{background:#C5B5A0}
-.stats-bar{background:var(--ivory);padding:2.5rem 0;border-top:1px solid var(--ivory-d);border-bottom:1px solid var(--ivory-d)}
-.stats-inner{display:flex;justify-content:center;gap:5rem;flex-wrap:wrap}
-.s-item{text-align:center}
-.s-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--charcoal)}
-.s-lbl{font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-gray);margin-top:.2rem}
-.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3.5rem}
-.cat-card{position:relative;aspect-ratio:3/4;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;text-decoration:none}
-.cc-bg{position:absolute;inset:0;transition:transform .6s ease}
-.cat-card:hover .cc-bg{transform:scale(1.06)}
-.cc-info{position:relative;z-index:2;padding:1.75rem 1.5rem;background:linear-gradient(to top,rgba(30,22,15,.72) 0%,transparent 100%);color:white}
-.cc-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;font-style:italic;margin-bottom:.2rem}
-.cc-cnt{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
-.finds-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem}
-.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem}
-.pint-strip{background:var(--ivory-d);padding:5rem 0;text-align:center}
-.pint-ico{width:52px;height:52px;background:#E60023;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
-.pint-ico svg{width:26px;height:26px;fill:white}
-.pint-h{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,2.6rem);font-weight:400;margin-bottom:.75rem}
-.pint-p{font-size:.9rem;font-weight:300;color:var(--warm-gray);max-width:440px;margin:0 auto 2rem;line-height:1.7}
-@keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-.h-eye{animation:fu .6s ease .1s both}.h-title{animation:fu .6s ease .25s both}.h-sub{animation:fu .6s ease .4s both}.h-acts{animation:fu .6s ease .55s both}
-@media(max-width:900px){.hero{grid-template-columns:1fr}.hero-vis{min-height:50vh}.cat-grid{grid-template-columns:repeat(2,1fr)}.finds-grid{grid-template-columns:repeat(2,1fr)}.blog-grid{grid-template-columns:1fr}.stats-inner{gap:3rem}}
-@media(max-width:600px){.cat-grid{grid-template-columns:1fr}.finds-grid{grid-template-columns:1fr}}
+/* ═══ HEARTHPICK ADMIN — SELF-CONTAINED ═══ */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --terra:#B5502A;--terra-lt:#D4785A;--terra-pale:#F2DDD5;
+  --ivory:#F8F3EC;--ivory-dk:#EDE4D6;--ivory-dp:#DDD0BE;
+  --sage:#6B9070;--charcoal:#27211C;--charcoal-mid:#4A3F37;
+  --warm-gray:#8C8078;--linen:#FBF8F3;--sidebar:#1E1915;
+  --sidebar-w:240px;--topbar-h:60px;
+  --font-d:'Playfair Display',Georgia,serif;
+  --font-b:'Jost',system-ui,sans-serif;
+  --radius:6px;--tr:0.2s ease;
+}
+html,body{height:100%;font-family:var(--font-b);background:var(--linen);color:var(--charcoal)}
+body{display:flex}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:var(--font-b)}
+input,textarea,select{font-family:var(--font-b)}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--charcoal);display:flex;align-items:center;justify-content:center;z-index:999}
+.login-box{background:white;padding:2.5rem;width:360px;max-width:90%}
+.login-logo{font-family:var(--font-d);font-size:1.6rem;font-weight:600;color:var(--charcoal);margin-bottom:0.3rem}
+.login-logo .dot{color:var(--terra)}
+.login-sub{font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:2rem}
+.lf-group{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:1rem}
+.lf-group label{font-size:0.78rem;font-weight:500}
+.lf-input{border:1px solid var(--ivory-dk);padding:0.75rem 1rem;font-size:0.9rem;outline:none;transition:border-color var(--tr)}
+.lf-input:focus{border-color:var(--terra)}
+.lf-btn{width:100%;background:var(--terra);color:white;border:none;padding:0.9rem;font-size:0.82rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;margin-top:0.5rem;transition:background var(--tr)}
+.lf-btn:hover{background:#933E1C}
+.lf-note{font-size:0.7rem;color:var(--warm-gray);text-align:center;margin-top:0.75rem}
+.lf-error{background:var(--terra-pale);color:var(--terra);font-size:0.78rem;padding:0.65rem 0.85rem;margin-bottom:0.85rem;display:none}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:var(--sidebar);height:100vh;position:fixed;left:0;top:0;display:flex;flex-direction:column;overflow-y:auto;z-index:100;transition:transform var(--tr)}
+.sb-logo{padding:1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.sb-logo .name{font-family:var(--font-d);font-size:1.35rem;font-weight:600;color:var(--ivory)}
+.sb-logo .name .dot{color:var(--terra-lt)}
+.sb-logo .label{font-size:0.6rem;font-weight:400;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:0.15rem}
+.sb-nav{flex:1;padding:1rem 0}
+.sb-sec{font-size:0.58rem;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.22);padding:1.25rem 1.5rem 0.4rem}
+.sb-link{display:flex;align-items:center;gap:0.7rem;padding:0.6rem 1.5rem;font-size:0.82rem;color:rgba(255,255,255,0.48);border-left:2px solid transparent;transition:all var(--tr);cursor:pointer}
+.sb-link:hover{color:var(--ivory);background:rgba(255,255,255,0.04)}
+.sb-link.active{color:var(--ivory);border-left-color:var(--terra-lt);background:rgba(181,80,42,0.12)}
+.sb-link svg{width:15px;height:15px;opacity:0.75;flex-shrink:0}
+.sb-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);font-size:0.73rem;color:rgba(255,255,255,0.22)}
+.sb-footer span{color:var(--terra-lt);cursor:pointer}
+
+/* MAIN */
+.admin-wrap{margin-left:var(--sidebar-w);flex:1;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:white;border-bottom:1px solid var(--ivory-dk);height:var(--topbar-h);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;position:sticky;top:0;z-index:50}
+.tb-title{font-family:var(--font-d);font-size:1.05rem;font-style:italic}
+.tb-right{display:flex;align-items:center;gap:1rem}
+.tb-view-site{font-size:0.75rem;font-weight:500;color:var(--terra);letter-spacing:0.08em}
+.tb-user{display:flex;align-items:center;gap:0.6rem;font-size:0.82rem;color:var(--charcoal-mid)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--terra);color:white;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:500}
+.content{padding:2rem;flex:1}
+
+/* PAGES */
+.pg{display:none}.pg.active{display:block}
+.pg-title{font-family:var(--font-d);font-size:1.45rem;font-style:italic;margin-bottom:1.75rem}
+.section-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+.section-bar h3{font-size:0.95rem;font-family:var(--font-d);font-weight:400}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-bottom:2rem}
+.stat{background:white;border:1px solid var(--ivory-dk);border-radius:var(--radius);padding:1.35rem}
+.stat .sl{font-size:0.68rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--warm-gray);margin-bottom:0.4rem}
+.stat .sv{font-family:var(--font-d);font-size:1.85rem;font-weight:600;color:var(--charcoal);line-height:1}
+.stat .sd{font-size:0.7rem;color:var(--sage);margin-top:0.3rem}
+
+/* TABLE */
+.tbl-wrap{background:white;border:1px solid var(--ivory-dk);border-radius:var(--radius);overflow:hidden;margin-bottom:2rem}
+.tbl-hdr{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem;border-bottom:1px solid var(--ivory-dk)}
+.tbl-hdr h3{font-size:0.95rem;font-family:var(--font-d);font-weight:400}
+table{width:100%;border-collapse:collapse}
+thead th{background:var(--linen);padding:0.65rem 0.9rem;font-size:0.65rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--warm-gray);text-align:left;border-bottom:1px solid var(--ivory-dk)}
+tbody td{padding:0.8rem 0.9rem;font-size:0.83rem;border-bottom:1px solid var(--ivory-dk);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--linen)}
+
+/* BADGES */
+.badge{display:inline-block;padding:0.18rem 0.6rem;font-size:0.6rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border-radius:20px}
+.b-pub{background:#DDE8DE;color:#3A5E3E}
+.b-dft{background:var(--ivory-dk);color:var(--warm-gray)}
+.b-ftr{background:var(--terra-pale);color:#7A2D10}
+.b-act{background:#DDE8DE;color:#3A5E3E}
+
+/* ADMIN BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:0.35rem;padding:0.52rem 1rem;font-size:0.76rem;font-weight:500;border:none;border-radius:var(--radius);cursor:pointer;transition:var(--tr);text-decoration:none}
+.btn-p{background:var(--terra);color:white}.btn-p:hover{background:#933E1C}
+.btn-s{background:var(--ivory-dk);color:var(--charcoal)}.btn-s:hover{background:var(--ivory-dp)}
+.btn-d{background:#FDEAEA;color:#A32D2D}.btn-d:hover{background:#F5C1C1}
+.btn-o{background:transparent;color:var(--charcoal);border:1px solid var(--ivory-dp)}.btn-o:hover{background:var(--ivory-dk)}
+
+/* FORMS */
+.form-card{background:white;border:1px solid var(--ivory-dk);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+.f-group{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:1rem}
+.f-group label{font-size:0.76rem;font-weight:500;color:var(--charcoal)}
+.f-ctrl{border:1px solid var(--ivory-dk);background:var(--linen);padding:0.65rem 0.85rem;font-size:0.87rem;border-radius:var(--radius);outline:none;transition:border-color var(--tr);color:var(--charcoal);width:100%}
+.f-ctrl:focus{border-color:var(--terra);background:white}
+textarea.f-ctrl{min-height:120px;resize:vertical}
+select.f-ctrl{cursor:pointer}
+
+/* EDITOR */
+.ed-toolbar{display:flex;gap:0.35rem;flex-wrap:wrap;padding:0.55rem;border:1px solid var(--ivory-dk);border-bottom:none;background:var(--linen);border-radius:var(--radius) var(--radius) 0 0}
+.ed-btn{padding:0.28rem 0.55rem;font-size:0.75rem;background:white;border:1px solid var(--ivory-dk);border-radius:4px;cursor:pointer;transition:var(--tr);color:var(--charcoal-mid)}
+.ed-btn:hover{background:var(--terra);color:white;border-color:var(--terra)}
+.ed-area{border:1px solid var(--ivory-dk);border-radius:0 0 var(--radius) var(--radius);min-height:260px;padding:1rem;outline:none;font-size:0.88rem;line-height:1.7;background:white;color:var(--charcoal)}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;z-index:300;background:rgba(39,33,28,0.55);backdrop-filter:blur(3px);align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-box{background:white;border-radius:var(--radius);padding:2rem;max-width:460px;width:90%;max-height:88vh;overflow-y:auto}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.modal-hdr h3{font-size:1.05rem}
+.modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--warm-gray)}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--charcoal);color:white;padding:0.85rem 1.5rem;border-radius:var(--radius);font-size:0.85rem;z-index:500;opacity:0;transform:translateY(10px);transition:all 0.3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-left:3px solid var(--sage)}
+.toast.error{border-left:3px solid var(--terra)}
+
+/* SETTINGS */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+
+/* MEDIA */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.65rem}
+.media-cell{aspect-ratio:1;background:var(--ivory-dk);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:0.68rem;color:var(--warm-gray);border:2px solid transparent;cursor:pointer;transition:var(--tr);position:relative;overflow:hidden}
+.media-cell:hover{border-color:var(--terra)}
+.media-cell.upload{border:2px dashed var(--ivory-dp);background:transparent;flex-direction:column;gap:0.3rem;font-size:0.72rem}
+.media-cell.upload:hover{border-color:var(--terra);color:var(--terra)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .admin-wrap{margin-left:0}
+  .stats{grid-template-columns:1fr 1fr}
+  .f-row{grid-template-columns:1fr}
+  .settings-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){.stats{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div id="nav-root"></div>
 
-<section class="hero">
-  <div class="hero-txt">
-    <div class="h-eye">Curated Home Finds</div>
-    <h1 class="h-title">Homes that<br><em>breathe</em><br>beautifully.</h1>
-    <p class="h-sub">We find the pieces that make a house feel like home — sourced from Amazon, Wayfair, IKEA and beyond. No endless scrolling. Just the finds that matter.</p>
-    <div class="h-acts">
-      <a href="pages/shop.html" class="btn btn-dark">Shop All Finds</a>
-      <a href="pages/blog.html" class="btn btn-ghost">Read the Edit <span class="arrow">→</span></a>
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Hearth<span class="dot">·</span>pick</div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="lf-error" id="loginError">Incorrect email or password.</div>
+    <div class="lf-group">
+      <label>Email</label>
+      <input type="email" class="lf-input" id="loginEmail" placeholder="admin@hearthpick.com" value="admin@hearthpick.com">
     </div>
-  </div>
-  <div class="hero-vis">
-    <div class="mc mc1"><span class="mc-lbl">Living</span></div>
-    <div class="mc mc2"><span class="mc-lbl">Bedroom</span></div>
-    <div class="mc mc3"><span class="mc-lbl">Kitchen</span></div>
-  </div>
-</section>
-
-<div class="marquee-bar"><div class="mq-track" id="mq"></div></div>
-
-<div class="stats-bar">
-  <div class="stats-inner">
-    <div class="s-item"><div class="s-num">500+</div><div class="s-lbl">Finds Curated</div></div>
-    <div class="s-item"><div class="s-num">6</div><div class="s-lbl">Room Categories</div></div>
-    <div class="s-item"><div class="s-num">Weekly</div><div class="s-lbl">New Drops</div></div>
-    <div class="s-item"><div class="s-num">100%</div><div class="s-lbl">Honest Reviews</div></div>
+    <div class="lf-group">
+      <label>Password</label>
+      <input type="password" class="lf-input" id="loginPass" placeholder="••••••••" value="hearthpick2026">
+    </div>
+    <button class="lf-btn" id="loginBtn">Sign In</button>
+    <p class="lf-note">Demo credentials pre-filled above.</p>
   </div>
 </div>
 
-<section class="sp" style="background:var(--linen)">
-  <div class="container">
-    <div class="tag-label">Browse by room</div>
-    <h2 class="sec-title" style="margin-top:1rem">Find your <em>perfect</em> space</h2>
-    <div class="cat-grid" id="cat-grid"></div>
-    <div style="text-align:center;margin-top:2.5rem"><a href="pages/shop.html" class="btn btn-outline">View All Categories</a></div>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="name">Hearth<span class="dot">·</span>pick</div>
+    <div class="label">Admin Panel</div>
   </div>
-</section>
-
-<section class="sp" style="background:var(--ivory)">
-  <div class="container">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-      <div><div class="tag-label">This week's edit</div><h2 class="sec-title" style="margin-top:1rem">Handpicked <em>just for you</em></h2></div>
-      <a href="pages/shop.html" class="btn btn-ghost">See all finds <span class="arrow">→</span></a>
+  <nav class="sb-nav">
+    <div class="sb-sec">Overview</div>
+    <div class="sb-link active" data-page="dashboard">
+      <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+      Dashboard
     </div>
-    <div class="finds-grid" id="finds-grid"></div>
-  </div>
-</section>
 
-<section class="sp" style="background:var(--linen)">
-  <div class="container">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-      <div><div class="tag-label">From the blog</div><h2 class="sec-title" style="margin-top:1rem">The <em>Hearthpick</em> Edit</h2></div>
-      <a href="pages/blog.html" class="btn btn-ghost">All articles <span class="arrow">→</span></a>
+    <div class="sb-sec">Content</div>
+    <div class="sb-link" data-page="products">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l6-3 6 3v8l-6 3-6-3V4z"/></svg>
+      Products / Finds
     </div>
-    <div class="blog-grid" id="blog-grid"></div>
-  </div>
-</section>
+    <div class="sb-link" data-page="posts">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><line x1="5" y1="6" x2="11" y2="6"/><line x1="5" y1="9" x2="9" y2="9"/></svg>
+      Blog Posts
+    </div>
+    <div class="sb-link" data-page="categories">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="4" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="4" cy="12" r="2"/><circle cx="12" cy="12" r="2"/></svg>
+      Categories
+    </div>
+    <div class="sb-link" data-page="media">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="1"/><circle cx="5.5" cy="7" r="1.5"/><path d="M1 11l4-3 3 2.5 2.5-2 4.5 3.5"/></svg>
+      Media Library
+    </div>
 
-<div class="pint-strip">
-  <div class="pint-ico"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
-  <h2 class="pint-h">Follow us on <em style="font-family:'Playfair Display',serif;font-style:italic;color:var(--terra)">Pinterest</em></h2>
-  <p class="pint-p">50+ boards. Daily pins. The home inspiration feed you actually want to wake up to.</p>
-  <a href="#" id="pint-btn" class="btn btn-terra" target="_blank">Follow Hearthpick on Pinterest</a>
+    <div class="sb-sec">Audience</div>
+    <div class="sb-link" data-page="subscribers">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-3 2.2-5 5-5s5 2 5 5"/><path d="M11 7l3 3m0-3l-3 3"/></svg>
+      Subscribers
+    </div>
+
+    <div class="sb-sec">Site</div>
+    <div class="sb-link" data-page="settings">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4"/></svg>
+      Site Settings
+    </div>
+  </nav>
+  <div class="sb-footer">
+    <a href="../index.html" target="_blank" style="color:var(--terra-lt)">← View Site</a> &nbsp;·&nbsp;
+    <span id="logoutBtn">Logout</span>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="admin-wrap" id="adminWrap">
+  <div class="topbar">
+    <span class="tb-title" id="topbarTitle">Dashboard</span>
+    <div class="tb-right">
+      <a href="../index.html" target="_blank" class="tb-view-site">View Site →</a>
+      <div class="tb-user"><div class="avatar">HP</div><span>Admin</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="pg active" id="pg-dashboard">
+      <div class="pg-title">Good morning, Admin ✦</div>
+      <div class="stats" id="statsGrid"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="tbl-wrap">
+          <div class="tbl-hdr"><h3>Recent Finds</h3><a href="#" class="btn btn-s" data-page="products">View All</a></div>
+          <table><thead><tr><th>Product</th><th>Price</th><th>Status</th></tr></thead>
+          <tbody id="dashProductRows"></tbody></table>
+        </div>
+        <div class="tbl-wrap">
+          <div class="tbl-hdr"><h3>Recent Posts</h3><a href="#" class="btn btn-s" data-page="posts">View All</a></div>
+          <table><thead><tr><th>Title</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="dashPostRows"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="pg" id="pg-products">
+      <div class="section-bar">
+        <div class="pg-title" style="margin:0">Products / Finds</div>
+        <button class="btn btn-p" id="addProductBtn">+ Add New Find</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-hdr">
+          <h3>All Finds</h3>
+          <input type="text" class="f-ctrl" id="productSearch" placeholder="Search..." style="width:220px;padding:0.4rem 0.7rem;font-size:0.82rem">
+        </div>
+        <table><thead><tr><th>Title</th><th>Category</th><th>Price</th><th>Source</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="productRows"></tbody></table>
+      </div>
+    </div>
+
+    <!-- POSTS -->
+    <div class="pg" id="pg-posts">
+      <div class="section-bar">
+        <div class="pg-title" style="margin:0">Blog Posts</div>
+        <button class="btn btn-p" id="addPostBtn">+ New Post</button>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
+        <tbody id="postRows"></tbody></table>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="pg" id="pg-categories">
+      <div class="section-bar">
+        <div class="pg-title" style="margin:0">Categories</div>
+        <button class="btn btn-p" id="addCatBtn">+ Add Category</button>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Name</th><th>Slug</th><th>Description</th><th>Actions</th></tr></thead>
+        <tbody id="catRows"></tbody></table>
+      </div>
+    </div>
+
+    <!-- MEDIA -->
+    <div class="pg" id="pg-media">
+      <div class="pg-title">Media Library</div>
+      <p style="font-size:0.85rem;color:var(--warm-gray);margin-bottom:1.5rem">Manage images for products and blog posts. In production, connect to Cloudinary or similar for cloud hosting.</p>
+      <div class="media-grid" id="mediaGrid">
+        <div class="media-cell upload" onclick="showToast('Connect file upload in production (Cloudinary/S3)','error')">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v10M6 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 15h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Upload
+        </div>
+        <div class="media-cell" style="background:#D6C9B8"><span style="font-size:0.62rem;position:absolute;bottom:4px;left:6px">living-room-1.jpg</span></div>
+        <div class="media-cell" style="background:#B8BFAD"><span style="font-size:0.62rem;position:absolute;bottom:4px;left:6px">bedroom-lamp.jpg</span></div>
+        <div class="media-cell" style="background:#C5B5A0"><span style="font-size:0.62rem;position:absolute;bottom:4px;left:6px">kitchen-set.jpg</span></div>
+        <div class="media-cell" style="background:#A8C4AB"><span style="font-size:0.62rem;position:absolute;bottom:4px;left:6px">outdoor-chair.jpg</span></div>
+      </div>
+    </div>
+
+    <!-- SUBSCRIBERS -->
+    <div class="pg" id="pg-subscribers">
+      <div class="section-bar">
+        <div class="pg-title" style="margin:0">Subscribers</div>
+        <button class="btn btn-s" onclick="exportCSV()">Export CSV</button>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Email</th><th>Date Joined</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="subRows"></tbody></table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="pg" id="pg-settings">
+      <div class="pg-title">Site Settings</div>
+      <form id="settingsForm">
+        <div class="form-card">
+          <h3 style="font-size:1rem;margin-bottom:1.25rem;font-family:var(--font-d);font-weight:400">General</h3>
+          <div class="f-row">
+            <div class="f-group"><label>Site Name</label><input id="s-name" class="f-ctrl" type="text"></div>
+            <div class="f-group"><label>Tagline</label><input id="s-tagline" class="f-ctrl" type="text"></div>
+          </div>
+          <div class="f-row">
+            <div class="f-group"><label>Admin Email</label><input id="s-email" class="f-ctrl" type="email"></div>
+            <div class="f-group"><label>Pinterest URL</label><input id="s-pinterest" class="f-ctrl" type="url"></div>
+          </div>
+          <div class="f-group"><label>Instagram URL</label><input id="s-instagram" class="f-ctrl" type="url"></div>
+        </div>
+        <div class="form-card">
+          <h3 style="font-size:1rem;margin-bottom:1.25rem;font-family:var(--font-d);font-weight:400">Legal</h3>
+          <div class="f-group"><label>Affiliate Disclosure (footer text)</label><textarea id="s-disclosure" class="f-ctrl" style="min-height:90px"></textarea></div>
+        </div>
+        <button type="submit" class="btn btn-p">Save Settings</button>
+      </form>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /admin-wrap -->
+
+<!-- MODALS -->
+<!-- Product Modal -->
+<div class="modal" id="productModal">
+  <div class="modal-box" style="max-width:620px">
+    <div class="modal-hdr">
+      <h3 id="productModalTitle">Add New Find</h3>
+      <button class="modal-close" data-close="productModal">×</button>
+    </div>
+    <input type="hidden" id="pId">
+    <div class="f-row">
+      <div class="f-group"><label>Product Title *</label><input id="pTitle" class="f-ctrl" type="text" placeholder="Linen Tufted Sofa"></div>
+      <div class="f-group"><label>Category</label><select id="pCat" class="f-ctrl"></select></div>
+    </div>
+    <div class="f-row">
+      <div class="f-group"><label>Price (USD)</label><input id="pPrice" class="f-ctrl" type="number" placeholder="149"></div>
+      <div class="f-group"><label>Source / Retailer</label><input id="pSource" class="f-ctrl" type="text" placeholder="Amazon"></div>
+    </div>
+    <div class="f-group"><label>Affiliate URL *</label><input id="pUrl" class="f-ctrl" type="url" placeholder="https://amazon.com/dp/..."></div>
+    <div class="f-group"><label>Description</label><textarea id="pDesc" class="f-ctrl" style="min-height:80px"></textarea></div>
+    <div class="f-row">
+      <div class="f-group"><label>Badge Label</label><input id="pBadge" class="f-ctrl" type="text" placeholder="New Find / Under $50 / Editor's Pick"></div>
+      <div class="f-group"><label>Status</label><select id="pStatus" class="f-ctrl"><option value="published">Published</option><option value="draft">Draft</option></select></div>
+    </div>
+    <div class="f-group" style="flex-direction:row;align-items:center;gap:0.5rem;margin-bottom:1.25rem">
+      <input type="checkbox" id="pFeatured" style="width:16px;height:16px">
+      <label for="pFeatured" style="font-size:0.82rem;margin:0">Feature on homepage</label>
+    </div>
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+      <button class="btn btn-s" data-close="productModal">Cancel</button>
+      <button class="btn btn-p" id="saveProductBtn">Save Find</button>
+    </div>
+  </div>
 </div>
 
-<div id="nl-root"></div>
-<div id="ft-root"></div>
+<!-- Post Modal -->
+<div class="modal" id="postModal">
+  <div class="modal-box" style="max-width:700px;width:95%">
+    <div class="modal-hdr">
+      <h3 id="postModalTitle">New Blog Post</h3>
+      <button class="modal-close" data-close="postModal">×</button>
+    </div>
+    <input type="hidden" id="bId">
+    <div class="f-group"><label>Post Title *</label><input id="bTitle" class="f-ctrl" type="text" placeholder="10 Amazon Home Finds Under $50..."></div>
+    <div class="f-row">
+      <div class="f-group"><label>Category</label><select id="bCat" class="f-ctrl"></select></div>
+      <div class="f-group"><label>Status</label><select id="bStatus" class="f-ctrl"><option value="published">Published</option><option value="draft">Draft</option></select></div>
+    </div>
+    <div class="f-group"><label>Excerpt / Meta Description</label><textarea id="bExcerpt" class="f-ctrl" style="min-height:72px" placeholder="Short summary shown in cards and search results..."></textarea></div>
+    <div class="f-group">
+      <label>Content</label>
+      <div class="ed-toolbar">
+        <button type="button" class="ed-btn" onclick="fmt('bold')"><b>B</b></button>
+        <button type="button" class="ed-btn" onclick="fmt('italic')"><i>I</i></button>
+        <button type="button" class="ed-btn" onclick="fmt('underline')"><u>U</u></button>
+        <button type="button" class="ed-btn" onclick="fmt('insertOrderedList')">OL</button>
+        <button type="button" class="ed-btn" onclick="fmt('insertUnorderedList')">UL</button>
+        <button type="button" class="ed-btn" onclick="fmtBlock('h2')">H2</button>
+        <button type="button" class="ed-btn" onclick="fmtBlock('h3')">H3</button>
+        <button type="button" class="ed-btn" onclick="fmtBlock('p')">P</button>
+        <button type="button" class="ed-btn" onclick="insertLink()">Link</button>
+      </div>
+      <div class="ed-area" id="postEditor" contenteditable="true"></div>
+    </div>
+    <div class="f-group" style="flex-direction:row;align-items:center;gap:0.5rem">
+      <input type="checkbox" id="bFeatured" style="width:16px;height:16px">
+      <label for="bFeatured" style="font-size:0.82rem;margin:0">Feature on homepage &amp; blog</label>
+    </div>
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1rem">
+      <button class="btn btn-s" data-close="postModal">Cancel</button>
+      <button class="btn btn-p" id="savePostBtn">Save Post</button>
+    </div>
+  </div>
+</div>
 
-<script src="js/data.js"></script><script src="js/components.js"></script>
+<!-- Category Modal -->
+<div class="modal" id="catModal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3 id="catModalTitle">Add Category</h3>
+      <button class="modal-close" data-close="catModal">×</button>
+    </div>
+    <input type="hidden" id="cId">
+    <div class="f-group"><label>Category Name *</label><input id="cName" class="f-ctrl" type="text" placeholder="Living Room"></div>
+    <div class="f-group"><label>Slug (auto-generated)</label><input id="cSlug" class="f-ctrl" type="text" placeholder="living-room"></div>
+    <div class="f-group"><label>Description</label><textarea id="cDesc" class="f-ctrl" style="min-height:80px"></textarea></div>
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end">
+      <button class="btn btn-s" data-close="catModal">Cancel</button>
+      <button class="btn btn-p" id="saveCatBtn">Save Category</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="../js/app.js"></script>
 <script>
-document.getElementById('nav-root').innerHTML=C.nav('','./');
-document.getElementById('nl-root').innerHTML=C.newsletter();
-document.getElementById('ft-root').innerHTML=C.footer('./');
-C.initNav();
+// ═══ STATE ═══
+let currentPage = 'dashboard';
+const ADMIN_EMAIL = 'admin@hearthpick.com';
+const ADMIN_PASS  = 'hearthpick2026';
 
-const cfg=HP.getCfg();
-document.getElementById('pint-btn').href=cfg.pin||'#';
+// ═══ AUTH ═══
+document.getElementById('loginBtn').addEventListener('click', () => {
+  const e = document.getElementById('loginEmail').value;
+  const p = document.getElementById('loginPass').value;
+  if (e === ADMIN_EMAIL && p === ADMIN_PASS) {
+    document.getElementById('loginScreen').style.display = 'none';
+    initAdmin();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+});
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('loginBtn').click(); });
+document.getElementById('logoutBtn').addEventListener('click', () => { location.reload(); });
 
-const mqItems=['Amazon Finds','Wayfair Picks','IKEA Hacks','Budget Style','Cozy Living','Home Refresh','Trending Décor','Pinned & Loved'];
-const t=[...mqItems,...mqItems];
-document.getElementById('mq').innerHTML=t.map(i=>`<span class="mq-item"><span class="mq-dot"></span>${i}</span>`).join('');
+// ═══ NAVIGATION ═══
+function goPage(page) {
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+  const pg = document.getElementById('pg-' + page);
+  if (pg) pg.classList.add('active');
+  const link = document.querySelector(`.sb-link[data-page="${page}"]`);
+  if (link) link.classList.add('active');
+  const titles = {dashboard:'Dashboard',products:'Products / Finds',posts:'Blog Posts',categories:'Categories',media:'Media Library',subscribers:'Subscribers',settings:'Site Settings'};
+  document.getElementById('topbarTitle').textContent = titles[page] || page;
+  currentPage = page;
+  renderPage(page);
+}
 
-const cats=HP.getCats().filter(c=>c.on).slice(0,6);
-document.getElementById('cat-grid').innerHTML=cats.map(c=>`
-<a href="pages/category.html?id=${c.id}" class="cat-card">
-  <div class="cc-bg" style="background:${c.color}"></div>
-  <div class="cc-info"><div class="cc-name">${c.name}</div><div class="cc-cnt">${c.cnt} curated finds</div></div>
-</a>`).join('');
+document.querySelectorAll('.sb-link[data-page], a[data-page]').forEach(el => {
+  el.addEventListener('click', e => { e.preventDefault(); goPage(el.dataset.page); });
+});
 
-const prods=HP.getProds({status:'published',feat:true}).slice(0,6);
-document.getElementById('finds-grid').innerHTML=prods.map((p,i)=>C.prodCard(p,i,'./')).join('');
+// ═══ RENDER ═══
+function initAdmin() { renderPage('dashboard'); loadSettings(); }
 
-const posts=HP.getPosts({status:'published'}).slice(0,3);
-document.getElementById('blog-grid').innerHTML=posts.map(p=>C.blogCard(p,'./')).join('');
+function renderPage(page) {
+  const data = HP.getData();
+  if (page === 'dashboard')   renderDashboard(data);
+  if (page === 'products')    renderProducts(data);
+  if (page === 'posts')       renderPosts(data);
+  if (page === 'categories')  renderCategories(data);
+  if (page === 'subscribers') renderSubscribers(data);
+}
+
+// Dashboard
+function renderDashboard(data) {
+  const pub = data.products.filter(p => p.status === 'published').length;
+  const posts = data.posts.filter(p => p.status === 'published').length;
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat"><div class="sl">Published Finds</div><div class="sv">${pub}</div><div class="sd">↑ ${data.products.length} total</div></div>
+    <div class="stat"><div class="sl">Blog Posts</div><div class="sv">${posts}</div><div class="sd">↑ ${data.posts.length} total</div></div>
+    <div class="stat"><div class="sl">Categories</div><div class="sv">${data.categories.length}</div><div class="sd">Active rooms</div></div>
+    <div class="stat"><div class="sl">Subscribers</div><div class="sv">${data.subscribers.length}</div><div class="sd">↑ Growing</div></div>
+  `;
+  document.getElementById('dashProductRows').innerHTML = data.products.slice(0,5).map(p => `
+    <tr><td><strong style="font-size:0.82rem">${p.title}</strong></td><td>${HP.formatPrice(p.price)}</td><td><span class="badge ${p.status==='published'?'b-pub':'b-dft'}">${p.status}</span></td></tr>
+  `).join('');
+  document.getElementById('dashPostRows').innerHTML = data.posts.slice(0,5).map(p => `
+    <tr><td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.title}</td><td>${HP.formatDate(p.date)}</td><td><span class="badge ${p.status==='published'?'b-pub':'b-dft'}">${p.status}</span></td></tr>
+  `).join('');
+}
+
+// Products
+function renderProducts(data, filter='') {
+  let prods = data.products;
+  if (filter) prods = prods.filter(p => p.title.toLowerCase().includes(filter) || (p.source||'').toLowerCase().includes(filter));
+  document.getElementById('productRows').innerHTML = prods.map(p => `
+    <tr>
+      <td><strong style="font-size:0.82rem">${p.title}</strong>${p.featured?'<span class="badge b-ftr" style="margin-left:6px">Featured</span>':''}</td>
+      <td>${HP.getCategoryName(p.category, data)}</td>
+      <td>${HP.formatPrice(p.price)}</td>
+      <td>${p.source||'—'}</td>
+      <td><span class="badge ${p.status==='published'?'b-pub':'b-dft'}">${p.status}</span></td>
+      <td><div style="display:flex;gap:0.4rem">
+        <button class="btn btn-s" onclick="editProduct('${p.id}')">Edit</button>
+        <button class="btn btn-d" onclick="deleteProduct('${p.id}')">Del</button>
+      </div></td>
+    </tr>
+  `).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--warm-gray)">No finds found.</td></tr>';
+}
+
+// Posts
+function renderPosts(data) {
+  document.getElementById('postRows').innerHTML = data.posts.map(p => `
+    <tr>
+      <td style="max-width:280px"><strong style="font-size:0.82rem">${p.title}</strong></td>
+      <td>${HP.getCategoryName(p.category, data)}</td>
+      <td>${HP.formatDate(p.date)}</td>
+      <td><span class="badge ${p.status==='published'?'b-pub':'b-dft'}">${p.status}</span></td>
+      <td>${p.featured?'<span class="badge b-ftr">Yes</span>':'—'}</td>
+      <td><div style="display:flex;gap:0.4rem">
+        <button class="btn btn-s" onclick="editPost('${p.id}')">Edit</button>
+        <button class="btn btn-d" onclick="deletePost('${p.id}')">Del</button>
+      </div></td>
+    </tr>
+  `).join('');
+}
+
+// Categories
+function renderCategories(data) {
+  document.getElementById('catRows').innerHTML = data.categories.map(c => `
+    <tr>
+      <td><strong style="font-size:0.82rem">${c.name}</strong></td>
+      <td><code style="font-size:0.75rem;background:var(--linen);padding:0.15rem 0.4rem">${c.slug}</code></td>
+      <td style="max-width:300px;color:var(--warm-gray);font-size:0.82rem">${c.description}</td>
+      <td><div style="display:flex;gap:0.4rem">
+        <button class="btn btn-s" onclick="editCat('${c.id}')">Edit</button>
+        <button class="btn btn-d" onclick="deleteCat('${c.id}')">Del</button>
+      </div></td>
+    </tr>
+  `).join('');
+}
+
+// Subscribers
+function renderSubscribers(data) {
+  document.getElementById('subRows').innerHTML = data.subscribers.map(s => `
+    <tr>
+      <td>${s.email}</td>
+      <td>${HP.formatDate(s.date)}</td>
+      <td><span class="badge b-act">${s.status}</span></td>
+      <td><button class="btn btn-d" onclick="deleteSub('${s.id}')">Remove</button></td>
+    </tr>
+  `).join('') || '<tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--warm-gray)">No subscribers yet.</td></tr>';
+}
+
+// ═══ PRODUCTS CRUD ═══
+function populateCatSelect(selectId, data, selectedId) {
+  const sel = document.getElementById(selectId);
+  sel.innerHTML = data.categories.map(c => `<option value="${c.id}" ${c.id===selectedId?'selected':''}>${c.name}</option>`).join('');
+}
+
+document.getElementById('addProductBtn').addEventListener('click', () => {
+  clearProductForm(); document.getElementById('productModalTitle').textContent = 'Add New Find';
+  const data = HP.getData(); populateCatSelect('pCat', data, data.categories[0]?.id);
+  openModal('productModal');
+});
+
+function editProduct(id) {
+  const data = HP.getData();
+  const p = data.products.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('productModalTitle').textContent = 'Edit Find';
+  document.getElementById('pId').value = p.id;
+  document.getElementById('pTitle').value = p.title;
+  document.getElementById('pPrice').value = p.price;
+  document.getElementById('pSource').value = p.source || '';
+  document.getElementById('pUrl').value = p.affiliateUrl || '';
+  document.getElementById('pDesc').value = p.description || '';
+  document.getElementById('pBadge').value = p.badge || '';
+  document.getElementById('pStatus').value = p.status;
+  document.getElementById('pFeatured').checked = p.featured;
+  populateCatSelect('pCat', data, p.category);
+  openModal('productModal');
+}
+
+document.getElementById('saveProductBtn').addEventListener('click', () => {
+  const title = document.getElementById('pTitle').value.trim();
+  const url = document.getElementById('pUrl').value.trim();
+  if (!title || !url) { showToast('Title and affiliate URL are required.', 'error'); return; }
+  const data = HP.getData();
+  const id = document.getElementById('pId').value;
+  const product = {
+    id: id || HP.uid(),
+    title, price: parseFloat(document.getElementById('pPrice').value) || 0,
+    source: document.getElementById('pSource').value.trim(),
+    affiliateUrl: url,
+    description: document.getElementById('pDesc').value.trim(),
+    badge: document.getElementById('pBadge').value.trim(),
+    category: document.getElementById('pCat').value,
+    status: document.getElementById('pStatus').value,
+    featured: document.getElementById('pFeatured').checked,
+    date: new Date().toISOString().split('T')[0]
+  };
+  if (id) { const idx = data.products.findIndex(p => p.id === id); data.products[idx] = product; }
+  else { data.products.unshift(product); }
+  HP.setData(data);
+  closeModal('productModal'); renderProducts(data);
+  showToast(id ? 'Find updated!' : 'Find added!', 'success');
+});
+
+function deleteProduct(id) {
+  if (!confirm('Delete this find?')) return;
+  const data = HP.getData();
+  data.products = data.products.filter(p => p.id !== id);
+  HP.setData(data); renderProducts(data); showToast('Find deleted.', 'success');
+}
+
+function clearProductForm() {
+  ['pId','pTitle','pPrice','pSource','pUrl','pDesc','pBadge'].forEach(f => document.getElementById(f).value = '');
+  document.getElementById('pStatus').value = 'published';
+  document.getElementById('pFeatured').checked = false;
+}
+
+// Product search
+document.getElementById('productSearch').addEventListener('input', e => {
+  renderProducts(HP.getData(), e.target.value.toLowerCase().trim());
+});
+
+// ═══ POSTS CRUD ═══
+document.getElementById('addPostBtn').addEventListener('click', () => {
+  clearPostForm(); document.getElementById('postModalTitle').textContent = 'New Blog Post';
+  const data = HP.getData(); populateCatSelect('bCat', data, data.categories[0]?.id);
+  openModal('postModal');
+});
+
+function editPost(id) {
+  const data = HP.getData();
+  const p = data.posts.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('postModalTitle').textContent = 'Edit Post';
+  document.getElementById('bId').value = p.id;
+  document.getElementById('bTitle').value = p.title;
+  document.getElementById('bExcerpt').value = p.excerpt || '';
+  document.getElementById('postEditor').innerHTML = p.content || '';
+  document.getElementById('bStatus').value = p.status;
+  document.getElementById('bFeatured').checked = p.featured;
+  populateCatSelect('bCat', data, p.category);
+  openModal('postModal');
+}
+
+document.getElementById('savePostBtn').addEventListener('click', () => {
+  const title = document.getElementById('bTitle').value.trim();
+  if (!title) { showToast('Title is required.', 'error'); return; }
+  const data = HP.getData();
+  const id = document.getElementById('bId').value;
+  const post = {
+    id: id || HP.uid(),
+    title, slug: HP.slug(title),
+    excerpt: document.getElementById('bExcerpt').value.trim(),
+    content: document.getElementById('postEditor').innerHTML,
+    category: document.getElementById('bCat').value,
+    status: document.getElementById('bStatus').value,
+    featured: document.getElementById('bFeatured').checked,
+    date: new Date().toISOString().split('T')[0]
+  };
+  if (id) { const idx = data.posts.findIndex(p => p.id === id); data.posts[idx] = post; }
+  else { data.posts.unshift(post); }
+  HP.setData(data); closeModal('postModal'); renderPosts(data);
+  showToast(id ? 'Post updated!' : 'Post published!', 'success');
+});
+
+function deletePost(id) {
+  if (!confirm('Delete this post?')) return;
+  const data = HP.getData();
+  data.posts = data.posts.filter(p => p.id !== id);
+  HP.setData(data); renderPosts(data); showToast('Post deleted.', 'success');
+}
+
+function clearPostForm() {
+  ['bId','bTitle','bExcerpt'].forEach(f => document.getElementById(f).value = '');
+  document.getElementById('postEditor').innerHTML = '';
+  document.getElementById('bStatus').value = 'published';
+  document.getElementById('bFeatured').checked = false;
+}
+
+// ═══ CATEGORIES CRUD ═══
+document.getElementById('addCatBtn').addEventListener('click', () => {
+  ['cId','cName','cSlug','cDesc'].forEach(f => document.getElementById(f).value = '');
+  document.getElementById('catModalTitle').textContent = 'Add Category';
+  openModal('catModal');
+});
+
+document.getElementById('cName').addEventListener('input', e => {
+  document.getElementById('cSlug').value = HP.slug(e.target.value);
+});
+
+function editCat(id) {
+  const data = HP.getData();
+  const c = data.categories.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('catModalTitle').textContent = 'Edit Category';
+  document.getElementById('cId').value = c.id;
+  document.getElementById('cName').value = c.name;
+  document.getElementById('cSlug').value = c.slug;
+  document.getElementById('cDesc').value = c.description || '';
+  openModal('catModal');
+}
+
+document.getElementById('saveCatBtn').addEventListener('click', () => {
+  const name = document.getElementById('cName').value.trim();
+  if (!name) { showToast('Name is required.', 'error'); return; }
+  const data = HP.getData();
+  const id = document.getElementById('cId').value;
+  const cat = {
+    id: id || HP.uid(), name,
+    slug: document.getElementById('cSlug').value || HP.slug(name),
+    description: document.getElementById('cDesc').value.trim()
+  };
+  if (id) { const idx = data.categories.findIndex(c => c.id === id); data.categories[idx] = cat; }
+  else { data.categories.push(cat); }
+  HP.setData(data); closeModal('catModal'); renderCategories(data);
+  showToast(id ? 'Category updated!' : 'Category added!', 'success');
+});
+
+function deleteCat(id) {
+  if (!confirm('Delete this category?')) return;
+  const data = HP.getData();
+  data.categories = data.categories.filter(c => c.id !== id);
+  HP.setData(data); renderCategories(data); showToast('Category deleted.', 'success');
+}
+
+// ═══ SUBSCRIBERS ═══
+function deleteSub(id) {
+  const data = HP.getData();
+  data.subscribers = data.subscribers.filter(s => s.id !== id);
+  HP.setData(data); renderSubscribers(data); showToast('Subscriber removed.', 'success');
+}
+
+function exportCSV() {
+  const data = HP.getData();
+  const rows = [['Email','Date','Status'], ...data.subscribers.map(s => [s.email, s.date, s.status])];
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'hearthpick-subscribers.csv'; a.click();
+  showToast('CSV exported!', 'success');
+}
+
+// ═══ SETTINGS ═══
+function loadSettings() {
+  const data = HP.getData();
+  const s = data.settings;
+  document.getElementById('s-name').value = s.siteName || '';
+  document.getElementById('s-tagline').value = s.tagline || '';
+  document.getElementById('s-email').value = s.adminEmail || '';
+  document.getElementById('s-pinterest').value = s.pinterestUrl || '';
+  document.getElementById('s-instagram').value = s.instagramUrl || '';
+  document.getElementById('s-disclosure').value = s.affiliateDisclosure || '';
+}
+
+document.getElementById('settingsForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const data = HP.getData();
+  data.settings.siteName = document.getElementById('s-name').value;
+  data.settings.tagline = document.getElementById('s-tagline').value;
+  data.settings.adminEmail = document.getElementById('s-email').value;
+  data.settings.pinterestUrl = document.getElementById('s-pinterest').value;
+  data.settings.instagramUrl = document.getElementById('s-instagram').value;
+  data.settings.affiliateDisclosure = document.getElementById('s-disclosure').value;
+  HP.setData(data); showToast('Settings saved!', 'success');
+});
+
+// ═══ EDITOR ═══
+function fmt(cmd) { document.getElementById('postEditor').focus(); document.execCommand(cmd, false, null); }
+function fmtBlock(tag) { document.getElementById('postEditor').focus(); document.execCommand('formatBlock', false, tag); }
+function insertLink() {
+  const url = prompt('Enter URL:');
+  if (url) { document.getElementById('postEditor').focus(); document.execCommand('createLink', false, url); }
+}
+
+// ═══ MODALS ═══
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-close, [data-close]').forEach(btn => {
+  btn.addEventListener('click', () => closeModal(btn.dataset.close || btn.closest('.modal').id));
+});
+document.querySelectorAll('.modal').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) closeModal(m.id); });
+});
+
+// ═══ TOAST ═══
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Auto-login for demo convenience on reload
+window.addEventListener('load', () => {
+  // Attempt auto-reveal of admin if desired — uncomment next line for dev convenience:
+  // document.getElementById('loginScreen').style.display='none'; initAdmin();
+});
 </script>
 </body>
 </html>
