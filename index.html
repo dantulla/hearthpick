@@ -350,7 +350,7 @@ input,textarea,select{font-family:var(--fb)}
 <!-- ══ NAV ══ -->
 <nav id="main-nav">
   <div class="nav-inner">
-    <a class="nav-logo" onclick="goto('home')">Hearth<span>pick</span></a>
+    <a class="nav-logo" id="nav-logo">Hearth<span>pick</span></a>
     <ul class="nav-links">
       <li class="nav-dd"><a href="#">Shop ▾</a>
         <div class="dd-menu" id="nav-cat-dd"></div>
@@ -1019,7 +1019,7 @@ function goto(page,extra){
   if(page==='about')renderAboutPage();
   if(page==='admin')renderAdminLoginPage();
   if(page==='privacy'||page==='terms'||page==='disclaimer'){renderFooter('footer-'+page.replace('disclaimer','disclaimer'));renderFooterInto(page+'-ft')}
-  updateHash(page,extra);
+  if(page!=='admin') updateHash(page,extra);
 }
 
 function updateHash(page,extra){
@@ -1034,7 +1034,7 @@ window.addEventListener('load',()=>{
   const parts=h.split('/');
   if(parts[0]==='category'&&parts[1]){goto('category',parts[1]);return}
   if(parts[0]==='post'&&parts[1]){goto('post',parts[1]);return}
-  if(['shop','blog','about','privacy','terms','disclaimer','admin'].includes(parts[0])){goto(parts[0]);return}
+  if(['shop','blog','about','privacy','terms','disclaimer'].includes(parts[0])){goto(parts[0]);return}
   goto('home');
 });
 
@@ -1239,6 +1239,22 @@ async function buildNav(){
   if(mob)mob.innerHTML=cats.map(c=>`<a onclick="goto('category','${c.id}');closeMob()">${c.name}</a>`).join('');
 }
 buildNav();
+
+// ── SECRET ADMIN TRIGGER — click logo 5 times fast ──
+let _logoClicks=0,_logoTimer=null;
+document.querySelector('.nav-logo').addEventListener('click',()=>{
+  _logoClicks++;
+  clearTimeout(_logoTimer);
+  if(_logoClicks>=5){
+    _logoClicks=0;
+    goto('admin');
+  } else {
+    _logoTimer=setTimeout(()=>{
+      _logoClicks=0;
+      goto('home'); // normal single click → go home
+    },400);
+  }
+});
 
 // Fix "Get the Edit" nav CTA — smooth scroll to newsletter on any page
 document.querySelector('.nav-cta').addEventListener('click', e => {
