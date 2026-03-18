@@ -7,21 +7,21 @@
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="0DxPEw-CKQmYlOk0tA-yYCZVX04pMvRh0Mk2clGxNdI">
 <meta name="p:domain_verify" content="15d2ad3180e11ae007e619813b40b7df">
-<link rel="canonical" id="canonical-url" href="https://dantulla.github.io/hearthpick/">
+<link rel="canonical" id="canonical-url" href="https://hearthpick.netlify.app/">
 
 <!-- OpenGraph (Facebook, Pinterest, WhatsApp) -->
 <meta property="og:type" content="website" id="og-type">
 <meta property="og:site_name" content="Hearthpick">
-<meta property="og:url" content="https://dantulla.github.io/hearthpick/" id="og-url">
+<meta property="og:url" content="https://hearthpick.netlify.app/" id="og-url">
 <meta property="og:title" content="Hearthpick — Curated Home Finds" id="og-title">
 <meta property="og:description" content="Handpicked home finds from Amazon. Honest curation, real prices." id="og-desc">
-<meta property="og:image" content="https://dantulla.github.io/hearthpick/og-image.jpg" id="og-image">
+<meta property="og:image" content="https://hearthpick.netlify.app/og-image.jpg" id="og-image">
 
 <!-- Twitter / X Cards -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Hearthpick — Curated Home Finds" id="tw-title">
 <meta name="twitter:description" content="Handpicked home finds from Amazon." id="tw-desc">
-<meta name="twitter:image" content="https://dantulla.github.io/hearthpick/og-image.jpg" id="tw-image">
+<meta name="twitter:image" content="https://hearthpick.netlify.app/og-image.jpg" id="tw-image">
 
 <!-- Pinterest verification (add your code from Pinterest after claiming site) -->
 <!-- <meta name="p:domain_verify" content="YOUR_PINTEREST_CODE"/> -->
@@ -32,7 +32,7 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Hearthpick",
-  "url": "https://dantulla.github.io/hearthpick/",
+  "url": "https://hearthpick.netlify.app/",
   "description": "Curated home finds and Amazon product recommendations",
   "sameAs": ["https://pinterest.com/hearthpick"]
 }
@@ -951,7 +951,7 @@ const sb = {
 /* ══════════════════════════════════════════
    FALLBACK SEED (used if Supabase not configured)
 ══════════════════════════════════════════ */
-const BASE_URL='https://dantulla.github.io/hearthpick/';
+const BASE_URL='https://hearthpick.netlify.app/';
 const DEFAULT_IMG=BASE_URL+'og-image.jpg';
 
 function updateSEO({title, desc, url, img, type='website', schema=null}={}){
@@ -1090,22 +1090,18 @@ let currentPostId=null;
 let currentBlogFilter='all';
 
 function goto(page,extra){
-  // hide all
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  // show target
   const el=document.getElementById('page-'+page);
   if(!el)return;
   el.classList.add('active');
   currentPage=page;
   window.scrollTo(0,0);
-  // update nav
   ['nav-blog','nav-about'].forEach(id=>{
     const a=document.getElementById(id);
     if(a)a.classList.remove('active');
   });
   if(page==='blog'&&document.getElementById('nav-blog'))document.getElementById('nav-blog').classList.add('active');
   if(page==='about'&&document.getElementById('nav-about'))document.getElementById('nav-about').classList.add('active');
-  // render
   if(page==='home')renderHome();
   if(page==='shop')renderShopPage();
   if(page==='blog')renderBlogPage();
@@ -1113,25 +1109,39 @@ function goto(page,extra){
   if(page==='category'){currentCatId=extra;renderCategoryPage(extra)}
   if(page==='about')renderAboutPage();
   if(page==='admin')renderAdminLoginPage();
-  if(page==='privacy'||page==='terms'||page==='disclaimer'){renderFooter('footer-'+page.replace('disclaimer','disclaimer'));renderFooterInto(page+'-ft')}
-  if(page!=='admin') updateHash(page,extra);
+  if(page==='privacy'||page==='terms'||page==='disclaimer'){renderFooterInto(page+'-ft')}
+  if(page!=='admin') updatePath(page,extra);
 }
 
-function updateHash(page,extra){
-  let h='#'+page;
-  if(extra)h+='/'+extra;
-  history.replaceState(null,'',h);
+function updatePath(page,extra){
+  let path='/';
+  if(page==='shop')path='/shop';
+  else if(page==='blog')path='/blog';
+  else if(page==='about')path='/about';
+  else if(page==='privacy')path='/privacy';
+  else if(page==='terms')path='/terms';
+  else if(page==='disclaimer')path='/disclaimer';
+  else if(page==='post'&&extra)path='/post/'+extra;
+  else if(page==='category'&&extra)path='/category/'+extra;
+  history.pushState({page,extra},document.title,path);
 }
 
-window.addEventListener('load',()=>{
-  const h=location.hash.replace('#','');
-  if(!h||h==='home'){goto('home');return}
-  const parts=h.split('/');
-  if(parts[0]==='category'&&parts[1]){goto('category',parts[1]);return}
+window.addEventListener('popstate',(e)=>{
+  if(e.state)goto(e.state.page,e.state.extra);
+  else routeFromPath();
+});
+
+function routeFromPath(){
+  const path=location.pathname.replace(/\/$/,'');
+  const parts=path.split('/').filter(Boolean);
+  if(!parts.length){goto('home');return}
   if(parts[0]==='post'&&parts[1]){goto('post',parts[1]);return}
+  if(parts[0]==='category'&&parts[1]){goto('category',parts[1]);return}
   if(['shop','blog','about','privacy','terms','disclaimer'].includes(parts[0])){goto(parts[0]);return}
   goto('home');
-});
+}
+
+window.addEventListener('load',()=>{ routeFromPath(); });
 
 /* ══════════════════════════════════════════
    COMPONENT HELPERS
@@ -1532,14 +1542,14 @@ async function saveProd(){
   if(!title||!url){alert('Title and URL required.');return}
   const id=document.getElementById('pm-id').value;
   const prod={id:id||uid(),name:title,price:parseFloat(document.getElementById('pm-price').value)||0,src:document.getElementById('pm-src').value.trim(),url,description:document.getElementById('pm-desc').value.trim(),badge:document.getElementById('pm-badge').value.trim(),cat:document.getElementById('pm-cat').value,status:document.getElementById('pm-status').value,feat:document.getElementById('pm-feat').checked,date:new Date().toISOString().split('T')[0],img:''};
-  if(USE_SUPA){await sb.upsert('products',prod);}
+  if(USE_SUPA){await adminWrite('upsert','products',prod);}
   else{const prods=gs('prods')||[];if(id){const i=prods.findIndex(p=>p.id===id);prods[i]=prod}else prods.unshift(prod);ss('prods',prods);}
   invalidateCache();closeProdModal();await renderAdminProds();
   showAdminToast(id?'Find updated!':'Find added!');
 }
 async function deleteProd(id){
   if(!confirm('Delete this find?'))return;
-  if(USE_SUPA)await sb.del('products',id);
+  if(USE_SUPA)await adminWrite('delete','products',null,id);
   else ss('prods',(gs('prods')||[]).filter(p=>p.id!==id));
   invalidateCache();renderAdminProds();showAdminToast('Find deleted.');
 }
@@ -1567,14 +1577,14 @@ async function savePost(){
   if(!title){alert('Title required.');return}
   const id=document.getElementById('bm-id').value;
   const post={id:id||uid(),title,slug:slug(title),excerpt:document.getElementById('bm-excerpt').value.trim(),content:document.getElementById('bm-content').value.trim(),cat:document.getElementById('bm-cat').value,status:document.getElementById('bm-status').value,feat:document.getElementById('bm-feat').checked,author:'Hearthpick Editorial',date:new Date().toISOString().split('T')[0],tags:''};
-  if(USE_SUPA){await sb.upsert('posts',post);}
+  if(USE_SUPA){await adminWrite('upsert','posts',post);}
   else{const posts=gs('posts')||[];if(id){const i=posts.findIndex(p=>p.id===id);posts[i]=post}else posts.unshift(post);ss('posts',posts);}
   invalidateCache();closePostModal();await renderAdminPosts();
   showAdminToast(id?'Post updated!':'Post published!');
 }
 async function deletePost(id){
   if(!confirm('Delete this post?'))return;
-  if(USE_SUPA)await sb.del('posts',id);
+  if(USE_SUPA)await adminWrite('delete','posts',null,id);
   else ss('posts',(gs('posts')||[]).filter(p=>p.id!==id));
   invalidateCache();renderAdminPosts();showAdminToast('Post deleted.');
 }
@@ -1596,14 +1606,14 @@ async function saveCat(){
   const id=document.getElementById('cm-id').value;
   const cats=await getCats();
   const cat={id:id||uid(),name,slug:document.getElementById('cm-slug').value||slug(name),description:document.getElementById('cm-desc').value.trim(),color:PALETTE[cats.length%PALETTE.length],cnt:0,on:true,on_site:true};
-  if(USE_SUPA){await sb.upsert('categories',cat);}
+  if(USE_SUPA){await adminWrite('upsert','categories',cat);}
   else{if(id){const i=cats.findIndex(c=>c.id===id);cats[i]=cat}else cats.push(cat);ss('cats',cats);}
   invalidateCache();closeCatModal();await renderAdminCats();buildNav();
   showAdminToast(id?'Category updated!':'Category added!');
 }
 async function deleteCat(id){
   if(!confirm('Delete this category?'))return;
-  if(USE_SUPA)await sb.del('categories',id);
+  if(USE_SUPA)await adminWrite('delete','categories',null,id);
   else{const cats=await getCats();ss('cats',cats.filter(c=>c.id!==id));}
   invalidateCache();renderAdminCats();
 }
@@ -1635,12 +1645,27 @@ async function loadAdminSettings(){
 }
 async function saveSettings(){
   const updates={name:document.getElementById('s-name').value,tag:document.getElementById('s-tagline').value,email:document.getElementById('s-email').value,pin:document.getElementById('s-pin').value,ig:document.getElementById('s-ig').value,adminPin:document.getElementById('s-adminpin').value||'1234',admin_pin:document.getElementById('s-adminpin').value||'1234',disc:document.getElementById('s-disc').value};
-  if(USE_SUPA){await sb.update('config',1,updates);}
+  if(USE_SUPA){await adminWrite('update','config',updates,1);}
   else{ss('cfg',{...getCfg(),...updates});}
   invalidateCache();showAdminToast('Settings saved!');
 }
 
-// ── SECURE ADMIN AUTH ──
+// ── SECURE ADMIN WRITES via Netlify Function ──
+// PIN never leaves the server. Service role key never in browser.
+let _sessionPin=''; // cached after login for the session
+
+async function adminWrite(action, table, data, id){
+  const res = await fetch('/.netlify/functions/admin', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({pin:_sessionPin, action, table, data, id})
+  });
+  const json = await res.json();
+  if(!res.ok) throw new Error(json.error||'Admin write failed');
+  return json;
+}
+
+
 // Admin functions are wrapped — inaccessible until _adminAuthed = true
 let _adminAuthed = false;
 let _loginAttempts = 0;
@@ -1671,26 +1696,43 @@ async function adminLogin(){
   if(_loginLocked){ showAdminToast('Too many attempts. Wait 30 seconds.'); return; }
   const pin=document.getElementById('admin-pin-input').value;
   if(!pin){ document.getElementById('admin-login-err').style.display='block'; return; }
-  // Artificial delay to prevent brute force
   await new Promise(r=>setTimeout(r,600));
-  const cfg=await getCfg();
-  const correct=cfg.adminPin||cfg.admin_pin||'1234';
-  // Timing-safe string compare (prevents timing attacks)
-  let match=pin.length===correct.length;
-  for(let i=0;i<Math.max(pin.length,correct.length);i++) match = (pin[i]===correct[i]) && match;
-  if(match){
-    _loginAttempts=0;
-    _adminAuthed=true;
-    document.getElementById('admin-login').style.display='none';
-    document.getElementById('admin-app').style.display='flex';
-    _adminPageReal('dashboard');
-  } else {
-    _loginAttempts++;
-    document.getElementById('admin-login-err').style.display='block';
-    if(_loginAttempts>=5){
-      _loginLocked=true;
-      document.getElementById('admin-login-err').textContent='Too many attempts. Locked for 30s.';
-      setTimeout(()=>{ _loginLocked=false; _loginAttempts=0; document.getElementById('admin-login-err').textContent='Incorrect PIN.'; },30000);
+  // Verify PIN server-side via Netlify function
+  try{
+    const res=await fetch('/.netlify/functions/admin',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pin, action:'upsert', table:'config', data:{id:1}})
+    });
+    if(res.ok){
+      _loginAttempts=0;
+      _adminAuthed=true;
+      _sessionPin=pin;
+      document.getElementById('admin-login').style.display='none';
+      document.getElementById('admin-app').style.display='flex';
+      _adminPageReal('dashboard');
+    } else {
+      _loginAttempts++;
+      document.getElementById('admin-login-err').style.display='block';
+      if(_loginAttempts>=5){
+        _loginLocked=true;
+        document.getElementById('admin-login-err').textContent='Too many attempts. Locked for 30s.';
+        setTimeout(()=>{ _loginLocked=false; _loginAttempts=0; document.getElementById('admin-login-err').textContent='Incorrect PIN.'; },30000);
+      }
+    }
+  } catch {
+    // Fallback to local PIN check if Netlify function not available (local dev)
+    const cfg=await getCfg();
+    const correct=cfg.adminPin||cfg.admin_pin||'1234';
+    let match=pin.length===correct.length;
+    for(let i=0;i<Math.max(pin.length,correct.length);i++) match=(pin[i]===correct[i])&&match;
+    if(match){
+      _adminAuthed=true;_sessionPin=pin;
+      document.getElementById('admin-login').style.display='none';
+      document.getElementById('admin-app').style.display='flex';
+      _adminPageReal('dashboard');
+    } else {
+      document.getElementById('admin-login-err').style.display='block';
     }
   }
 }

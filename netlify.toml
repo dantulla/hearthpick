@@ -1,0 +1,70 @@
+# ══════════════════════════════════════════
+# HEARTHPICK — netlify.toml
+# Handles clean URL routing so every path
+# serves index.html (SPA routing)
+# ══════════════════════════════════════════
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Clean URL rewrites — all paths serve index.html
+# The JS router reads window.location.pathname and renders the right page
+[[redirects]]
+  from = "/post/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/shop/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/shop"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/category/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/about"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/disclaimer"
+  to = "/index.html"
+  status = 200
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
