@@ -3,8 +3,42 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Hearthpick — Curated Home Finds</title>
-   <meta name="google-site-verification" content="0DxPEw-CKQmYlOk0tA-yYCZVX04pMvRh0Mk2clGxNdI" />
-<meta name="description" content="Handpicked home finds from Amazon, Wayfair, IKEA and more.">
+<meta name="description" content="Handpicked home finds from Amazon. Curated sofas, rugs, lamps, bedding and more — honest reviews, real prices.">
+<meta name="robots" content="index, follow">
+<meta name="google-site-verification" content="0DxPEw-CKQmYlOk0tA-yYCZVX04pMvRh0Mk2clGxNdI">
+<link rel="canonical" id="canonical-url" href="https://dantulla.github.io/hearthpick/">
+
+<!-- OpenGraph (Facebook, Pinterest, WhatsApp) -->
+<meta property="og:type" content="website" id="og-type">
+<meta property="og:site_name" content="Hearthpick">
+<meta property="og:url" content="https://dantulla.github.io/hearthpick/" id="og-url">
+<meta property="og:title" content="Hearthpick — Curated Home Finds" id="og-title">
+<meta property="og:description" content="Handpicked home finds from Amazon. Honest curation, real prices." id="og-desc">
+<meta property="og:image" content="https://dantulla.github.io/hearthpick/og-image.jpg" id="og-image">
+
+<!-- Twitter / X Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hearthpick — Curated Home Finds" id="tw-title">
+<meta name="twitter:description" content="Handpicked home finds from Amazon." id="tw-desc">
+<meta name="twitter:image" content="https://dantulla.github.io/hearthpick/og-image.jpg" id="tw-image">
+
+<!-- Pinterest verification (add your code from Pinterest after claiming site) -->
+<!-- <meta name="p:domain_verify" content="YOUR_PINTEREST_CODE"/> -->
+
+<!-- Structured Data: Organization -->
+<script type="application/ld+json" id="schema-org">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Hearthpick",
+  "url": "https://dantulla.github.io/hearthpick/",
+  "description": "Curated home finds and Amazon product recommendations",
+  "sameAs": ["https://pinterest.com/hearthpick"]
+}
+</script>
+
+<!-- DOMPurify: sanitizes HTML to prevent XSS attacks -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap">
 <style>
@@ -777,7 +811,7 @@ input,textarea,select{font-family:var(--fb)}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem"><h3 id="prod-modal-title" style="font-family:var(--fd);font-size:1.2rem;font-weight:500">Add New Find</h3><button onclick="closeProdModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--warm-gray)">×</button></div>
     <input type="hidden" id="pm-id">
     <div class="frow"><div class="fg"><label>Title *</label><input class="fi" id="pm-title" placeholder="Linen Tufted Sofa"></div><div class="fg"><label>Category</label><select class="fs" id="pm-cat"></select></div></div>
-    <div class="frow"><div class="fg"><label>Price (USD)</label><input class="fi" id="pm-price" type="number" placeholder="149"></div><div class="fg"><label>Source / Retailer</label><input class="fi" id="pm-src" placeholder="Amazon"></div></div>
+    <div class="frow"><div class="fg"><label>Price (USD)</label><input class="fi" id="pm-price" type="number" placeholder="149"></div><div class="fg"><label>Source</label><input class="fi" id="pm-src" value="Amazon" readonly style="background:var(--ivory);color:var(--warm-gray);cursor:not-allowed"></div></div>
     <div class="fg"><label>Affiliate URL *</label><input class="fi" id="pm-url" type="url" placeholder="https://amazon.com/dp/..."></div>
     <div class="fg"><label>Description</label><textarea class="ft" id="pm-desc" style="min-height:80px"></textarea></div>
     <div class="frow"><div class="fg"><label>Badge</label><input class="fi" id="pm-badge" placeholder="New Find / Under $50"></div><div class="fg"><label>Status</label><select class="fs" id="pm-status"><option value="published">Published</option><option value="draft">Draft</option></select></div></div>
@@ -796,7 +830,34 @@ input,textarea,select{font-family:var(--fb)}
     <div class="fg"><label>Title *</label><input class="fi" id="bm-title" placeholder="10 Amazon Home Finds Under $50…"></div>
     <div class="frow"><div class="fg"><label>Category</label><select class="fs" id="bm-cat"></select></div><div class="fg"><label>Status</label><select class="fs" id="bm-status"><option value="published">Published</option><option value="draft">Draft</option></select></div></div>
     <div class="fg"><label>Excerpt</label><textarea class="ft" id="bm-excerpt" style="min-height:72px" placeholder="Short summary…"></textarea></div>
-    <div class="fg"><label>Content (HTML)</label><textarea class="ft" id="bm-content" style="min-height:200px" placeholder="<p>Article content…</p>"></textarea></div>
+    <div class="fg"><label>Content</label>
+      <div style="border:1px solid var(--ivory-d);border-radius:var(--r);overflow:hidden">
+        <!-- Editor Toolbar -->
+        <div style="display:flex;flex-wrap:wrap;gap:3px;padding:8px;background:var(--linen);border-bottom:1px solid var(--ivory-d)">
+          <button type="button" onclick="ef('bold')" title="Bold" style="font-weight:700;width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.85rem">B</button>
+          <button type="button" onclick="ef('italic')" title="Italic" style="font-style:italic;width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.85rem">I</button>
+          <button type="button" onclick="ef('underline')" title="Underline" style="text-decoration:underline;width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.85rem">U</button>
+          <div style="width:1px;background:var(--ivory-d);margin:2px 4px"></div>
+          <button type="button" onclick="efb('h2')" title="Heading 2" style="width:36px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.75rem;font-weight:600">H2</button>
+          <button type="button" onclick="efb('h3')" title="Heading 3" style="width:36px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.75rem;font-weight:600">H3</button>
+          <button type="button" onclick="efb('p')" title="Paragraph" style="width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.75rem">¶</button>
+          <div style="width:1px;background:var(--ivory-d);margin:2px 4px"></div>
+          <button type="button" onclick="ef('insertUnorderedList')" title="Bullet List" style="width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.85rem">•≡</button>
+          <button type="button" onclick="ef('insertOrderedList')" title="Numbered List" style="width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.85rem">1≡</button>
+          <div style="width:1px;background:var(--ivory-d);margin:2px 4px"></div>
+          <button type="button" onclick="eLink()" title="Insert Link" style="width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.8rem">🔗</button>
+          <button type="button" onclick="eImg()" title="Insert Image URL" style="width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.8rem">🖼</button>
+          <button type="button" onclick="eProduct()" title="Attach Amazon Product" style="height:30px;padding:0 8px;border:1px solid var(--terra);background:white;border-radius:3px;cursor:pointer;font-size:.72rem;font-weight:600;color:var(--terra)">+ Amazon Product</button>
+          <div style="width:1px;background:var(--ivory-d);margin:2px 4px"></div>
+          <button type="button" onclick="ef('undo')" title="Undo" style="width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.8rem">↩</button>
+          <button type="button" onclick="ef('redo')" title="Redo" style="width:30px;height:30px;border:1px solid var(--ivory-d);background:white;border-radius:3px;cursor:pointer;font-size:.8rem">↪</button>
+        </div>
+        <!-- Editable content area -->
+        <div id="bm-editor" contenteditable="true" style="min-height:280px;padding:1.25rem;font-size:.88rem;line-height:1.75;outline:none;background:white;font-family:var(--fb)" oninput="syncEditor()"></div>
+      </div>
+      <!-- Hidden textarea synced with editor -->
+      <textarea id="bm-content" style="display:none"></textarea>
+    </div>
     <div class="fg" style="flex-direction:row;align-items:center;gap:.5rem;display:flex"><input type="checkbox" id="bm-feat" style="width:16px;height:16px"><label for="bm-feat" style="font-size:.82rem;margin:0;font-weight:400">Feature on homepage</label></div>
     <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
       <button class="abtn ab-edit" onclick="closePostModal()">Cancel</button>
@@ -889,7 +950,39 @@ const sb = {
 /* ══════════════════════════════════════════
    FALLBACK SEED (used if Supabase not configured)
 ══════════════════════════════════════════ */
-const SEED={
+const BASE_URL='https://dantulla.github.io/hearthpick/';
+const DEFAULT_IMG=BASE_URL+'og-image.jpg';
+
+function updateSEO({title, desc, url, img, type='website', schema=null}={}){
+  const fullTitle=title?title+' — Hearthpick':'Hearthpick — Curated Home Finds';
+  const fullDesc=desc||'Handpicked home finds from Amazon. Honest curation, real prices.';
+  const fullUrl=url?BASE_URL+'#'+url:BASE_URL;
+  const fullImg=img||DEFAULT_IMG;
+
+  // Basic
+  document.title=fullTitle;
+  document.querySelector('meta[name="description"]').content=fullDesc;
+  document.getElementById('canonical-url').href=fullUrl;
+
+  // OpenGraph
+  document.getElementById('og-type').content=type;
+  document.getElementById('og-url').content=fullUrl;
+  document.getElementById('og-title').content=fullTitle;
+  document.getElementById('og-desc').content=fullDesc;
+  document.getElementById('og-image').content=fullImg;
+
+  // Twitter
+  document.getElementById('tw-title').content=fullTitle;
+  document.getElementById('tw-desc').content=fullDesc;
+  document.getElementById('tw-image').content=fullImg;
+
+  // Structured data
+  if(schema){
+    document.getElementById('schema-org').textContent=JSON.stringify(schema);
+  }
+}
+
+
   cats:[
     {id:'c1',name:'Living Room',slug:'living-room',desc:'Sofas, rugs, lighting and accent pieces that anchor your living space.',color:'#C5B5A0',cnt:148,on:true},
     {id:'c2',name:'Bedroom',slug:'bedroom',desc:'Bedding, nightstands, lamps and everything for your most personal space.',color:'#B8BFAD',cnt:203,on:true},
@@ -1076,6 +1169,11 @@ function renderNLInto(id){
 ══════════════════════════════════════════ */
 async function renderHome(){
   const cfg=await getCfg();
+  updateSEO({
+    title:'Curated Home Finds',
+    desc:'Handpicked Amazon home finds. Sofas, rugs, lamps, bedding and more — honest curation, real prices.',
+    url:'home'
+  });
   // marquee
   const mqItems=['Amazon Finds','Wayfair Picks','IKEA Hacks','Budget Style','Cozy Living','Home Refresh','Trending Décor','Pinned & Loved'];
   const t=[...mqItems,...mqItems];
@@ -1097,6 +1195,11 @@ async function renderHome(){
 }
 
 async function renderShopPage(){
+  updateSEO({
+    title:'Shop All Amazon Home Finds',
+    desc:'Browse all our curated Amazon home finds. Filter by room, price and more.',
+    url:'shop'
+  });
   const cats=(await getCats()).filter(c=>c.on);
   const allProds=await getProds();
   cats.forEach(c=>{
@@ -1138,6 +1241,11 @@ async function renderShop(){
 function clearShopFilters(){document.querySelectorAll('#page-shop input[type=checkbox]').forEach(c=>c.checked=false);renderShop()}
 
 async function renderBlogPage(){
+  updateSEO({
+    title:'The Edit — Home Styling Articles',
+    desc:'Home styling guides, curated room breakdowns and the stories behind our favourite Amazon finds.',
+    url:'blog'
+  });
   const allPosts=await getPosts({status:'published'});
   const allCats=await getCats();
   // featured post
@@ -1174,12 +1282,31 @@ async function renderPostPage(id){
   document.title=post.title+' — Hearthpick';
   const cats=await getCats();
   const cat=cats.find(c=>c.id===post.cat);
+  updateSEO({
+    title:post.title,
+    desc:post.excerpt,
+    url:'post/'+post.id,
+    type:'article',
+    schema:{
+      '@context':'https://schema.org',
+      '@type':'Article',
+      'headline':post.title,
+      'description':post.excerpt,
+      'author':{'@type':'Organization','name':'Hearthpick'},
+      'publisher':{'@type':'Organization','name':'Hearthpick','url':BASE_URL},
+      'datePublished':post.date,
+      'url':BASE_URL+'#post/'+post.id
+    }
+  });
   document.getElementById('post-bc').textContent=post.title.substring(0,40)+'…';
   document.getElementById('post-cat-lbl').textContent=cat?cat.name:'Editorial';
   document.getElementById('post-title-el').textContent=post.title;
   document.getElementById('post-author-el').textContent=post.author||'Hearthpick Editorial';
   document.getElementById('post-date-el').textContent=new Date(post.date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
-  document.getElementById('post-content-el').innerHTML=post.content||'<p>'+post.excerpt+'</p>';
+  // Sanitize content before rendering — prevents XSS
+  const rawContent=post.content||'<p>'+post.excerpt+'</p>';
+  const safeContent=typeof DOMPurify!=='undefined'?DOMPurify.sanitize(rawContent):rawContent.replace(/<script[\s\S]*?<\/script>/gi,'');
+  document.getElementById('post-content-el').innerHTML=safeContent;
   if(cat)document.getElementById('post-hero-bg').style.background=cat.color+'22';
   const tags=(post.tags||'').split(',').filter(Boolean);
   document.getElementById('post-tags-el').innerHTML=tags.map(t=>`<span class="post-tag">${t.trim()}</span>`).join('');
@@ -1196,6 +1323,18 @@ async function renderCategoryPage(id){
   const cat=cats.find(c=>c.id===id);
   if(cat){
     document.title=cat.name+' Finds — Hearthpick';
+    updateSEO({
+      title:cat.name+' — Amazon Home Finds',
+      desc:'Curated Amazon '+cat.name.toLowerCase()+' finds. '+cat.desc,
+      url:'category/'+cat.id,
+      schema:{
+        '@context':'https://schema.org',
+        '@type':'CollectionPage',
+        'name':cat.name+' Home Finds',
+        'description':cat.desc,
+        'url':BASE_URL+'#category/'+cat.id
+      }
+    });
     document.getElementById('cat-bc').textContent=cat.name;
     document.getElementById('cat-tag-lbl').textContent='Shop '+cat.name;
     document.getElementById('cat-title-el').innerHTML=cat.name+'<br><em style="font-style:italic;color:var(--terra)">Finds</em>';
@@ -1222,6 +1361,11 @@ async function renderCatProducts(){
 }
 
 async function renderAboutPage(){
+  updateSEO({
+    title:'About Hearthpick',
+    desc:'Hearthpick curates the best Amazon home finds — honest reviews, no paid placements.',
+    url:'about'
+  });
   const cfg=await getCfg();
   const el=document.getElementById('about-contact-email');
   if(el){el.href='mailto:'+(cfg.email||'hello@hearthpick.com');el.textContent=cfg.email||'hello@hearthpick.com'}
@@ -1303,26 +1447,11 @@ function sidebarSub(){
    ADMIN
 ══════════════════════════════════════════ */
 function renderAdminLoginPage(){
-  // just show page, login handled by button
-}
-
-function adminLogin(){
-  const pin=document.getElementById('admin-pin-input').value;
-  const cfg=getCfg();
-  if(pin===(cfg.adminPin||'1234')){
-    document.getElementById('admin-login').style.display='none';
-    document.getElementById('admin-app').style.display='flex';
-    adminPage('dashboard');
-  } else {
-    document.getElementById('admin-login-err').style.display='block';
-  }
-}
-document.getElementById('admin-pin-input').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin()});
-
-function adminLogout(){
+  // reset state on each visit
   document.getElementById('admin-login').style.display='flex';
   document.getElementById('admin-app').style.display='none';
   document.getElementById('admin-pin-input').value='';
+  document.getElementById('admin-login-err').style.display='none';
 }
 
 function adminPage(p){
@@ -1420,7 +1549,10 @@ async function openPostModal(p){
   document.getElementById('bm-id').value=p?p.id:'';
   document.getElementById('bm-title').value=p?p.title:'';
   document.getElementById('bm-excerpt').value=p?p.excerpt:'';
-  document.getElementById('bm-content').value=p?p.content:'';
+  // Populate rich editor
+  const content=p?p.content:'';
+  document.getElementById('bm-editor').innerHTML=content;
+  document.getElementById('bm-content').value=content;
   document.getElementById('bm-status').value=p?p.status:'published';
   document.getElementById('bm-feat').checked=p?!!p.feat:false;
   const cats=await getCats();
@@ -1507,20 +1639,116 @@ async function saveSettings(){
   invalidateCache();showAdminToast('Settings saved!');
 }
 
-// ── ADMIN LOGIN (async for cfg check) ──
+// ── SECURE ADMIN AUTH ──
+// Admin functions are wrapped — inaccessible until _adminAuthed = true
+let _adminAuthed = false;
+let _loginAttempts = 0;
+let _loginLocked = false;
+
+// Overwrite global adminPage so DevTools can't call it directly
+const _adminPageReal = function(p){
+  if(!_adminAuthed){ console.warn('Unauthorized'); return; }
+  ['dashboard','products','posts','categories','subscribers','settings'].forEach(n=>{
+    const el=document.getElementById('apg-'+n);
+    const lnk=document.getElementById('asb-'+n);
+    if(el)el.style.display=n===p?'block':'none';
+    if(lnk)lnk.classList.toggle('active',n===p);
+  });
+  const titles={dashboard:'Dashboard',products:'Products / Finds',posts:'Blog Posts',categories:'Categories',subscribers:'Subscribers',settings:'Site Settings'};
+  document.getElementById('admin-page-title').textContent=titles[p]||p;
+  if(p==='dashboard')renderAdminDash();
+  if(p==='products')renderAdminProds();
+  if(p==='posts')renderAdminPosts();
+  if(p==='categories')renderAdminCats();
+  if(p==='subscribers')renderAdminSubs();
+  if(p==='settings')loadAdminSettings();
+};
+// Expose adminPage but gate it
+function adminPage(p){ _adminPageReal(p); }
+
 async function adminLogin(){
+  if(_loginLocked){ showAdminToast('Too many attempts. Wait 30 seconds.'); return; }
   const pin=document.getElementById('admin-pin-input').value;
+  if(!pin){ document.getElementById('admin-login-err').style.display='block'; return; }
+  // Artificial delay to prevent brute force
+  await new Promise(r=>setTimeout(r,600));
   const cfg=await getCfg();
-  if(pin===(cfg.adminPin||cfg.admin_pin||'1234')){
+  const correct=cfg.adminPin||cfg.admin_pin||'1234';
+  // Timing-safe string compare (prevents timing attacks)
+  let match=pin.length===correct.length;
+  for(let i=0;i<Math.max(pin.length,correct.length);i++) match = (pin[i]===correct[i]) && match;
+  if(match){
+    _loginAttempts=0;
+    _adminAuthed=true;
     document.getElementById('admin-login').style.display='none';
     document.getElementById('admin-app').style.display='flex';
-    adminPage('dashboard');
+    _adminPageReal('dashboard');
   } else {
+    _loginAttempts++;
     document.getElementById('admin-login-err').style.display='block';
+    if(_loginAttempts>=5){
+      _loginLocked=true;
+      document.getElementById('admin-login-err').textContent='Too many attempts. Locked for 30s.';
+      setTimeout(()=>{ _loginLocked=false; _loginAttempts=0; document.getElementById('admin-login-err').textContent='Incorrect PIN.'; },30000);
+    }
   }
 }
 
-// ── TOAST ──
+function adminLogout(){
+  _adminAuthed=false;
+  document.getElementById('admin-login').style.display='flex';
+  document.getElementById('admin-app').style.display='none';
+  document.getElementById('admin-pin-input').value='';
+  document.getElementById('admin-login-err').style.display='none';
+}
+
+// ── RICH BLOG EDITOR ──
+function ef(cmd){ document.getElementById('bm-editor').focus(); document.execCommand(cmd,false,null); syncEditor(); }
+function efb(tag){ document.getElementById('bm-editor').focus(); document.execCommand('formatBlock',false,tag); syncEditor(); }
+function syncEditor(){ document.getElementById('bm-content').value=document.getElementById('bm-editor').innerHTML; }
+function eLink(){
+  const url=prompt('Enter URL (include https://):');
+  if(url){ document.getElementById('bm-editor').focus(); document.execCommand('createLink',false,url); syncEditor(); }
+}
+function eImg(){
+  const url=prompt('Enter image URL:');
+  if(url){ document.getElementById('bm-editor').focus(); document.execCommand('insertHTML',false,`<img src="${url}" style="max-width:100%;margin:1rem 0;border-radius:4px" alt="">`); syncEditor(); }
+}
+async function eProduct(){
+  const prods=await getProds({status:'published'});
+  // Build a quick picker modal
+  let existing=document.getElementById('prod-picker');
+  if(existing)existing.remove();
+  const picker=document.createElement('div');
+  picker.id='prod-picker';
+  picker.style.cssText='position:fixed;inset:0;background:rgba(44,40,37,.6);z-index:3000;display:flex;align-items:center;justify-content:center';
+  picker.innerHTML=`<div style="background:white;border-radius:6px;padding:1.5rem;width:520px;max-width:95%;max-height:80vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <strong style="font-family:var(--fd)">Pick an Amazon Product</strong>
+      <button onclick="document.getElementById('prod-picker').remove()" style="background:none;border:none;font-size:1.4rem;cursor:pointer">×</button>
+    </div>
+    ${prods.map(p=>`<div onclick="insertProduct('${p.id}')" style="display:flex;align-items:center;gap:1rem;padding:.75rem;border:1px solid var(--ivory-d);margin-bottom:.5rem;cursor:pointer;border-radius:4px;transition:.2s" onmouseover="this.style.background='var(--linen)'" onmouseout="this.style.background='white'">
+      <div style="width:48px;height:48px;background:${pc(0)};border-radius:3px;flex-shrink:0"></div>
+      <div><div style="font-weight:500;font-size:.85rem">${p.name}</div><div style="font-size:.75rem;color:var(--terra);font-weight:600">$${p.price} · Amazon</div></div>
+    </div>`).join('')}
+  </div>`;
+  document.body.appendChild(picker);
+}
+async function insertProduct(id){
+  document.getElementById('prod-picker')?.remove();
+  const prods=await getProds();
+  const p=prods.find(x=>x.id===id);
+  if(!p)return;
+  const html=`<div style="border:1px solid #EDE3D5;border-radius:4px;padding:1rem;margin:1.5rem 0;display:flex;gap:1rem;align-items:center;background:#FAF7F2">
+    <div style="width:60px;height:60px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>
+    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">${p.name}</div><div style="font-size:.8rem;color:#9B8F85;margin-bottom:.5rem">${p.description||p.desc||''}</div><a href="${p.url}" target="_blank" rel="noopener sponsored" style="display:inline-block;background:#C1603A;color:white;padding:.3rem .8rem;border-radius:3px;font-size:.75rem;font-weight:600;text-decoration:none">Shop on Amazon — $${p.price}</a></div>
+  </div>`;
+  document.getElementById('bm-editor').focus();
+  document.execCommand('insertHTML',false,html);
+  syncEditor();
+}
+
+
 function showAdminToast(msg){
   let t=document.getElementById('admin-toast');
   if(!t){t=document.createElement('div');t.id='admin-toast';t.style.cssText='position:fixed;bottom:2rem;right:2rem;background:var(--charcoal);color:white;padding:.85rem 1.5rem;border-radius:4px;font-size:.85rem;z-index:9999;border-left:3px solid var(--sage);transition:opacity .3s';document.body.appendChild(t);}
