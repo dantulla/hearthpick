@@ -731,6 +731,7 @@ input,textarea,select{font-family:var(--fb)}
       <a onclick="adminPage('posts')" id="asb-posts">📝 Blog Posts</a>
       <a onclick="adminPage('categories')" id="asb-categories">🗂 Categories</a>
       <div class="sb-sec">Audience</div>
+      <a onclick="adminPage('analytics')" id="asb-analytics">📈 Analytics</a>
       <a onclick="adminPage('subscribers')" id="asb-subscribers">👥 Subscribers</a>
       <div class="sb-sec">Site</div>
       <a onclick="adminPage('settings')" id="asb-settings">⚙️ Settings</a>
@@ -788,6 +789,56 @@ input,textarea,select{font-family:var(--fb)}
       </div>
       <div class="acard"><h3>All Subscribers</h3>
         <table class="atable"><thead><tr><th>Name</th><th>Email</th><th>Date</th><th>Actions</th></tr></thead><tbody id="admin-sub-rows"></tbody></table>
+      </div>
+    </div>
+    <!-- Analytics -->
+    <div id="apg-analytics" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+        <h2 style="font-family:var(--fd);font-size:1.4rem;font-weight:500">Analytics</h2>
+        <div style="display:flex;gap:.6rem;align-items:center">
+          <select id="analytics-range" class="fs" style="padding:.4rem .7rem;font-size:.82rem;width:auto" onchange="renderAnalytics()">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="all">All time</option>
+          </select>
+          <button class="btn btn-outline" onclick="clearAnalytics()" style="font-size:.78rem;padding:.4rem .9rem">Clear Data</button>
+        </div>
+      </div>
+      <!-- Stat cards -->
+      <div id="analytics-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem"></div>
+      <!-- Charts row -->
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+        <div class="acard">
+          <h3 style="margin-bottom:1.25rem">Page Views Over Time</h3>
+          <canvas id="analytics-views-chart" height="180"></canvas>
+        </div>
+        <div class="acard">
+          <h3 style="margin-bottom:1.25rem">Devices</h3>
+          <canvas id="analytics-device-chart" height="180"></canvas>
+        </div>
+      </div>
+      <!-- Sources + Pages row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
+        <div class="acard">
+          <h3 style="margin-bottom:1rem">Traffic Sources</h3>
+          <div id="analytics-sources"></div>
+        </div>
+        <div class="acard">
+          <h3 style="margin-bottom:1rem">Top Pages</h3>
+          <div id="analytics-pages"></div>
+        </div>
+      </div>
+      <!-- Countries + Products row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div class="acard">
+          <h3 style="margin-bottom:1rem">Visitor Countries</h3>
+          <div id="analytics-countries"></div>
+        </div>
+        <div class="acard">
+          <h3 style="margin-bottom:1rem">Top Product Clicks</h3>
+          <div id="analytics-products"></div>
+        </div>
       </div>
     </div>
     <!-- Settings -->
@@ -1481,18 +1532,19 @@ function renderAdminLoginPage(){
 }
 
 function adminPage(p){
-  ['dashboard','products','posts','categories','subscribers','settings'].forEach(n=>{
+  ['dashboard','products','posts','categories','analytics','subscribers','settings'].forEach(n=>{
     const el=document.getElementById('apg-'+n);
     const lnk=document.getElementById('asb-'+n);
     if(el)el.style.display=n===p?'block':'none';
     if(lnk){lnk.classList.toggle('active',n===p)}
   });
-  const titles={dashboard:'Dashboard',products:'Products / Finds',posts:'Blog Posts',categories:'Categories',subscribers:'Subscribers',settings:'Site Settings'};
+  const titles={dashboard:'Dashboard',products:'Products / Finds',posts:'Blog Posts',categories:'Categories',analytics:'Analytics',subscribers:'Subscribers',settings:'Site Settings'};
   document.getElementById('admin-page-title').textContent=titles[p]||p;
   if(p==='dashboard')renderAdminDash();
   if(p==='products')renderAdminProds();
   if(p==='posts')renderAdminPosts();
   if(p==='categories')renderAdminCats();
+  if(p==='analytics')renderAnalytics();
   if(p==='subscribers')renderAdminSubs();
   if(p==='settings')loadAdminSettings();
 }
@@ -1723,18 +1775,19 @@ let _loginLocked = false;
 // Overwrite global adminPage so DevTools can't call it directly
 const _adminPageReal = function(p){
   if(!_adminAuthed){ console.warn('Unauthorized'); return; }
-  ['dashboard','products','posts','categories','subscribers','settings'].forEach(n=>{
+  ['dashboard','products','posts','categories','analytics','subscribers','settings'].forEach(n=>{
     const el=document.getElementById('apg-'+n);
     const lnk=document.getElementById('asb-'+n);
     if(el)el.style.display=n===p?'block':'none';
     if(lnk)lnk.classList.toggle('active',n===p);
   });
-  const titles={dashboard:'Dashboard',products:'Products / Finds',posts:'Blog Posts',categories:'Categories',subscribers:'Subscribers',settings:'Site Settings'};
+  const titles={dashboard:'Dashboard',products:'Products / Finds',posts:'Blog Posts',categories:'Categories',analytics:'Analytics',subscribers:'Subscribers',settings:'Site Settings'};
   document.getElementById('admin-page-title').textContent=titles[p]||p;
   if(p==='dashboard')renderAdminDash();
   if(p==='products')renderAdminProds();
   if(p==='posts')renderAdminPosts();
   if(p==='categories')renderAdminCats();
+  if(p==='analytics')renderAnalytics();
   if(p==='subscribers')renderAdminSubs();
   if(p==='settings')loadAdminSettings();
 };
@@ -1840,6 +1893,314 @@ async function insertProduct(id){
   syncEditor();
 }
 
+
+// ── ANALYTICS ENGINE ──────────────────────────────────────────────────────────
+
+(function(){
+  // Track a page visit on every page load
+  const AK = 'hp_analytics';
+  function getAData(){ try{ return JSON.parse(localStorage.getItem(AK)||'[]'); }catch(e){ return []; } }
+  function saveAData(d){ try{ localStorage.setItem(AK, JSON.stringify(d)); }catch(e){} }
+
+  function detectDevice(){
+    const ua = navigator.userAgent;
+    if(/tablet|ipad|playbook|silk/i.test(ua)) return 'Tablet';
+    if(/mobile|iphone|ipod|android|blackberry|opera mini|iemobile/i.test(ua)) return 'Mobile';
+    return 'Desktop';
+  }
+
+  function getSource(){
+    const ref = document.referrer;
+    if(!ref) return 'Direct';
+    try{
+      const h = new URL(ref).hostname.replace('www.','');
+      if(h.includes('google')) return 'Google';
+      if(h.includes('bing')) return 'Bing';
+      if(h.includes('facebook')||h.includes('fb.')) return 'Facebook';
+      if(h.includes('instagram')) return 'Instagram';
+      if(h.includes('pinterest')) return 'Pinterest';
+      if(h.includes('twitter')||h.includes('t.co')) return 'Twitter/X';
+      if(h.includes('tiktok')) return 'TikTok';
+      if(h.includes('youtube')) return 'YouTube';
+      return h;
+    }catch(e){ return 'Other'; }
+  }
+
+  function getPage(){
+    const hash = location.hash.replace('#','') || 'home';
+    const pageMap = {home:'Home',shop:'Shop',blog:'Blog',about:'About',contact:'Contact'};
+    return pageMap[hash] || hash.charAt(0).toUpperCase()+hash.slice(1);
+  }
+
+  function getCountry(){
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    const tzMap = {
+      'Africa/Nairobi':'Kenya 🇰🇪','America/New_York':'USA 🇺🇸','America/Chicago':'USA 🇺🇸',
+      'America/Los_Angeles':'USA 🇺🇸','America/Denver':'USA 🇺🇸','Europe/London':'UK 🇬🇧',
+      'Europe/Paris':'France 🇫🇷','Europe/Berlin':'Germany 🇩🇪','Asia/Tokyo':'Japan 🇯🇵',
+      'Asia/Dubai':'UAE 🇦🇪','Asia/Kolkata':'India 🇮🇳','Australia/Sydney':'Australia 🇦🇺',
+      'America/Toronto':'Canada 🇨🇦','America/Sao_Paulo':'Brazil 🇧🇷','Africa/Lagos':'Nigeria 🇳🇬',
+      'Africa/Cairo':'Egypt 🇪🇬','Africa/Johannesburg':'South Africa 🇿🇦','Asia/Singapore':'Singapore 🇸🇬',
+    };
+    return tzMap[tz] || tz.split('/').pop().replace('_',' ') || 'Unknown';
+  }
+
+  // Record visit
+  const visit = {
+    ts: Date.now(),
+    date: new Date().toISOString().split('T')[0],
+    page: getPage(),
+    source: getSource(),
+    device: detectDevice(),
+    country: getCountry(),
+    ua: navigator.userAgent.substring(0,80)
+  };
+  const data = getAData();
+  data.push(visit);
+  // Keep max 10000 records
+  if(data.length > 10000) data.splice(0, data.length - 10000);
+  saveAData(data);
+
+  // Track hash changes as new page views
+  window.addEventListener('hashchange', ()=>{
+    const v = {
+      ts: Date.now(),
+      date: new Date().toISOString().split('T')[0],
+      page: getPage(),
+      source: 'Internal',
+      device: detectDevice(),
+      country: getCountry(),
+    };
+    const d = getAData(); d.push(v);
+    if(d.length>10000) d.splice(0,d.length-10000);
+    saveAData(d);
+  });
+
+  // Track product link clicks
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a[href]');
+    if(!a) return;
+    const href = a.href||'';
+    if(href.includes('amazon.com')||href.includes('wayfair.com')||href.includes('ikea.com')||href.includes('target.com')){
+      const clicks = JSON.parse(localStorage.getItem('hp_clicks')||'{}');
+      const name = (a.closest('.product-card')?.querySelector('.card-name')?.textContent||'Unknown Product').trim();
+      clicks[name] = (clicks[name]||0)+1;
+      localStorage.setItem('hp_clicks', JSON.stringify(clicks));
+    }
+  });
+
+  window._getAnalyticsData = getAData;
+  window._saveAnalyticsData = saveAData;
+})();
+
+function clearAnalytics(){
+  if(!confirm('Clear all analytics data? This cannot be undone.')) return;
+  localStorage.removeItem('hp_analytics');
+  localStorage.removeItem('hp_clicks');
+  renderAnalytics();
+  showAdminToast('Analytics cleared.');
+}
+
+function renderAnalytics(){
+  const rangeEl = document.getElementById('analytics-range');
+  if(!rangeEl) return;
+  const range = rangeEl.value;
+  let data = window._getAnalyticsData ? window._getAnalyticsData() : [];
+
+  // Filter by date range
+  if(range !== 'all'){
+    const days = parseInt(range);
+    const cutoff = Date.now() - days * 86400000;
+    data = data.filter(v => v.ts >= cutoff);
+  }
+
+  // ── STAT CARDS ──
+  const totalViews = data.length;
+  const uniqueDays = new Set(data.map(v=>v.date)).size;
+  const avgPerDay = uniqueDays ? Math.round(totalViews/uniqueDays) : 0;
+  const mobileCount = data.filter(v=>v.device==='Mobile').length;
+  const mobilePct = totalViews ? Math.round(mobileCount/totalViews*100) : 0;
+  const clicks = JSON.parse(localStorage.getItem('hp_clicks')||'{}');
+  const totalClicks = Object.values(clicks).reduce((a,b)=>a+b,0);
+
+  const statsEl = document.getElementById('analytics-stats');
+  if(statsEl) statsEl.innerHTML = [
+    {label:'Total Page Views', val: totalViews.toLocaleString(), sub:'all tracked visits', icon:'👁'},
+    {label:'Avg Views / Day',  val: avgPerDay.toLocaleString(),  sub:'over selected period', icon:'📅'},
+    {label:'Mobile Visitors',  val: mobilePct+'%',               sub:'of all visitors', icon:'📱'},
+    {label:'Product Clicks',   val: totalClicks.toLocaleString(),sub:'affiliate link clicks', icon:'🛒'},
+  ].map(s=>`
+    <div class="acard" style="display:flex;align-items:flex-start;gap:1rem;padding:1.25rem 1.5rem">
+      <div style="font-size:1.6rem;line-height:1">${s.icon}</div>
+      <div>
+        <div style="font-size:1.6rem;font-family:var(--fd);font-weight:500;line-height:1.1">${s.val}</div>
+        <div style="font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--warm-gray);margin:.3rem 0 .15rem">${s.label}</div>
+        <div style="font-size:.76rem;color:var(--warm-gray)">${s.sub}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // ── VIEWS OVER TIME CHART ──
+  const byDate = {};
+  data.forEach(v=>{ byDate[v.date]=(byDate[v.date]||0)+1; });
+  const sortedDates = Object.keys(byDate).sort().slice(-30);
+  const viewCounts = sortedDates.map(d=>byDate[d]);
+
+  const vCanvas = document.getElementById('analytics-views-chart');
+  if(vCanvas){
+    if(vCanvas._chartInst) vCanvas._chartInst.destroy();
+    if(typeof Chart !== 'undefined'){
+      vCanvas._chartInst = new Chart(vCanvas.getContext('2d'),{
+        type:'line',
+        data:{
+          labels: sortedDates.map(d=>{ const [,m,day]=d.split('-'); return m+'/'+day; }),
+          datasets:[{
+            label:'Views',
+            data: viewCounts,
+            borderColor:'#C4855A',
+            backgroundColor:'rgba(196,133,90,0.08)',
+            borderWidth:2,
+            fill:true,
+            tension:0.35,
+            pointRadius:3,
+            pointBackgroundColor:'#C4855A'
+          }]
+        },
+        options:{
+          responsive:true,
+          plugins:{legend:{display:false}},
+          scales:{
+            x:{grid:{display:false},ticks:{font:{size:10},maxTicksLimit:10}},
+            y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},precision:0}}
+          }
+        }
+      });
+    } else {
+      vCanvas.parentElement.innerHTML += '<p style="font-size:.82rem;color:var(--warm-gray);margin-top:.5rem">Chart.js not loaded — views data available below.</p>';
+    }
+  }
+
+  // ── DEVICE CHART ──
+  const deviceCounts = {};
+  data.forEach(v=>{ deviceCounts[v.device]=(deviceCounts[v.device]||0)+1; });
+  const dCanvas = document.getElementById('analytics-device-chart');
+  if(dCanvas){
+    if(dCanvas._chartInst) dCanvas._chartInst.destroy();
+    if(typeof Chart !== 'undefined' && Object.keys(deviceCounts).length){
+      dCanvas._chartInst = new Chart(dCanvas.getContext('2d'),{
+        type:'doughnut',
+        data:{
+          labels: Object.keys(deviceCounts),
+          datasets:[{
+            data: Object.values(deviceCounts),
+            backgroundColor:['#C4855A','#7A8C72','#8C7B6B'],
+            borderWidth:0
+          }]
+        },
+        options:{
+          responsive:true,
+          plugins:{
+            legend:{position:'bottom',labels:{font:{size:11},padding:12}},
+          },
+          cutout:'62%'
+        }
+      });
+    }
+  }
+
+  // ── SOURCES ──
+  const srcCounts = {};
+  data.forEach(v=>{ if(v.source!=='Internal') srcCounts[v.source]=(srcCounts[v.source]||0)+1; });
+  const srcEl = document.getElementById('analytics-sources');
+  if(srcEl){
+    const sorted = Object.entries(srcCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const max = sorted[0]?sorted[0][1]:1;
+    srcEl.innerHTML = sorted.length ? sorted.map(([src,cnt])=>`
+      <div style="margin-bottom:.85rem">
+        <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem">
+          <span style="font-weight:500">${src}</span>
+          <span style="color:var(--warm-gray)">${cnt} visit${cnt!==1?'s':''}</span>
+        </div>
+        <div style="background:#F0EAE2;border-radius:3px;height:6px;overflow:hidden">
+          <div style="background:var(--terra);height:100%;border-radius:3px;width:${Math.round(cnt/max*100)}%;transition:width .5s"></div>
+        </div>
+      </div>
+    `).join('') : '<p style="font-size:.82rem;color:var(--warm-gray)">No source data yet. Visit your site to start tracking.</p>';
+  }
+
+  // ── TOP PAGES ──
+  const pageCounts = {};
+  data.forEach(v=>{ pageCounts[v.page]=(pageCounts[v.page]||0)+1; });
+  const pagesEl = document.getElementById('analytics-pages');
+  if(pagesEl){
+    const sorted = Object.entries(pageCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const max = sorted[0]?sorted[0][1]:1;
+    pagesEl.innerHTML = sorted.length ? sorted.map(([pg,cnt])=>`
+      <div style="margin-bottom:.85rem">
+        <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem">
+          <span style="font-weight:500">${pg}</span>
+          <span style="color:var(--warm-gray)">${cnt} view${cnt!==1?'s':''}</span>
+        </div>
+        <div style="background:#F0EAE2;border-radius:3px;height:6px;overflow:hidden">
+          <div style="background:#7A8C72;height:100%;border-radius:3px;width:${Math.round(cnt/max*100)}%;transition:width .5s"></div>
+        </div>
+      </div>
+    `).join('') : '<p style="font-size:.82rem;color:var(--warm-gray)">No page data yet.</p>';
+  }
+
+  // ── COUNTRIES ──
+  const cntryCounts = {};
+  data.forEach(v=>{ if(v.country) cntryCounts[v.country]=(cntryCounts[v.country]||0)+1; });
+  const cntryEl = document.getElementById('analytics-countries');
+  if(cntryEl){
+    const sorted = Object.entries(cntryCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    cntryEl.innerHTML = sorted.length ? `
+      <table style="width:100%;font-size:.82rem;border-collapse:collapse">
+        <thead><tr style="border-bottom:1px solid #F0EAE2">
+          <th style="text-align:left;padding:.4rem 0;font-weight:500;color:var(--warm-gray);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase">Country</th>
+          <th style="text-align:right;padding:.4rem 0;font-weight:500;color:var(--warm-gray);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase">Visits</th>
+          <th style="text-align:right;padding:.4rem 0;font-weight:500;color:var(--warm-gray);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase">Share</th>
+        </tr></thead>
+        <tbody>${sorted.map(([c,n])=>`
+          <tr style="border-bottom:1px solid #F9F5F0">
+            <td style="padding:.55rem 0">${c}</td>
+            <td style="text-align:right;padding:.55rem 0">${n}</td>
+            <td style="text-align:right;padding:.55rem 0;color:var(--terra)">${totalViews?Math.round(n/totalViews*100):0}%</td>
+          </tr>
+        `).join('')}</tbody>
+      </table>
+    ` : '<p style="font-size:.82rem;color:var(--warm-gray)">No country data yet.</p>';
+  }
+
+  // ── TOP PRODUCT CLICKS ──
+  const prodEl = document.getElementById('analytics-products');
+  if(prodEl){
+    const sorted = Object.entries(clicks).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const maxC = sorted[0]?sorted[0][1]:1;
+    prodEl.innerHTML = sorted.length ? sorted.map(([name,cnt])=>`
+      <div style="margin-bottom:.85rem">
+        <div style="display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.3rem">
+          <span style="font-weight:500;max-width:70%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</span>
+          <span style="color:var(--warm-gray)">${cnt} click${cnt!==1?'s':''}</span>
+        </div>
+        <div style="background:#F0EAE2;border-radius:3px;height:6px;overflow:hidden">
+          <div style="background:#C4855A;height:100%;border-radius:3px;width:${Math.round(cnt/maxC*100)}%;transition:width .5s"></div>
+        </div>
+      </div>
+    `).join('') : '<p style="font-size:.82rem;color:var(--warm-gray)">No product clicks tracked yet.</p>';
+  }
+}
+
+// Load Chart.js for analytics charts
+(function(){
+  if(typeof Chart==='undefined'){
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
+    document.head.appendChild(s);
+  }
+})();
+
+// ── END ANALYTICS ─────────────────────────────────────────────────────────────
 
 function showAdminToast(msg){
   let t=document.getElementById('admin-toast');
