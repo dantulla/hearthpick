@@ -814,6 +814,22 @@ input,textarea,select{font-family:var(--fb)}
     <div class="frow"><div class="fg"><label>Price (USD)</label><input class="fi" id="pm-price" type="number" placeholder="149"></div><div class="fg"><label>Source</label><input class="fi" id="pm-src" value="Amazon" readonly style="background:var(--ivory);color:var(--warm-gray);cursor:not-allowed"></div></div>
     <div class="fg"><label>Affiliate URL *</label><input class="fi" id="pm-url" type="url" placeholder="https://amazon.com/dp/..."></div>
     <div class="fg"><label>Description</label><textarea class="ft" id="pm-desc" style="min-height:80px"></textarea></div>
+    <div class="fg"><label>Product Image</label>
+      <div style="display:flex;flex-direction:column;gap:.6rem">
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <input class="fi" id="pm-img-url" type="url" placeholder="Paste image URL (e.g. from Amazon)" style="flex:1" oninput="pmImgPreview(this.value)">
+          <label style="cursor:pointer;background:var(--terra);color:white;padding:.45rem .9rem;border-radius:3px;font-size:.78rem;white-space:nowrap;display:flex;align-items:center;gap:.35rem">
+            <span>📁 Upload</span>
+            <input type="file" id="pm-img-file" accept="image/*" style="display:none" onchange="pmImgFileRead(this)">
+          </label>
+        </div>
+        <div id="pm-img-preview" style="display:none;position:relative;width:100%;max-height:160px;overflow:hidden;border-radius:4px;border:1px solid var(--ivory-d)">
+          <img id="pm-img-thumb" src="" alt="Preview" style="width:100%;max-height:160px;object-fit:cover;display:block">
+          <button onclick="pmImgClear()" style="position:absolute;top:6px;right:6px;background:rgba(44,40,37,.7);color:white;border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center">×</button>
+        </div>
+        <p style="font-size:.75rem;color:var(--warm-gray);margin:0">Paste an Amazon image URL or upload a file from your device.</p>
+      </div>
+    </div>
     <div class="frow"><div class="fg"><label>Badge</label><input class="fi" id="pm-badge" placeholder="New Find / Under $50"></div><div class="fg"><label>Status</label><select class="fs" id="pm-status"><option value="published">Published</option><option value="draft">Draft</option></select></div></div>
     <div class="fg" style="flex-direction:row;align-items:center;gap:.5rem;display:flex"><input type="checkbox" id="pm-feat" style="width:16px;height:16px"><label for="pm-feat" style="font-size:.82rem;margin:0;font-weight:400">Feature on homepage</label></div>
     <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.25rem">
@@ -1529,9 +1545,43 @@ async function openProdModal(p){
   document.getElementById('pm-badge').value=p?p.badge:'';
   document.getElementById('pm-status').value=p?p.status:'published';
   document.getElementById('pm-feat').checked=p?!!p.feat:false;
+  document.getElementById('pm-img-url').value=p?p.img||''  :'';
+  pmImgPreview(p?p.img||'':'');
   const cats=await getCats();
   document.getElementById('pm-cat').innerHTML=cats.map(c=>`<option value="${c.id}" ${p&&p.cat===c.id?'selected':''}>${c.name}</option>`).join('');
   document.getElementById('prod-modal').style.display='flex';
+}
+
+function pmImgPreview(src){
+  const wrap=document.getElementById('pm-img-preview');
+  const thumb=document.getElementById('pm-img-thumb');
+  if(src&&src.trim()){
+    thumb.src=src.trim();
+    wrap.style.display='block';
+    thumb.onerror=()=>{wrap.style.display='none';};
+    thumb.onload=()=>{wrap.style.display='block';};
+  } else {
+    wrap.style.display='none';
+    thumb.src='';
+  }
+}
+
+function pmImgFileRead(input){
+  const file=input.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const dataUrl=e.target.result;
+    document.getElementById('pm-img-url').value=dataUrl;
+    pmImgPreview(dataUrl);
+  };
+  reader.readAsDataURL(file);
+}
+
+function pmImgClear(){
+  document.getElementById('pm-img-url').value='';
+  document.getElementById('pm-img-file').value='';
+  pmImgPreview('');
 }
 function closeProdModal(){document.getElementById('prod-modal').style.display='none'}
 async function editProd(id){const prods=await getProds();openProdModal(prods.find(p=>p.id===id))}
@@ -1540,7 +1590,7 @@ async function saveProd(){
   const url=document.getElementById('pm-url').value.trim();
   if(!title||!url){alert('Title and URL required.');return}
   const id=document.getElementById('pm-id').value;
-  const prod={id:id||uid(),name:title,price:parseFloat(document.getElementById('pm-price').value)||0,src:document.getElementById('pm-src').value.trim(),url,description:document.getElementById('pm-desc').value.trim(),badge:document.getElementById('pm-badge').value.trim(),cat:document.getElementById('pm-cat').value,status:document.getElementById('pm-status').value,feat:document.getElementById('pm-feat').checked,date:new Date().toISOString().split('T')[0],img:''};
+  const prod={id:id||uid(),name:title,price:parseFloat(document.getElementById('pm-price').value)||0,src:document.getElementById('pm-src').value.trim(),url,description:document.getElementById('pm-desc').value.trim(),badge:document.getElementById('pm-badge').value.trim(),cat:document.getElementById('pm-cat').value,status:document.getElementById('pm-status').value,feat:document.getElementById('pm-feat').checked,date:new Date().toISOString().split('T')[0],img:document.getElementById('pm-img-url').value.trim()};
   if(USE_SUPA){await adminWrite('upsert','products',prod);}
   else{const prods=gs('prods')||[];if(id){const i=prods.findIndex(p=>p.id===id);prods[i]=prod}else prods.unshift(prod);ss('prods',prods);}
   invalidateCache();closeProdModal();await renderAdminProds();
