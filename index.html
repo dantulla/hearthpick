@@ -1383,7 +1383,8 @@ window.addEventListener('load',()=>{ routeFromPath(); });
    COMPONENT HELPERS
 ══════════════════════════════════════════ */
 function injectProductSchema(p){
-  // Safely inject schema via DOM — not via innerHTML (which breaks script tags)
+  // Skip schema if no image — Google rejects Product schema without image
+  if(!p.img||!p.img.trim()) return;
   const s=document.createElement('script');
   s.type='application/ld+json';
   s.text=JSON.stringify({
@@ -1391,7 +1392,7 @@ function injectProductSchema(p){
     '@type':'Product',
     'name':p.name,
     'description':p.desc||p.description||'',
-    'image':p.img||'',
+    'image':p.img,
     'offers':{
       '@type':'Offer',
       'price':p.price,
