@@ -423,12 +423,60 @@ body.dark-mode .mob-nav{background:#1A1814;}
 .lm-btn{background:var(--charcoal);color:white;border:none;padding:.9rem 2.5rem;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:var(--r);transition:background .2s;font-family:var(--fd);}
 .lm-btn:hover{background:var(--terra);}
 .lm-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* ── ANNOUNCEMENT BAR ── */
+#ann-bar{background:var(--terra);color:white;padding:.55rem 3rem .55rem 1.5rem;text-align:center;font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;position:relative;overflow:hidden;z-index:1001;line-height:1.5;}
+#ann-bar a{color:white;text-decoration:underline;text-underline-offset:2px;opacity:.9;}
+#ann-bar a:hover{opacity:1;}
+.ann-close{position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:white;font-size:1.1rem;cursor:pointer;opacity:.6;padding:.1rem .4rem;line-height:1;}
+.ann-close:hover{opacity:1;}
+.ann-msg{display:none;}.ann-msg.active{display:inline;}
+
+/* ── EMAIL POPUP ── */
+#ep-ov{position:fixed;inset:0;background:rgba(30,24,18,.72);z-index:4000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);}
+#ep-ov.open{display:flex;}
+#ep-box{background:var(--linen);max-width:500px;width:100%;position:relative;border-radius:2px;overflow:hidden;animation:epIn .35s cubic-bezier(.22,.68,0,1.2);}
+@keyframes epIn{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ep-visual{background:var(--charcoal);padding:2.5rem 2.5rem 1.5rem;text-align:center;position:relative;}
+.ep-visual::after{content:'✦ ✦ ✦';color:var(--terra-l);font-size:.6rem;letter-spacing:.4em;display:block;margin-top:1rem;opacity:.5;}
+.ep-tag{font-size:.62rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--terra-l);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.75rem;}
+.ep-tag::before,.ep-tag::after{content:'';display:block;width:24px;height:1px;background:var(--terra-l);}
+.ep-title{font-family:var(--fd);font-size:clamp(1.7rem,4vw,2.3rem);font-weight:400;line-height:1.1;color:var(--ivory);}
+.ep-title em{font-style:italic;color:var(--terra-l);}
+.ep-sub{font-size:.82rem;font-weight:300;color:rgba(245,239,230,.5);line-height:1.7;margin-top:.75rem;}
+.ep-form{padding:2rem 2.5rem 2.5rem;}
+.ep-input{width:100%;background:white;border:1px solid var(--ivory-d);padding:.85rem 1.2rem;font-size:.9rem;font-family:var(--fb);color:var(--charcoal);outline:none;border-radius:var(--r);margin-bottom:.7rem;transition:border-color .2s;}
+.ep-input:focus{border-color:var(--terra);}
+.ep-note{font-size:.67rem;color:var(--warm-gray);margin-top:.85rem;text-align:center;}
+.ep-skip{background:none;border:none;font-size:.67rem;color:var(--warm-gray);text-decoration:underline;text-underline-offset:2px;cursor:pointer;margin-top:.5rem;display:block;width:100%;text-align:center;font-family:var(--fb);}
+.ep-skip:hover{color:var(--charcoal);}
+.ep-close{position:absolute;top:.6rem;right:.7rem;background:rgba(255,255,255,.1);border:none;font-size:1.1rem;color:rgba(245,239,230,.6);cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;z-index:2;}
+.ep-close:hover{background:rgba(255,255,255,.2);color:white;}
+
+/* ── PRICE ANCHOR SECTION ── */
+.pa-pill{background:transparent;border:1px solid rgba(245,239,230,.2);color:rgba(245,239,230,.55);padding:.4rem 1.1rem;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;border-radius:20px;cursor:pointer;transition:all .2s;font-family:var(--fb);}
+.pa-pill:hover,.pa-pill.active{background:var(--terra);border-color:var(--terra);color:white;}
+.pa-scroll{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:2.5rem;}
+@media(max-width:900px){.pa-scroll{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.pa-scroll{grid-template-columns:1fr;}}
+
+/* ── TRENDING STRIP ── */
+.trend-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(193,96,58,.15);color:var(--terra);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem;border-radius:20px;border:1px solid rgba(193,96,58,.25);}
+.trend-badge::before{content:'🔥';font-size:.7rem;}
 </style>
 <!-- Google Analytics — replace G-09G3QQB2KM with your real Measurement ID from analytics.google.com -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-09G3QQB2KM"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-09G3QQB2KM');</script>
 </head>
 <body>
+
+<!-- ══ ANNOUNCEMENT BAR ══ -->
+<div id="ann-bar">
+  <span class="ann-msg active" id="ann-0">🔥 New finds dropped this Thursday — <a onclick="goto('shop');return false;" href="#">explore the edit →</a></span>
+  <span class="ann-msg" id="ann-1">✦ Curated from Amazon, Wayfair, IKEA &amp; beyond — no paid placements, ever</span>
+  <span class="ann-msg" id="ann-2">📌 50K+ Pinterest saves — <a href="https://pinterest.com/hearthpick" target="_blank" rel="noopener">Follow us for daily home inspo →</a></span>
+  <button class="ann-close" onclick="this.closest('#ann-bar').remove();updateNavOffset();" title="Dismiss">×</button>
+</div>
 
 <!-- ══ NAV ══ -->
 <nav id="main-nav">
@@ -463,12 +511,19 @@ body.dark-mode .mob-nav{background:#1A1814;}
 <div class="page active" id="page-home">
 <section class="hero">
   <div class="hero-txt">
-    <div class="h-eye">Curated Home Finds</div>
-    <h1 class="h-title">Homes that<br><em>breathe</em><br>beautifully.</h1>
-    <p class="h-sub">We find the pieces that make a house feel like home — sourced from Amazon, Wayfair, IKEA and beyond. No endless scrolling. Just the finds that matter.</p>
+    <div class="h-eye">The Home Finds People Save Obsessively</div>
+    <h1 class="h-title">Your Home<br>Could Look <em>This</em><br>Good.</h1>
+    <p class="h-sub">500+ hand-picked finds from Amazon, Wayfair &amp; IKEA. We obsess over quality, price, and what actually looks expensive. You just shop.</p>
     <div class="h-acts">
-      <button class="btn btn-dark" onclick="goto('shop')">Shop All Finds</button>
-      <button class="btn btn-ghost" onclick="goto('blog')">Read the Edit <span class="arrow">→</span></button>
+      <button class="btn btn-dark" onclick="goto('shop')">See the Finds</button>
+      <button class="btn btn-ghost" onclick="goto('home');setTimeout(()=>document.getElementById('newsletter')?.scrollIntoView({behavior:'smooth'}),300)">Get weekly drops <span class="arrow">→</span></button>
+    </div>
+    <div style="margin-top:2rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+      <span style="font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--warm-gray)">Trusted by</span>
+      <span style="display:flex;gap:.5rem;align-items:center">
+        <span style="background:var(--ivory);border:1px solid var(--ivory-d);border-radius:20px;padding:.25rem .8rem;font-size:.68rem;font-weight:600;color:var(--charcoal)">📌 50K+ Pinterest saves</span>
+        <span style="background:var(--ivory);border:1px solid var(--ivory-d);border-radius:20px;padding:.25rem .8rem;font-size:.68rem;font-weight:600;color:var(--charcoal)">✦ No paid posts</span>
+      </span>
     </div>
   </div>
   <div class="hero-vis">
@@ -490,9 +545,9 @@ body.dark-mode .mob-nav{background:#1A1814;}
 <div class="stats-bar">
   <div class="stats-inner">
     <div class="s-item"><div class="s-num">500+</div><div class="s-lbl">Finds Curated</div></div>
-    <div class="s-item"><div class="s-num">6</div><div class="s-lbl">Room Categories</div></div>
-    <div class="s-item"><div class="s-num">Weekly</div><div class="s-lbl">New Drops</div></div>
-    <div class="s-item"><div class="s-num">100%</div><div class="s-lbl">Honest Reviews</div></div>
+    <div class="s-item"><div class="s-num">50K+</div><div class="s-lbl">Pinterest Saves</div></div>
+    <div class="s-item"><div class="s-num">$0</div><div class="s-lbl">Paid Placements</div></div>
+    <div class="s-item"><div class="s-num">Weekly</div><div class="s-lbl">Fresh Drops</div></div>
   </div>
 </div>
 <section class="sp" style="background:var(--linen)">
@@ -506,10 +561,37 @@ body.dark-mode .mob-nav{background:#1A1814;}
 <section class="sp" style="background:var(--ivory)">
   <div class="container">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-      <div><div class="tag-label">This week's edit</div><h2 class="sec-title" style="margin-top:1rem">Handpicked <em>just for you</em></h2></div>
+      <div>
+        <div class="tag-label">Editor's picks</div>
+        <h2 class="sec-title" style="margin-top:1rem">Finds That Make <em>Guests Ask</em><br>Where You Got It</h2>
+        <p style="font-size:.85rem;color:var(--warm-gray);margin-top:.6rem;font-weight:300;max-width:360px;line-height:1.75">Pieces that look like they cost 3× what they do. Featured this week.</p>
+      </div>
       <button class="btn btn-ghost" onclick="goto('shop')">See all finds <span class="arrow">→</span></button>
     </div>
     <div class="finds-grid" id="home-finds-grid"></div>
+  </div>
+</section>
+
+<!-- PRICE ANCHOR — BUDGET LUXURY SECTION -->
+<section style="background:var(--charcoal);padding:6rem 0;overflow:hidden">
+  <div class="container">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:0">
+      <div>
+        <div class="tag-label" style="color:var(--terra-l)">Budget Luxury</div>
+        <h2 class="sec-title" style="margin-top:.75rem;color:white">Looks <em>Expensive.</em><br>Costs Nothing Like It.</h2>
+        <p style="font-size:.88rem;color:rgba(245,239,230,.45);margin-top:.75rem;font-weight:300;max-width:380px;line-height:1.8">The finds your guests think you splurged on. Filter by what you're actually willing to spend.</p>
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-self:flex-start;margin-top:1rem" id="pa-pills">
+        <button class="pa-pill active" onclick="filterPriceAnchor(this,'all')">All</button>
+        <button class="pa-pill" onclick="filterPriceAnchor(this,'0-25')">Under $25</button>
+        <button class="pa-pill" onclick="filterPriceAnchor(this,'0-50')">Under $50</button>
+        <button class="pa-pill" onclick="filterPriceAnchor(this,'0-100')">Under $100</button>
+      </div>
+    </div>
+    <div class="pa-scroll" id="pa-scroll"></div>
+    <div style="text-align:center;margin-top:2.5rem">
+      <button class="btn btn-ghost" style="color:rgba(245,239,230,.65);font-size:.8rem" onclick="goto('shop')">Browse all finds <span class="arrow">→</span></button>
+    </div>
   </div>
 </section>
 
@@ -518,9 +600,9 @@ body.dark-mode .mob-nav{background:#1A1814;}
   <div class="container">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2.5rem">
       <div>
-        <div class="tag-label">Fresh drops</div>
-        <h2 class="sec-title" style="margin-top:.75rem;color:white">New <em>This Week</em> <span class="ntw-badge">Just In</span></h2>
-        <p style="font-size:.88rem;color:rgba(245,239,230,.55);margin-top:.6rem;font-weight:300">The latest finds added to HearthPick — updated every Thursday.</p>
+        <div class="tag-label" style="color:var(--terra-l)">Just dropped</div>
+        <h2 class="sec-title" style="margin-top:.75rem;color:white">New This Week <span class="ntw-badge">Just In</span></h2>
+        <p style="font-size:.88rem;color:rgba(245,239,230,.45);margin-top:.6rem;font-weight:300;max-width:360px;line-height:1.8">Fresh Thursday drops. These are the ones selling out fast — don't sleep on them.</p>
       </div>
       <button class="btn btn-ghost" style="color:rgba(245,239,230,.7);border-color:rgba(245,239,230,.25)" onclick="goto('shop')">Shop all finds →</button>
     </div>
@@ -531,7 +613,11 @@ body.dark-mode .mob-nav{background:#1A1814;}
 <section class="sp" style="background:var(--linen)">
   <div class="container">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem">
-      <div><div class="tag-label">From the blog</div><h2 class="sec-title" style="margin-top:1rem">The <em>Hearthpick</em> Edit</h2></div>
+      <div>
+        <div class="tag-label">From the blog</div>
+        <h2 class="sec-title" style="margin-top:1rem">The Finds <em>With</em> Context</h2>
+        <p style="font-size:.85rem;color:var(--warm-gray);margin-top:.6rem;font-weight:300;max-width:360px;line-height:1.75">Room breakdowns, styling guides, and why certain pieces make a home feel expensive.</p>
+      </div>
       <button class="btn btn-ghost" onclick="goto('blog')">All articles <span class="arrow">→</span></button>
     </div>
     <div class="blog-grid" id="home-blog-grid"></div>
@@ -539,9 +625,9 @@ body.dark-mode .mob-nav{background:#1A1814;}
 </section>
 <div class="pint-strip">
   <div class="pint-ico"><svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
-  <h2 class="pint-h">Follow us on <em style="font-family:var(--fd);font-style:italic;color:var(--terra)">Pinterest</em></h2>
-  <p class="pint-p">50+ boards. Daily pins. The home inspiration feed you actually want to wake up to.</p>
-  <a id="home-pint-btn" class="btn btn-terra" target="_blank">Follow Hearthpick on Pinterest</a>
+  <h2 class="pint-h">50,000+ Saves on <em style="font-family:var(--fd);font-style:italic;color:var(--terra)">Pinterest</em></h2>
+  <p class="pint-p">50+ boards. Daily pins. The home inspiration feed people keep coming back to — join them.</p>
+  <a id="home-pint-btn" class="btn btn-terra" target="_blank" rel="noopener">Follow Hearthpick on Pinterest →</a>
 </div>
 <div id="home-nl"></div>
 <div id="home-ft"></div>
@@ -1296,11 +1382,11 @@ function renderProdCard(p,i){
 
 function renderBlogCardHtml(post){
   const cat=getCats().find(c=>c.id===post.cat);
-  return`<div class="blog-card" onclick="goto('post','${post.id}')"><div class="blog-img" style="background:${cat?cat.color:'#C5B5A0'}"><span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:rgba(255,255,255,.35)">${cat?cat.name:'Editorial'}</span></div><div class="blog-body"><span class="blog-cat">${cat?cat.name:'Editorial'}</span><h3 class="blog-title">${post.title}</h3><p class="blog-excerpt">${post.excerpt}</p><div class="blog-meta"><span>${post.author}</span><span class="meta-dot"></span><span>${new Date(post.date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span></div></div></div>`;
+  return`<div class="blog-card" onclick="goto('post','${post.slug||post.id}')"><div class="blog-img" style="background:${cat?cat.color:'#C5B5A0'}"><span style="font-family:'Playfair Display',serif;font-size:1.1rem;font-style:italic;color:rgba(255,255,255,.35)">${cat?cat.name:'Editorial'}</span></div><div class="blog-body"><span class="blog-cat">${cat?cat.name:'Editorial'}</span><h3 class="blog-title">${post.title}</h3><p class="blog-excerpt">${post.excerpt}</p><div class="blog-meta"><span>${post.author}</span><span class="meta-dot"></span><span>${new Date(post.date).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span></div></div></div>`;
 }
 
 function renderNewsletter(){
-  return`<section class="nl-wrap" id="newsletter"><div class="container"><div class="nl-inner"><div><div class="nl-eye">The Weekly Edit</div><h2 class="nl-title">Get the <em>best finds</em><br>before everyone else.</h2><p class="nl-desc">Every Thursday — 5 hand-picked home finds, exclusive deals, one styling tip, and the one piece worth splurging on this week.</p></div><div><div class="nl-form"><div id="nl-msg" style="display:none"></div><input type="text" class="nl-input" id="nl-name" placeholder="Your first name"><input type="email" class="nl-input" id="nl-email" placeholder="Your email address"><button class="btn btn-terra" onclick="subscribe()" style="align-self:flex-start">Subscribe — it's free</button><p class="nl-note">No spam. Unsubscribe anytime.</p></div></div></div></div></section>`;
+  return`<section class="nl-wrap" id="newsletter"><div class="container"><div class="nl-inner"><div><div class="nl-eye">The Thursday Edit</div><h2 class="nl-title">The $30 Finds<br>That Look Like <em>$300.</em></h2><p class="nl-desc">Every Thursday — 5 obsessively curated home finds that make your home look expensive, cost nothing like it, and sell out fast. Subscribers get first access.</p><div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:.5rem"><div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:rgba(245,239,230,.5);font-weight:300"><span style="color:var(--terra-l);font-size:.8rem">✓</span> No sponsored posts. No filler. Ever.</div><div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:rgba(245,239,230,.5);font-weight:300"><span style="color:var(--terra-l);font-size:.8rem">✓</span> One styling tip that changes everything.</div><div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;color:rgba(245,239,230,.5);font-weight:300"><span style="color:var(--terra-l);font-size:.8rem">✓</span> The splurge-worthy pick of the week.</div></div></div><div><div class="nl-form"><div id="nl-msg" style="display:none"></div><input type="text" class="nl-input" id="nl-name" placeholder="Your first name" autocomplete="given-name"><input type="email" class="nl-input" id="nl-email" placeholder="Email address" autocomplete="email"><button class="btn btn-terra" onclick="subscribe()" style="align-self:flex-start">Get My Thursday Finds</button><p class="nl-note">Join free. Unsubscribe any time. We hate spam as much as you do.</p></div></div></div></div></section>`;
 }
 
 function renderFooterHtml(){
@@ -1328,7 +1414,7 @@ async function renderHome(){
     url:'home'
   });
   // marquee
-  const mqItems=['Amazon Finds','Wayfair Picks','IKEA Hacks','Budget Style','Cozy Living','Home Refresh','Trending Décor','Pinned & Loved'];
+  const mqItems=['Amazon Finds That Look $$$','Looks Expensive · Isn\'t','Interior Secrets Revealed','Budget Luxury Finds','No Paid Placements. Ever','Curated By Obsessives','Your Home Upgrade Starts Here','50K+ Pinterest Saves'];
   const t=[...mqItems,...mqItems];
   document.getElementById('mq').innerHTML=t.map(i=>`<span class="mq-item"><span class="mq-dot"></span>${i}</span>`).join('');
   // cat grid
@@ -1341,6 +1427,8 @@ async function renderHome(){
   document.getElementById('home-blog-grid').innerHTML=(await getPosts({status:'published'})).slice(0,3).map(p=>renderBlogCardHtml(p)).join('');
   // New This Week strip
   renderNewThisWeek();
+  // Price Anchor section
+  renderPriceAnchor();
   // pinterest
   const pb=document.getElementById('home-pint-btn');
   if(pb)pb.href=cfg.pin||'#';
@@ -1432,7 +1520,7 @@ async function renderBlogGrid(){
 
 async function renderPostPage(id){
   const posts=await getPosts();
-  const post=posts.find(p=>p.id===id);
+  const post=posts.find(p=>p.slug===id)||posts.find(p=>p.id===id);
   if(!post){document.getElementById('post-content-el').innerHTML='<p>Post not found.</p>';return}
   document.title=post.title+' — Hearthpick';
   const cats=await getCats();
@@ -1440,7 +1528,7 @@ async function renderPostPage(id){
   updateSEO({
     title:post.title,
     desc:post.excerpt,
-    url:'post/'+post.id,
+    url:'post/'+(post.slug||post.id),
     type:'article',
     schema:{
       '@context':'https://schema.org',
@@ -1450,7 +1538,7 @@ async function renderPostPage(id){
       'author':{'@type':'Organization','name':'Hearthpick'},
       'publisher':{'@type':'Organization','name':'Hearthpick','url':BASE_URL},
       'datePublished':post.date,
-      'url':BASE_URL+'#post/'+post.id
+      'url':BASE_URL+'post/'+(post.slug||post.id)
     }
   });
   document.getElementById('post-bc').textContent=post.title.substring(0,40)+'…';
@@ -2380,6 +2468,109 @@ document.addEventListener('mouseout',e=>{
   if(card){const t=card.querySelector('.qv-trigger');if(t)t.style.opacity='0';}
 });
 
+// ── ANNOUNCEMENT BAR NAV OFFSET ──
+function updateNavOffset(){
+  const bar=document.getElementById('ann-bar');
+  const nav=document.getElementById('main-nav');
+  if(!nav)return;
+  const bh=bar?bar.offsetHeight:0;
+  nav.style.top=bh+'px';
+  document.documentElement.style.setProperty('--nav-offset',(70+bh)+'px');
+}
+updateNavOffset();
+window.addEventListener('resize',updateNavOffset);
+// Recheck after bar dismissed
+const _origAnnRemove=HTMLElement.prototype.remove;
+
+
+(function(){
+  const msgs=document.querySelectorAll('.ann-msg');
+  if(!msgs.length)return;
+  let cur=0;
+  setInterval(()=>{
+    msgs[cur].classList.remove('active');
+    cur=(cur+1)%msgs.length;
+    msgs[cur].classList.add('active');
+  },4500);
+})();
+
+// ── EMAIL POPUP ──
+function closeEmailPopup(){
+  const ov=document.getElementById('ep-ov');
+  if(ov){ov.classList.remove('open');document.body.style.overflow='';}
+  try{localStorage.setItem('hp_popup_dismissed',Date.now());}catch(e){}
+}
+function showEmailPopup(){
+  try{
+    const dismissed=localStorage.getItem('hp_popup_dismissed');
+    if(dismissed&&(Date.now()-parseInt(dismissed))<7*24*60*60*1000)return;
+    const subscribed=localStorage.getItem('hp_subscribed');
+    if(subscribed)return;
+  }catch(e){}
+  const ov=document.getElementById('ep-ov');
+  if(!ov||ov.classList.contains('open'))return;
+  if(document.getElementById('page-admin')?.classList.contains('active'))return;
+  ov.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+async function popupSubscribe(){
+  const name=(document.getElementById('ep-name')?.value||'').trim();
+  const email=(document.getElementById('ep-email')?.value||'').trim();
+  const msg=document.getElementById('ep-msg');
+  const btn=document.getElementById('ep-btn');
+  if(!email||!email.includes('@')||!email.includes('.')){
+    msg.style.display='block';msg.className='alert a-err';msg.textContent='Please enter a valid email address.';return;
+  }
+  if(btn){btn.disabled=true;btn.textContent='Subscribing…';}
+  try{
+    const subs=JSON.parse(localStorage.getItem('hp_subs')||'[]');
+    if(subs.find(s=>s.email===email)){
+      msg.style.display='block';msg.className='alert a-inf';msg.textContent="You're already on the list — see you Thursday!";
+    }else{
+      subs.push({id:'sub_'+Date.now(),name,email,date:new Date().toISOString(),src:'popup'});
+      localStorage.setItem('hp_subs',JSON.stringify(subs));
+      localStorage.setItem('hp_subscribed','1');
+      msg.style.display='block';msg.className='alert a-ok';msg.textContent='You\'re in! First edit lands this Thursday.';
+      const skipBtn=document.querySelector('.ep-skip');
+      if(skipBtn)skipBtn.textContent='Close';
+      if(btn)btn.style.display='none';
+    }
+  }catch(e){
+    msg.style.display='block';msg.className='alert a-err';msg.textContent='Something went wrong. Please try again.';
+  }
+  if(btn){btn.disabled=false;btn.textContent='Yes — Send Me the Finds';}
+}
+// Trigger: 9s delay + exit intent
+setTimeout(()=>showEmailPopup(),9000);
+let _exitFired=false;
+document.addEventListener('mouseleave',e=>{
+  if(e.clientY<5&&!_exitFired){_exitFired=true;showEmailPopup();}
+});
+
+// ── PRICE ANCHOR SECTION ──
+let _paAllProds=[];
+async function renderPriceAnchor(){
+  const grid=document.getElementById('pa-scroll');
+  if(!grid)return;
+  _paAllProds=await getProds({status:'published'});
+  _paAllProds.sort((a,b)=>a.price-b.price);
+  grid.innerHTML=_paAllProds.slice(0,8).map((p,i)=>renderProdCard(p,i)).join('');
+}
+function filterPriceAnchor(btn,range){
+  document.querySelectorAll('.pa-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  const grid=document.getElementById('pa-scroll');
+  if(!grid)return;
+  let prods=[..._paAllProds];
+  if(range!=='all'){
+    const[mn,mx]=range.split('-').map(Number);
+    prods=prods.filter(p=>p.price>=mn&&p.price<=mx);
+  }
+  grid.innerHTML=prods.slice(0,8).map((p,i)=>renderProdCard(p,i)).join('');
+}
+
+
+
 // ── LOAD MORE (patch renderShop) ──
 let _shopAllProds=[];
 let _shopPage=1;
@@ -2442,16 +2633,32 @@ async function renderNewThisWeek(){
   }).join('');
 }
 
-// ── PATCH renderProdCard TO ADD QUICK VIEW BUTTON ──
+// ── PATCH renderProdCard TO ADD QUICK VIEW + PINTEREST SAVE BUTTON ──
 const _origRPC=window.renderProdCard;
 window.renderProdCard=function(p,i){
   const card=_origRPC(p,i);
-  // Inject Quick View button into card-img div
+  // Inject Quick View + Pinterest Save into card-img div
   return card.replace(
     /(<div class="card-img">)/,
-    `$1<button class="qv-trigger" onclick="event.preventDefault();event.stopPropagation();openQV('${p.id}')" style="position:absolute;bottom:10px;right:10px;background:rgba(255,253,249,.95);border:none;border-radius:4px;padding:5px 11px;font-size:.68rem;font-weight:600;letter-spacing:.07em;cursor:pointer;color:var(--charcoal);text-transform:uppercase;opacity:0;transition:opacity .2s;z-index:5;">Quick View</button>`
+    `$1<button class="qv-trigger" onclick="event.preventDefault();event.stopPropagation();openQV('${p.id}')" style="position:absolute;bottom:10px;right:10px;background:rgba(255,253,249,.95);border:none;border-radius:4px;padding:5px 11px;font-size:.68rem;font-weight:600;letter-spacing:.07em;cursor:pointer;color:var(--charcoal);text-transform:uppercase;opacity:0;transition:opacity .2s;z-index:5;">Quick View</button><a href="https://pinterest.com/pin/create/button/?url=${encodeURIComponent('https://hearthpick.netlify.app/')}&description=${encodeURIComponent(p.name+' — via Hearthpick')}" target="_blank" rel="noopener" title="Save to Pinterest" onclick="event.stopPropagation()" style="position:absolute;top:10px;right:10px;background:#E60023;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;z-index:5;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></a>`
   );
 };
+
+// Show Pinterest button on hover alongside QV
+document.addEventListener('mouseover',e=>{
+  const card=e.target.closest('.product-card');
+  if(card){
+    const t=card.querySelector('.qv-trigger');if(t)t.style.opacity='1';
+    const pins=card.querySelectorAll('a[href*="pinterest.com/pin"]');pins.forEach(p=>p.style.opacity='1');
+  }
+});
+document.addEventListener('mouseout',e=>{
+  const card=e.target.closest('.product-card');
+  if(card){
+    const t=card.querySelector('.qv-trigger');if(t)t.style.opacity='0';
+    const pins=card.querySelectorAll('a[href*="pinterest.com/pin"]');pins.forEach(p=>p.style.opacity='0');
+  }
+});
 
 </script>
 <!-- QUICK VIEW MODAL -->
@@ -2468,6 +2675,26 @@ window.renderProdCard=function(p,i){
       <div class="qv-actions">
         <a id="qv-link" class="qv-shop" href="#" target="_blank" rel="noopener sponsored">Shop Now →</a>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL CAPTURE POPUP -->
+<div id="ep-ov" onclick="if(event.target===this)closeEmailPopup()">
+  <div id="ep-box">
+    <div class="ep-visual">
+      <button class="ep-close" onclick="closeEmailPopup()" title="Close">×</button>
+      <div class="ep-tag">The Weekly Edit</div>
+      <h2 class="ep-title">Your Home Could Look<br><em>This Good</em> for $30.</h2>
+      <p class="ep-sub">5 hand-picked finds every Thursday. The ones that sell out fast — in your inbox first.</p>
+    </div>
+    <div class="ep-form">
+      <div id="ep-msg" style="display:none;margin-bottom:1rem"></div>
+      <input type="text" class="ep-input" id="ep-name" placeholder="Your first name" autocomplete="given-name">
+      <input type="email" class="ep-input" id="ep-email" placeholder="Email address" autocomplete="email">
+      <button class="btn btn-terra" id="ep-btn" onclick="popupSubscribe()" style="width:100%;justify-content:center">Yes — Send Me the Finds</button>
+      <p class="ep-note">No spam. Unsubscribe any time. We hate fluff as much as you do.</p>
+      <button class="ep-skip" onclick="closeEmailPopup()">No thanks, my home is already perfect</button>
     </div>
   </div>
 </div>
