@@ -2062,35 +2062,20 @@ function eImg(){
 }
 async function eProduct(){
   const prods=await getProds({status:'published'});
-  // Remove any existing picker
   let existing=document.getElementById('prod-picker');
   if(existing)existing.remove();
-  // Create picker and append to BODY — completely outside modal stacking context
   const picker=document.createElement('div');
   picker.id='prod-picker';
-  picker.setAttribute('style','position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;width:100vw !important;height:100vh !important;background:rgba(44,40,37,.75) !important;z-index:99999 !important;display:flex !important;align-items:center !important;justify-content:center !important');
-  // Build inner HTML
+  picker.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(44,40,37,.75);z-index:99999;display:flex;align-items:center;justify-content:center';
   const inner=document.createElement('div');
-  inner.setAttribute('style','background:white;border-radius:8px;padding:1.5rem;width:540px;max-width:95vw;max-height:80vh;overflow-y:auto;position:relative;z-index:100000');
-  inner.innerHTML=`
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-      <strong style="font-family:'Playfair Display',serif;font-size:1.1rem">Pick an Amazon Product</strong>
-      <button id="prod-picker-close" style="background:none;border:none;font-size:1.6rem;cursor:pointer;line-height:1;color:#9B8F85">×</button>
-    </div>
-    ${prods.map(p=>`
-    <div data-pid="${p.id}" class="ppick-item" style="display:flex;align-items:center;gap:1rem;padding:.75rem;border:1px solid #EDE3D5;margin-bottom:.5rem;cursor:pointer;border-radius:4px;background:white">
-      ${p.img?`<img src="${p.img}" style="width:52px;height:52px;object-fit:cover;border-radius:3px;flex-shrink:0">`:`<div style="width:52px;height:52px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>`}
-      <div><div style="font-weight:500;font-size:.85rem;margin-bottom:.2rem">${p.name}</div><div style="font-size:.75rem;color:#C1603A;font-weight:600">$${p.price} · ${p.src||'Amazon'}</div></div>
-    </div>`).join('')}
-  `;
+  inner.style.cssText='background:white;border-radius:8px;padding:1.5rem;width:540px;max-width:95vw;max-height:80vh;overflow-y:auto';
+  inner.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem"><strong style="font-family:var(--fd)">Pick an Amazon Product</strong><button id="prod-picker-close" style="background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--warm-gray)">×</button></div>`+prods.map(p=>`<div data-pid="${p.id}" class="ppick-item" style="display:flex;align-items:center;gap:1rem;padding:.75rem;border:1px solid var(--ivory-d);margin-bottom:.5rem;cursor:pointer;border-radius:4px;background:white">${p.img?`<img src="${p.img}" style="width:52px;height:52px;object-fit:cover;border-radius:3px;flex-shrink:0" alt="${p.name}">`:`<div style="width:52px;height:52px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>`}<div><div style="font-weight:500;font-size:.85rem;margin-bottom:.2rem">${p.name}</div><div style="font-size:.75rem;color:var(--terra);font-weight:600">$${p.price} · ${p.src||'Amazon'}</div></div></div>`).join('');
   picker.appendChild(inner);
   document.body.appendChild(picker);
-  // Close on backdrop click
   picker.addEventListener('click',function(e){if(e.target===picker)picker.remove();});
   document.getElementById('prod-picker-close').addEventListener('click',function(){picker.remove();});
-  // Item click handlers
   inner.querySelectorAll('.ppick-item').forEach(function(el){
-    el.addEventListener('mouseover',function(){el.style.background='#FAF7F2';});
+    el.addEventListener('mouseover',function(){el.style.background='var(--linen)';});
     el.addEventListener('mouseout',function(){el.style.background='white';});
     el.addEventListener('click',function(){insertProduct(el.dataset.pid);});
   });
@@ -2101,48 +2086,31 @@ async function insertProduct(id){
   const p=prods.find(x=>x.id===id);
   if(!p)return;
   const editor=document.getElementById('bm-editor');
-
-  // Create the product card as a real DOM element
-  const wrapper=document.createElement('div');
-  wrapper.contentEditable='false'; // make entire card non-editable so cursor can't get stuck inside
-  wrapper.style.cssText='border:1px solid #EDE3D5;border-radius:4px;padding:1rem;margin:1.5rem 0;display:flex;gap:1rem;align-items:center;background:#FAF7F2;user-select:none';
-  wrapper.innerHTML=`
-    ${p.img?`<img src="${p.img}" style="width:60px;height:60px;object-fit:cover;border-radius:3px;flex-shrink:0" alt="${p.name}">`:`<div style="width:60px;height:60px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>`}
-    <div style="flex:1">
-      <div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">${p.name}</div>
-      <div style="font-size:.8rem;color:#9B8F85;margin-bottom:.5rem">${p.description||p.desc||''}</div>
-      <a href="${p.url}" target="_blank" rel="noopener sponsored" style="display:inline-block;background:#C1603A;color:white;padding:.3rem .8rem;border-radius:3px;font-size:.75rem;font-weight:600;text-decoration:none">Shop on Amazon — $${p.price}</a>
-    </div>`;
-
-  // Create a paragraph AFTER the card so cursor has somewhere to go
+  // Card — contentEditable false so cursor cannot get stuck inside
+  const card=document.createElement('div');
+  card.contentEditable='false';
+  card.style.cssText='border:1px solid #EDE3D5;border-radius:4px;padding:1rem;margin:1.5rem 0;display:flex;gap:1rem;align-items:flex-start;background:#FAF7F2;user-select:none';
+  card.innerHTML=`${p.img?`<img src="${p.img}" style="width:64px;height:64px;object-fit:cover;border-radius:3px;flex-shrink:0" alt="${p.name}">`:`<div style="width:64px;height:64px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>`}<div style="flex:1"><div style="font-weight:600;font-size:.9rem;margin-bottom:.25rem">${p.name}</div><div style="font-size:.8rem;color:#9B8F85;margin-bottom:.6rem">${p.description||p.desc||''}</div><a href="${p.url}" target="_blank" rel="noopener sponsored" style="display:inline-block;background:#C1603A;color:white;padding:.3rem .85rem;border-radius:3px;font-size:.75rem;font-weight:600;text-decoration:none">Shop on Amazon — $${p.price}</a></div>`;
+  // Empty paragraph after card — cursor lands here
   const after=document.createElement('p');
-  after.innerHTML='<br>';
-
-  // Insert at cursor position or append to editor
+  after.innerHTML='&#8203;';
   editor.focus();
   const sel=window.getSelection();
   if(sel&&sel.rangeCount>0){
     const range=sel.getRangeAt(0);
-    // Move to end of current block
     range.collapse(false);
     range.insertNode(after);
-    range.insertNode(wrapper);
-    // Place cursor in the paragraph after the card
-    const newRange=document.createRange();
-    newRange.setStart(after,0);
-    newRange.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(newRange);
+    range.insertNode(card);
   } else {
-    editor.appendChild(wrapper);
+    editor.appendChild(card);
     editor.appendChild(after);
-    // Place cursor after
-    const newRange=document.createRange();
-    newRange.setStart(after,0);
-    newRange.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(newRange);
   }
+  // Move cursor to after paragraph
+  const newRange=document.createRange();
+  newRange.setStartAfter(after);
+  newRange.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(newRange);
   syncEditor();
 }
 
