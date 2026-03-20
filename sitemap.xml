@@ -3,83 +3,83 @@
 
   <!-- Static Pages -->
   <url>
-    <loc>https://hearthpick.netlify.app/</loc>
+    <loc>https://hearthpick.vercel.app/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/blog</loc>
+    <loc>https://hearthpick.vercel.app/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/shop</loc>
+    <loc>https://hearthpick.vercel.app/shop</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/about</loc>
+    <loc>https://hearthpick.vercel.app/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <!-- Category Pages -->
   <url>
-    <loc>https://hearthpick.netlify.app/category/c1</loc>
+    <loc>https://hearthpick.vercel.app/category/c1</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/category/c2</loc>
+    <loc>https://hearthpick.vercel.app/category/c2</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/category/c3</loc>
+    <loc>https://hearthpick.vercel.app/category/c3</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/category/c4</loc>
+    <loc>https://hearthpick.vercel.app/category/c4</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/category/c5</loc>
+    <loc>https://hearthpick.vercel.app/category/c5</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/category/c6</loc>
+    <loc>https://hearthpick.vercel.app/category/c6</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Blog Posts -->
   <url>
-    <loc>https://hearthpick.netlify.app/post/amazon-finds-under-50</loc>
+    <loc>https://hearthpick.vercel.app/post/amazon-finds-under-50</loc>
     <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/post/japandi-bedroom-guide</loc>
+    <loc>https://hearthpick.vercel.app/post/japandi-bedroom-guide</loc>
     <lastmod>2026-03-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://hearthpick.netlify.app/post/how-we-curate</loc>
+    <loc>https://hearthpick.vercel.app/post/how-we-curate</loc>
     <lastmod>2026-03-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
