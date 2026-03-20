@@ -16,21 +16,21 @@
 <meta name="robots" content="index, follow">
 <meta name="google-site-verification" content="0DxPEw-CKQmYlOk0tA-yYCZVX04pMvRh0Mk2clGxNdI">
 <meta name="p:domain_verify" content="15d2ad3180e11ae007e619813b40b7df">
-<link rel="canonical" id="canonical-url" href="https://hearthpick.netlify.app/">
+<link rel="canonical" id="canonical-url" href="https://hearthpick.vercel.app/">
 
 <!-- OpenGraph (Facebook, Pinterest, WhatsApp) -->
 <meta property="og:type" content="website" id="og-type">
 <meta property="og:site_name" content="Hearthpick">
-<meta property="og:url" content="https://hearthpick.netlify.app/" id="og-url">
+<meta property="og:url" content="https://hearthpick.vercel.app/" id="og-url">
 <meta property="og:title" content="Hearthpick — Curated Home Finds" id="og-title">
 <meta property="og:description" content="Handpicked home finds from Amazon. Honest curation, real prices." id="og-desc">
-<meta property="og:image" content="https://hearthpick.netlify.app/og-image.jpg" id="og-image">
+<meta property="og:image" content="https://hearthpick.vercel.app/og-image.jpg" id="og-image">
 
 <!-- Twitter / X Cards -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Hearthpick — Curated Home Finds" id="tw-title">
 <meta name="twitter:description" content="Handpicked home finds from Amazon." id="tw-desc">
-<meta name="twitter:image" content="https://hearthpick.netlify.app/og-image.jpg" id="tw-image">
+<meta name="twitter:image" content="https://hearthpick.vercel.app/og-image.jpg" id="tw-image">
 
 <!-- Pinterest verification (add your code from Pinterest after claiming site) -->
 <!-- <meta name="p:domain_verify" content="YOUR_PINTEREST_CODE"/> -->
@@ -41,7 +41,7 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Hearthpick",
-  "url": "https://hearthpick.netlify.app/",
+  "url": "https://hearthpick.vercel.app/",
   "description": "Curated home finds and Amazon product recommendations",
   "sameAs": ["https://pinterest.com/hearthpick"]
 }
@@ -1064,7 +1064,8 @@ body.dark-mode .mob-nav{background:#1A1814;}
   <div style="background:white;padding:2rem;width:700px;max-width:95%;max-height:90vh;overflow-y:auto;border-radius:6px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem"><h3 id="post-modal-title" style="font-family:var(--fd);font-size:1.2rem;font-weight:500">New Blog Post</h3><button onclick="closePostModal()" style="background:none;border:none;font-size:1.5rem;cursor:pointer;color:var(--warm-gray)">×</button></div>
     <input type="hidden" id="bm-id">
-    <div class="fg"><label>Title *</label><input class="fi" id="bm-title" placeholder="10 Amazon Home Finds Under $50…"></div>
+    <div class="fg"><label>Title *</label><input class="fi" id="bm-title" placeholder="10 Amazon Home Finds Under $50…" oninput="document.getElementById('bm-slug').value=slug(this.value);document.getElementById('bm-slug-preview').textContent=slug(this.value)||'your-slug'"></div>
+    <div class="fg"><label>Slug (URL)</label><input class="fi" id="bm-slug" placeholder="amazon-home-finds-under-50" style="font-family:monospace;font-size:.82rem" oninput="document.getElementById('bm-slug-preview').textContent=this.value||'your-slug'"><span style="font-size:.72rem;color:var(--warm-gray);margin-top:.3rem;display:block">hearthpick.vercel.app/post/<span id="bm-slug-preview">your-slug</span></span></div>
     <div class="frow"><div class="fg"><label>Category</label><select class="fs" id="bm-cat"></select></div><div class="fg"><label>Status</label><select class="fs" id="bm-status"><option value="published">Published</option><option value="draft">Draft</option></select></div></div>
     <div class="fg"><label>Excerpt</label><textarea class="ft" id="bm-excerpt" style="min-height:72px" placeholder="Short summary…"></textarea></div>
     <div class="fg"><label>Content</label>
@@ -1187,7 +1188,7 @@ const sb = {
 /* ══════════════════════════════════════════
    FALLBACK SEED (used if Supabase not configured)
 ══════════════════════════════════════════ */
-const BASE_URL='https://hearthpick.netlify.app/';
+const BASE_URL='https://hearthpick.vercel.app/';
 const DEFAULT_IMG=BASE_URL+'og-image.jpg';
 
 function updateSEO({title, desc, url, img, type='website', schema=null}={}){
@@ -1865,6 +1866,8 @@ async function deleteProd(id){
 // ── POST CRUD ──
 async function openPostModal(p){
   document.getElementById('post-modal-title').textContent=p?'Edit Post':'New Blog Post';
+  document.getElementById('bm-slug').value=p?p.slug||slug(p.title||''):'';
+  document.getElementById('bm-slug-preview').textContent=p?p.slug||slug(p.title||''):'your-slug';
   document.getElementById('bm-id').value=p?p.id:'';
   document.getElementById('bm-title').value=p?p.title:'';
   document.getElementById('bm-excerpt').value=p?p.excerpt:'';
@@ -1884,7 +1887,8 @@ async function savePost(){
   const title=document.getElementById('bm-title').value.trim();
   if(!title){alert('Title required.');return}
   const id=document.getElementById('bm-id').value;
-  const post={id:id||uid(),title,slug:slug(title),excerpt:document.getElementById('bm-excerpt').value.trim(),content:document.getElementById('bm-content').value.trim(),cat:document.getElementById('bm-cat').value,status:document.getElementById('bm-status').value,feat:document.getElementById('bm-feat').checked,author:'Hearthpick Editorial',date:new Date().toISOString().split('T')[0],tags:''};
+  const postSlug=document.getElementById('bm-slug').value.trim()||slug(title);
+  const post={id:id||uid(),title,slug:postSlug,excerpt:document.getElementById('bm-excerpt').value.trim(),content:document.getElementById('bm-content').value.trim(),cat:document.getElementById('bm-cat').value,status:document.getElementById('bm-status').value,feat:document.getElementById('bm-feat').checked,author:'Hearthpick Editorial',date:new Date().toISOString().split('T')[0],tags:''};
   if(USE_SUPA){await adminWrite('upsert','posts',post);}
   else{const posts=gs('posts')||[];if(id){const i=posts.findIndex(p=>p.id===id);posts[i]=post}else posts.unshift(post);ss('posts',posts);}
   invalidateCache();closePostModal();await renderAdminPosts();
@@ -2671,7 +2675,7 @@ window.renderProdCard=function(p,i){
   // Inject Quick View + Pinterest Save into card-img div
   return card.replace(
     /(<div class="card-img">)/,
-    `$1<button class="qv-trigger" onclick="event.preventDefault();event.stopPropagation();openQV('${p.id}')" style="position:absolute;bottom:10px;right:10px;background:rgba(255,253,249,.95);border:none;border-radius:4px;padding:5px 11px;font-size:.68rem;font-weight:600;letter-spacing:.07em;cursor:pointer;color:var(--charcoal);text-transform:uppercase;opacity:0;transition:opacity .2s;z-index:5;">Quick View</button><a href="https://pinterest.com/pin/create/button/?url=${encodeURIComponent('https://hearthpick.netlify.app/')}&description=${encodeURIComponent(p.name+' — via Hearthpick')}" target="_blank" rel="noopener" title="Save to Pinterest" onclick="event.stopPropagation()" style="position:absolute;top:10px;right:10px;background:#E60023;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;z-index:5;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></a>`
+    `$1<button class="qv-trigger" onclick="event.preventDefault();event.stopPropagation();openQV('${p.id}')" style="position:absolute;bottom:10px;right:10px;background:rgba(255,253,249,.95);border:none;border-radius:4px;padding:5px 11px;font-size:.68rem;font-weight:600;letter-spacing:.07em;cursor:pointer;color:var(--charcoal);text-transform:uppercase;opacity:0;transition:opacity .2s;z-index:5;">Quick View</button><a href="https://pinterest.com/pin/create/button/?url=${encodeURIComponent('https://hearthpick.vercel.app/')}&description=${encodeURIComponent(p.name+' — via Hearthpick')}" target="_blank" rel="noopener" title="Save to Pinterest" onclick="event.stopPropagation()" style="position:absolute;top:10px;right:10px;background:#E60023;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;z-index:5;text-decoration:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></a>`
   );
 };
 
