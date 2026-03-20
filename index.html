@@ -1385,7 +1385,40 @@ window.addEventListener('load',()=>{ routeFromPath(); });
 function renderProdCard(p,i){
   const color=pc(i);
   const imgHtml=p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy">`:`<div style="position:absolute;inset:0;background:${color};display:flex;align-items:center;justify-content:center"><span style="font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:rgba(44,40,37,.35)">${catName(p.cat)}</span></div>`;
-  return`<div class="product-card"><div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div><div class="card-body"><div class="card-source">${p.src}</div><div class="card-name">${p.name}</div><div class="card-desc">${p.desc||p.description}</div><div class="card-footer"><div class="card-price">$${p.price}</div><a href="${p.url}" target="_blank" rel="noopener sponsored" class="card-cta">Shop Now →</a></div></div></div>`;
+  // Product schema — enables rich snippets in Google
+  const schema={
+    '@context':'https://schema.org',
+    '@type':'Product',
+    'name':p.name,
+    'description':p.desc||p.description||'',
+    'image':p.img||'',
+    'offers':{
+      '@type':'Offer',
+      'price':p.price,
+      'priceCurrency':'USD',
+      'availability':'https://schema.org/InStock',
+      'seller':{'@type':'Organization','name':p.src||'Amazon'},
+      'url':p.url||''
+    },
+    'brand':{'@type':'Brand','name':p.src||'Amazon'}
+  };
+  return`<div class="product-card" itemscope itemtype="https://schema.org/Product">
+    <script type="application/ld+json">${JSON.stringify(schema)}</script>
+    <div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div>
+    <div class="card-body">
+      <div class="card-source" itemprop="brand">${p.src}</div>
+      <div class="card-name" itemprop="name">${p.name}</div>
+      <div class="card-desc" itemprop="description">${p.desc||p.description}</div>
+      <div class="card-footer">
+        <div class="card-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+          <span itemprop="price" content="${p.price}">$${p.price}</span>
+          <meta itemprop="priceCurrency" content="USD">
+          <meta itemprop="availability" content="https://schema.org/InStock">
+        </div>
+        <a href="${p.url}" target="_blank" rel="noopener sponsored" class="card-cta" itemprop="url">Shop Now →</a>
+      </div>
+    </div>
+  </div>`;
 }
 
 function renderBlogCardHtml(post){
@@ -1543,10 +1576,18 @@ async function renderPostPage(id){
       '@type':'Article',
       'headline':post.title,
       'description':post.excerpt,
-      'author':{'@type':'Organization','name':'Hearthpick'},
-      'publisher':{'@type':'Organization','name':'Hearthpick','url':BASE_URL},
+      'author':{'@type':'Organization','name':'Hearthpick','url':BASE_URL},
+      'publisher':{
+        '@type':'Organization',
+        'name':'Hearthpick',
+        'url':BASE_URL,
+        'logo':{'@type':'ImageObject','url':BASE_URL+'og-image.jpg'}
+      },
       'datePublished':post.date,
-      'url':BASE_URL+'post/'+(post.slug||post.id)
+      'dateModified':post.date,
+      'mainEntityOfPage':{'@type':'WebPage','@id':BASE_URL+'post/'+(post.slug||post.id)},
+      'url':BASE_URL+'post/'+(post.slug||post.id),
+      'keywords':(post.tags||'').split(',').map(t=>t.trim()).join(',')
     }
   });
   document.getElementById('post-bc').textContent=post.title.substring(0,40)+'…';
