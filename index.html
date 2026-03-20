@@ -2067,7 +2067,7 @@ async function eProduct(){
   if(existing)existing.remove();
   const picker=document.createElement('div');
   picker.id='prod-picker';
-  picker.style.cssText='position:fixed;inset:0;background:rgba(44,40,37,.6);z-index:3000;display:flex;align-items:center;justify-content:center';
+  picker.style.cssText='position:fixed;inset:0;background:rgba(44,40,37,.6);z-index:9999;display:flex;align-items:center;justify-content:center';
   picker.innerHTML=`<div style="background:white;border-radius:6px;padding:1.5rem;width:520px;max-width:95%;max-height:80vh;overflow-y:auto">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
       <strong style="font-family:var(--fd)">Pick an Amazon Product</strong>
