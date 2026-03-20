@@ -2100,12 +2100,49 @@ async function insertProduct(id){
   const prods=await getProds();
   const p=prods.find(x=>x.id===id);
   if(!p)return;
-  const html=`<div style="border:1px solid #EDE3D5;border-radius:4px;padding:1rem;margin:1.5rem 0;display:flex;gap:1rem;align-items:center;background:#FAF7F2">
-    <div style="width:60px;height:60px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>
-    <div style="flex:1"><div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">${p.name}</div><div style="font-size:.8rem;color:#9B8F85;margin-bottom:.5rem">${p.description||p.desc||''}</div><a href="${p.url}" target="_blank" rel="noopener sponsored" style="display:inline-block;background:#C1603A;color:white;padding:.3rem .8rem;border-radius:3px;font-size:.75rem;font-weight:600;text-decoration:none">Shop on Amazon — $${p.price}</a></div>
-  </div>`;
-  document.getElementById('bm-editor').focus();
-  document.execCommand('insertHTML',false,html);
+  const editor=document.getElementById('bm-editor');
+
+  // Create the product card as a real DOM element
+  const wrapper=document.createElement('div');
+  wrapper.contentEditable='false'; // make entire card non-editable so cursor can't get stuck inside
+  wrapper.style.cssText='border:1px solid #EDE3D5;border-radius:4px;padding:1rem;margin:1.5rem 0;display:flex;gap:1rem;align-items:center;background:#FAF7F2;user-select:none';
+  wrapper.innerHTML=`
+    ${p.img?`<img src="${p.img}" style="width:60px;height:60px;object-fit:cover;border-radius:3px;flex-shrink:0" alt="${p.name}">`:`<div style="width:60px;height:60px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>`}
+    <div style="flex:1">
+      <div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">${p.name}</div>
+      <div style="font-size:.8rem;color:#9B8F85;margin-bottom:.5rem">${p.description||p.desc||''}</div>
+      <a href="${p.url}" target="_blank" rel="noopener sponsored" style="display:inline-block;background:#C1603A;color:white;padding:.3rem .8rem;border-radius:3px;font-size:.75rem;font-weight:600;text-decoration:none">Shop on Amazon — $${p.price}</a>
+    </div>`;
+
+  // Create a paragraph AFTER the card so cursor has somewhere to go
+  const after=document.createElement('p');
+  after.innerHTML='<br>';
+
+  // Insert at cursor position or append to editor
+  editor.focus();
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount>0){
+    const range=sel.getRangeAt(0);
+    // Move to end of current block
+    range.collapse(false);
+    range.insertNode(after);
+    range.insertNode(wrapper);
+    // Place cursor in the paragraph after the card
+    const newRange=document.createRange();
+    newRange.setStart(after,0);
+    newRange.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(newRange);
+  } else {
+    editor.appendChild(wrapper);
+    editor.appendChild(after);
+    // Place cursor after
+    const newRange=document.createRange();
+    newRange.setStart(after,0);
+    newRange.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(newRange);
+  }
   syncEditor();
 }
 
