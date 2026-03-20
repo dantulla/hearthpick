@@ -60,6 +60,11 @@
   to = "/index.html"
   status = 200
 
+  [[redirects]]
+  from = "/sitemap.xml"
+  to = "/.netlify/functions/sitemap"
+  status = 200
+
 # Security headers
 [[headers]]
   for = "/*"
