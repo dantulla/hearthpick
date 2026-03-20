@@ -2062,23 +2062,38 @@ function eImg(){
 }
 async function eProduct(){
   const prods=await getProds({status:'published'});
-  // Build a quick picker modal
+  // Remove any existing picker
   let existing=document.getElementById('prod-picker');
   if(existing)existing.remove();
+  // Create picker and append to BODY — completely outside modal stacking context
   const picker=document.createElement('div');
   picker.id='prod-picker';
-  picker.style.cssText='position:fixed;inset:0;background:rgba(44,40,37,.6);z-index:9999;display:flex;align-items:center;justify-content:center';
-  picker.innerHTML=`<div style="background:white;border-radius:6px;padding:1.5rem;width:520px;max-width:95%;max-height:80vh;overflow-y:auto">
+  picker.setAttribute('style','position:fixed !important;top:0 !important;left:0 !important;right:0 !important;bottom:0 !important;width:100vw !important;height:100vh !important;background:rgba(44,40,37,.75) !important;z-index:99999 !important;display:flex !important;align-items:center !important;justify-content:center !important');
+  // Build inner HTML
+  const inner=document.createElement('div');
+  inner.setAttribute('style','background:white;border-radius:8px;padding:1.5rem;width:540px;max-width:95vw;max-height:80vh;overflow-y:auto;position:relative;z-index:100000');
+  inner.innerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-      <strong style="font-family:var(--fd)">Pick an Amazon Product</strong>
-      <button onclick="document.getElementById('prod-picker').remove()" style="background:none;border:none;font-size:1.4rem;cursor:pointer">×</button>
+      <strong style="font-family:'Playfair Display',serif;font-size:1.1rem">Pick an Amazon Product</strong>
+      <button id="prod-picker-close" style="background:none;border:none;font-size:1.6rem;cursor:pointer;line-height:1;color:#9B8F85">×</button>
     </div>
-    ${prods.map(p=>`<div onclick="insertProduct('${p.id}')" style="display:flex;align-items:center;gap:1rem;padding:.75rem;border:1px solid var(--ivory-d);margin-bottom:.5rem;cursor:pointer;border-radius:4px;transition:.2s" onmouseover="this.style.background='var(--linen)'" onmouseout="this.style.background='white'">
-      <div style="width:48px;height:48px;background:${pc(0)};border-radius:3px;flex-shrink:0"></div>
-      <div><div style="font-weight:500;font-size:.85rem">${p.name}</div><div style="font-size:.75rem;color:var(--terra);font-weight:600">$${p.price} · Amazon</div></div>
+    ${prods.map(p=>`
+    <div data-pid="${p.id}" class="ppick-item" style="display:flex;align-items:center;gap:1rem;padding:.75rem;border:1px solid #EDE3D5;margin-bottom:.5rem;cursor:pointer;border-radius:4px;background:white">
+      ${p.img?`<img src="${p.img}" style="width:52px;height:52px;object-fit:cover;border-radius:3px;flex-shrink:0">`:`<div style="width:52px;height:52px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>`}
+      <div><div style="font-weight:500;font-size:.85rem;margin-bottom:.2rem">${p.name}</div><div style="font-size:.75rem;color:#C1603A;font-weight:600">$${p.price} · ${p.src||'Amazon'}</div></div>
     </div>`).join('')}
-  </div>`;
+  `;
+  picker.appendChild(inner);
   document.body.appendChild(picker);
+  // Close on backdrop click
+  picker.addEventListener('click',function(e){if(e.target===picker)picker.remove();});
+  document.getElementById('prod-picker-close').addEventListener('click',function(){picker.remove();});
+  // Item click handlers
+  inner.querySelectorAll('.ppick-item').forEach(function(el){
+    el.addEventListener('mouseover',function(){el.style.background='#FAF7F2';});
+    el.addEventListener('mouseout',function(){el.style.background='white';});
+    el.addEventListener('click',function(){insertProduct(el.dataset.pid);});
+  });
 }
 async function insertProduct(id){
   document.getElementById('prod-picker')?.remove();
