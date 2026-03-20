@@ -1382,11 +1382,11 @@ window.addEventListener('load',()=>{ routeFromPath(); });
 /* ══════════════════════════════════════════
    COMPONENT HELPERS
 ══════════════════════════════════════════ */
-function renderProdCard(p,i){
-  const color=pc(i);
-  const imgHtml=p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy">`:`<div style="position:absolute;inset:0;background:${color};display:flex;align-items:center;justify-content:center"><span style="font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:rgba(44,40,37,.35)">${catName(p.cat)}</span></div>`;
-  // Product schema — enables rich snippets in Google
-  const schema={
+function injectProductSchema(p){
+  // Safely inject schema via DOM — not via innerHTML (which breaks script tags)
+  const s=document.createElement('script');
+  s.type='application/ld+json';
+  s.text=JSON.stringify({
     '@context':'https://schema.org',
     '@type':'Product',
     'name':p.name,
@@ -1401,24 +1401,15 @@ function renderProdCard(p,i){
       'url':p.url||''
     },
     'brand':{'@type':'Brand','name':p.src||'Amazon'}
-  };
-  return`<div class="product-card" itemscope itemtype="https://schema.org/Product">
-    <script type="application/ld+json">${JSON.stringify(schema)}</script>
-    <div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div>
-    <div class="card-body">
-      <div class="card-source" itemprop="brand">${p.src}</div>
-      <div class="card-name" itemprop="name">${p.name}</div>
-      <div class="card-desc" itemprop="description">${p.desc||p.description}</div>
-      <div class="card-footer">
-        <div class="card-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-          <span itemprop="price" content="${p.price}">$${p.price}</span>
-          <meta itemprop="priceCurrency" content="USD">
-          <meta itemprop="availability" content="https://schema.org/InStock">
-        </div>
-        <a href="${p.url}" target="_blank" rel="noopener sponsored" class="card-cta" itemprop="url">Shop Now →</a>
-      </div>
-    </div>
-  </div>`;
+  });
+  document.head.appendChild(s);
+}
+
+function renderProdCard(p,i){
+  const color=pc(i);
+  const imgHtml=p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy">`:`<div style="position:absolute;inset:0;background:${color};display:flex;align-items:center;justify-content:center"><span style="font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:rgba(44,40,37,.35)">${catName(p.cat)}</span></div>`;
+  injectProductSchema(p);
+  return`<div class="product-card" itemscope itemtype="https://schema.org/Product"><div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div><div class="card-body"><div class="card-source" itemprop="brand">${p.src}</div><div class="card-name" itemprop="name">${p.name}</div><div class="card-desc" itemprop="description">${p.desc||p.description}</div><div class="card-footer"><div class="card-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer"><span itemprop="price" content="${p.price}">$${p.price}</span><meta itemprop="priceCurrency" content="USD"><meta itemprop="availability" content="https://schema.org/InStock"></div><a href="${p.url}" target="_blank" rel="noopener sponsored" class="card-cta" itemprop="url">Shop Now →</a></div></div></div>`;
 }
 
 function renderBlogCardHtml(post){
