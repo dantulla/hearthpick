@@ -4,10 +4,3 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
-```
-
-4. Click **Commit changes**
-
-Wait 30 seconds then test:
-```
-https://hearthpick.vercel.app/post/amazon-finds-under-50
