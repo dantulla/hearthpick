@@ -5,19 +5,9 @@
   ]
 }
 ```
+
 4. Click **Commit changes**
 
----
-
-**Step 3 — Delete the old static `sitemap.xml`**
-
-1. Click `sitemap.xml` in your repo
-2. Click **three dots `...`** → **Delete file** → **Commit**
-
----
-
-**Step 4 — Test it**
-
-After Vercel redeploys (about 30 seconds), visit:
+Wait 30 seconds then test:
 ```
-https://hearthpick.vercel.app/sitemap.xml
+https://hearthpick.vercel.app/post/amazon-finds-under-50
