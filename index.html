@@ -1423,9 +1423,13 @@ window.addEventListener('load',()=>{ routeFromPath(); });
 /* ══════════════════════════════════════════
    COMPONENT HELPERS
 ══════════════════════════════════════════ */
+const _schemaInjected=new Set();
 function injectProductSchema(p){
   // Skip schema if no image — Google rejects Product schema without image
   if(!p.img||!p.img.trim()) return;
+  // Skip if already injected for this product ID
+  if(_schemaInjected.has(p.id)) return;
+  _schemaInjected.add(p.id);
   const s=document.createElement('script');
   s.type='application/ld+json';
   s.text=JSON.stringify({
