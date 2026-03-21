@@ -1238,15 +1238,21 @@ async function injectListSchema(){
         'shippingDetails':{
           '@type':'OfferShippingDetails',
           'shippingRate':{'@type':'MonetaryAmount','value':'0','currency':'USD'},
+          'shippingDestination':{'@type':'DefinedRegion','addressCountry':'US'},
           'deliveryTime':{
             '@type':'ShippingDeliveryTime',
+            'handlingTime':{'@type':'QuantitativeValue','minValue':0,'maxValue':1,'unitCode':'DAY'},
+            'transitTime':{'@type':'QuantitativeValue','minValue':2,'maxValue':7,'unitCode':'DAY'},
             'businessDays':{'@type':'OpeningHoursSpecification','dayOfWeek':['Monday','Tuesday','Wednesday','Thursday','Friday']}
           }
         },
         'hasMerchantReturnPolicy':{
           '@type':'MerchantReturnPolicy',
+          'applicableCountry':'US',
           'returnPolicyCategory':'https://schema.org/MerchantReturnFiniteReturnWindow',
-          'merchantReturnDays':30
+          'merchantReturnDays':30,
+          'returnMethod':'https://schema.org/ReturnByMail',
+          'returnFees':'https://schema.org/FreeReturn'
         }
       }
     }
@@ -1423,13 +1429,9 @@ window.addEventListener('load',()=>{ routeFromPath(); });
 /* ══════════════════════════════════════════
    COMPONENT HELPERS
 ══════════════════════════════════════════ */
-const _schemaInjected=new Set();
 function injectProductSchema(p){
   // Skip schema if no image — Google rejects Product schema without image
   if(!p.img||!p.img.trim()) return;
-  // Skip if already injected for this product ID
-  if(_schemaInjected.has(p.id)) return;
-  _schemaInjected.add(p.id);
   const s=document.createElement('script');
   s.type='application/ld+json';
   s.text=JSON.stringify({
@@ -1449,15 +1451,21 @@ function injectProductSchema(p){
       'shippingDetails':{
         '@type':'OfferShippingDetails',
         'shippingRate':{'@type':'MonetaryAmount','value':'0','currency':'USD'},
+        'shippingDestination':{'@type':'DefinedRegion','addressCountry':'US'},
         'deliveryTime':{
           '@type':'ShippingDeliveryTime',
+          'handlingTime':{'@type':'QuantitativeValue','minValue':0,'maxValue':1,'unitCode':'DAY'},
+          'transitTime':{'@type':'QuantitativeValue','minValue':2,'maxValue':7,'unitCode':'DAY'},
           'businessDays':{'@type':'OpeningHoursSpecification','dayOfWeek':['Monday','Tuesday','Wednesday','Thursday','Friday']}
         }
       },
       'hasMerchantReturnPolicy':{
         '@type':'MerchantReturnPolicy',
+        'applicableCountry':'US',
         'returnPolicyCategory':'https://schema.org/MerchantReturnFiniteReturnWindow',
-        'merchantReturnDays':30
+        'merchantReturnDays':30,
+        'returnMethod':'https://schema.org/ReturnByMail',
+        'returnFees':'https://schema.org/FreeReturn'
       }
     }
   });
