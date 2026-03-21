@@ -472,9 +472,7 @@ body.dark-mode .mob-nav{background:#1A1814;}
 .trend-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(193,96,58,.15);color:var(--terra);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem;border-radius:20px;border:1px solid rgba(193,96,58,.25);}
 .trend-badge::before{content:'🔥';font-size:.7rem;}
 </style>
-<!-- Google Analytics — replace G-09G3QQB2KM with your real Measurement ID from analytics.google.com -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-09G3QQB2KM"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-09G3QQB2KM');</script>
+
 </head>
 <body>
 
@@ -1392,26 +1390,42 @@ function injectProductSchema(p){
     '@context':'https://schema.org',
     '@type':'Product',
     'name':p.name,
-    'description':p.desc||p.description||'',
+    'description':p.desc||p.description||p.name,
     'image':p.img,
+    'brand':{'@type':'Brand','name':p.src||'Amazon'},
     'offers':{
       '@type':'Offer',
       'price':p.price,
       'priceCurrency':'USD',
       'availability':'https://schema.org/InStock',
       'seller':{'@type':'Organization','name':p.src||'Amazon'},
-      'url':p.url||''
-    },
-    'brand':{'@type':'Brand','name':p.src||'Amazon'}
+      'url':p.url||'',
+      'shippingDetails':{
+        '@type':'OfferShippingDetails',
+        'shippingRate':{'@type':'MonetaryAmount','value':'0','currency':'USD'},
+        'deliveryTime':{
+          '@type':'ShippingDeliveryTime',
+          'businessDays':{'@type':'OpeningHoursSpecification','dayOfWeek':['Monday','Tuesday','Wednesday','Thursday','Friday']}
+        }
+      },
+      'hasMerchantReturnPolicy':{
+        '@type':'MerchantReturnPolicy',
+        'returnPolicyCategory':'https://schema.org/MerchantReturnFiniteReturnWindow',
+        'merchantReturnDays':30
+      }
+    }
   });
   document.head.appendChild(s);
 }
 
 function renderProdCard(p,i){
   const color=pc(i);
-  const imgHtml=p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy">`:`<div style="position:absolute;inset:0;background:${color};display:flex;align-items:center;justify-content:center"><span style="font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:rgba(44,40,37,.35)">${catName(p.cat)}</span></div>`;
+  const imgHtml=p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy" itemprop="image">`:`<div style="position:absolute;inset:0;background:${color};display:flex;align-items:center;justify-content:center"><span style="font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:rgba(44,40,37,.35)">${catName(p.cat)}</span></div>`;
   injectProductSchema(p);
-  return`<div class="product-card" itemscope itemtype="https://schema.org/Product"><div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div><div class="card-body"><div class="card-source" itemprop="brand">${p.src}</div><div class="card-name" itemprop="name">${p.name}</div><div class="card-desc" itemprop="description">${p.desc||p.description}</div><div class="card-footer"><div class="card-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer"><span itemprop="price" content="${p.price}">$${p.price}</span><meta itemprop="priceCurrency" content="USD"><meta itemprop="availability" content="https://schema.org/InStock"></div><a href="${p.url}" target="_blank" rel="noopener sponsored" class="card-cta" itemprop="url">Shop Now →</a></div></div></div>`;
+  // Only add Product microdata when image is present (Google requires image for valid Product schema)
+  const hasImg=p.img&&p.img.trim();
+  const itemAttrs=hasImg?'itemscope itemtype="https://schema.org/Product"':'';
+  return`<div class="product-card" ${itemAttrs}><div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div><div class="card-body"><div class="card-source"${hasImg?' itemprop="brand"':''}>${p.src}</div><div class="card-name"${hasImg?' itemprop="name"':''}>${p.name}</div><div class="card-desc"${hasImg?' itemprop="description"':''}>${p.desc||p.description}</div><div class="card-footer"><div class="card-price"${hasImg?' itemprop="offers" itemscope itemtype="https://schema.org/Offer"':''}>${hasImg?`<span itemprop="price" content="${p.price}">$${p.price}</span><meta itemprop="priceCurrency" content="USD"><meta itemprop="availability" content="https://schema.org/InStock">`:`$${p.price}`}</div><a href="${p.url}" target="_blank" rel="noopener sponsored" class="card-cta"${hasImg?' itemprop="url"':''}>Shop Now →</a></div></div></div>`;
 }
 
 function renderBlogCardHtml(post){
