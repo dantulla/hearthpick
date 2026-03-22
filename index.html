@@ -471,6 +471,28 @@ body.dark-mode .mob-nav{background:#1A1814;}
 /* ── TRENDING STRIP ── */
 .trend-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(193,96,58,.15);color:var(--terra);font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .65rem;border-radius:20px;border:1px solid rgba(193,96,58,.25);}
 .trend-badge::before{content:'🔥';font-size:.7rem;}
+
+/* ── PRODUCT PAGE ── */
+.prod-page-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;padding:4rem 0 6rem}
+.prod-img-wrap{position:relative;aspect-ratio:1/1;background:var(--ivory);border-radius:var(--r);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.prod-img-wrap img{width:100%;height:100%;object-fit:cover;}
+.prod-img-placeholder{font-family:var(--fd);font-size:1rem;font-style:italic;color:var(--warm-gray);text-align:center;padding:2rem;}
+.prod-info{display:flex;flex-direction:column;gap:1.25rem;}
+.prod-source-badge{font-size:.65rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--warm-gray);}
+.prod-page-title{font-family:var(--fd);font-size:clamp(1.8rem,3vw,2.6rem);font-weight:400;line-height:1.12;color:var(--charcoal);}
+.prod-page-price{font-family:var(--fd);font-size:2.2rem;font-weight:700;color:var(--terra);}
+.prod-page-desc{font-size:.95rem;font-weight:300;color:var(--warm-gray);line-height:1.85;}
+.prod-page-cta{display:flex;align-items:center;justify-content:center;gap:.6rem;background:var(--terra);color:white;padding:1.1rem 2.5rem;font-size:.82rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border-radius:var(--r);transition:background .2s,transform .2s;text-decoration:none;width:100%;box-sizing:border-box;}
+.prod-page-cta:hover{background:var(--terra-d);transform:translateY(-2px);}
+.prod-meta-row{display:flex;gap:2rem;padding:1.25rem 0;border-top:1px solid var(--ivory-d);border-bottom:1px solid var(--ivory-d);}
+.prod-meta-item{display:flex;flex-direction:column;gap:.2rem;}
+.prod-meta-label{font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--warm-gray);}
+.prod-meta-val{font-size:.85rem;font-weight:500;color:var(--charcoal);}
+.prod-share-row{display:flex;align-items:center;gap:.75rem;font-size:.75rem;color:var(--warm-gray);}
+.prod-share-btn{background:none;border:1px solid var(--ivory-d);padding:.4rem .9rem;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:var(--r);color:var(--charcoal);transition:var(--tr);font-family:var(--fb);}
+.prod-share-btn:hover{background:var(--charcoal);color:white;border-color:var(--charcoal);}
+.prod-related{padding:5rem 0;background:var(--ivory);}
+@media(max-width:860px){.prod-page-grid{grid-template-columns:1fr;gap:2.5rem;}}
 </style>
 
 </head>
@@ -742,6 +764,58 @@ body.dark-mode .mob-nav{background:#1A1814;}
 <div id="post-nl"></div>
 <div id="post-ft"></div>
 </div><!-- /page-post -->
+
+<!-- PRODUCT PAGE -->
+<div class="page" id="page-product">
+<div style="background:var(--linen);padding-top:2rem">
+  <div class="container">
+    <nav class="breadcrumb"><a onclick="goto('home')">Home</a><span class="bc-sep">›</span><a onclick="goto('shop')">Shop</a><span class="bc-sep">›</span><span id="prod-bc">Product</span></nav>
+  </div>
+</div>
+<div class="container">
+  <div class="prod-page-grid">
+    <div class="prod-img-wrap" id="prod-img-wrap">
+      <span class="prod-img-placeholder">Loading…</span>
+    </div>
+    <div class="prod-info">
+      <div class="prod-source-badge" id="prod-source"></div>
+      <h1 class="prod-page-title" id="prod-title">Loading…</h1>
+      <div class="prod-page-price" id="prod-price"></div>
+      <div class="prod-meta-row">
+        <div class="prod-meta-item">
+          <span class="prod-meta-label">Category</span>
+          <span class="prod-meta-val" id="prod-cat-name">—</span>
+        </div>
+        <div class="prod-meta-item">
+          <span class="prod-meta-label">Ships From</span>
+          <span class="prod-meta-val">Amazon US</span>
+        </div>
+        <div class="prod-meta-item">
+          <span class="prod-meta-label">Returns</span>
+          <span class="prod-meta-val">30 Days Free</span>
+        </div>
+      </div>
+      <p class="prod-page-desc" id="prod-desc"></p>
+      <a id="prod-cta" href="#" target="_blank" rel="noopener sponsored" class="prod-page-cta">Shop Now on Amazon →</a>
+      <div class="prod-share-row">
+        <span>Share:</span>
+        <button class="prod-share-btn" onclick="shareProdPinterest()">Pinterest</button>
+        <button class="prod-share-btn" onclick="shareProdCopy()">Copy Link</button>
+      </div>
+      <p style="font-size:.68rem;color:var(--warm-gray);line-height:1.6;margin-top:.5rem">✦ Affiliate disclosure: We may earn a small commission when you shop through our links, at no extra cost to you.</p>
+    </div>
+  </div>
+</div>
+<div class="prod-related">
+  <div class="container">
+    <div class="tag-label">You might also like</div>
+    <h2 class="sec-title" style="margin-top:1rem">More <em>Finds</em> Like This</h2>
+    <div class="finds-grid" id="prod-related-grid" style="margin-top:2.5rem"></div>
+  </div>
+</div>
+<div id="prod-nl"></div>
+<div id="prod-ft"></div>
+</div><!-- /page-product -->
 
 <!-- CATEGORY -->
 <div class="page" id="page-category">
@@ -1389,6 +1463,7 @@ function goto(page,extra){
   if(page==='shop')renderShopPage();
   if(page==='blog')renderBlogPage();
   if(page==='post'){currentPostId=extra;renderPostPage(extra)}
+  if(page==='product'){renderProductPage(extra)}
   if(page==='category'){currentCatId=extra;renderCategoryPage(extra)}
   if(page==='about')renderAboutPage();
   if(page==='admin')renderAdminLoginPage();
@@ -1405,6 +1480,7 @@ function updatePath(page,extra){
   else if(page==='terms')path='/terms';
   else if(page==='disclaimer')path='/disclaimer';
   else if(page==='post'&&extra)path='/post/'+extra;
+  else if(page==='product'&&extra)path='/product/'+extra;
   else if(page==='category'&&extra)path='/category/'+extra;
   history.pushState({page,extra},document.title,path);
 }
@@ -1419,6 +1495,7 @@ function routeFromPath(){
   const parts=path.split('/').filter(Boolean);
   if(!parts.length){goto('home');return}
   if(parts[0]==='post'&&parts[1]){goto('post',parts[1]);return}
+  if(parts[0]==='product'&&parts[1]){goto('product',parts[1]);return}
   if(parts[0]==='category'&&parts[1]){goto('category',parts[1]);return}
   if(['shop','blog','about','privacy','terms','disclaimer'].includes(parts[0])){goto(parts[0]);return}
   goto('home');
@@ -1472,14 +1549,16 @@ function injectProductSchema(p){
   document.head.appendChild(s);
 }
 
+function prodSlug(p){return p.slug||slug(p.name)+'-'+p.id;}
+
 function renderProdCard(p,i){
   const color=pc(i);
   const imgHtml=p.img?`<img src="${p.img}" alt="${p.name}" loading="lazy" itemprop="image">`:`<div style="position:absolute;inset:0;background:${color};display:flex;align-items:center;justify-content:center"><span style="font-family:'Playfair Display',serif;font-size:.95rem;font-style:italic;color:rgba(44,40,37,.35)">${catName(p.cat)}</span></div>`;
   injectProductSchema(p);
-  // Only add Product microdata when image is present (Google requires image for valid Product schema)
   const hasImg=p.img&&p.img.trim();
   const itemAttrs=hasImg?'itemscope itemtype="https://schema.org/Product"':'';
-  return`<div class="product-card" ${itemAttrs}><div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div><div class="card-body"><div class="card-source"${hasImg?' itemprop="brand"':''}>${p.src}</div><div class="card-name"${hasImg?' itemprop="name"':''}>${p.name}</div><div class="card-desc"${hasImg?' itemprop="description"':''}>${p.desc||p.description}</div><div class="card-footer"><div class="card-price"${hasImg?' itemprop="offers" itemscope itemtype="https://schema.org/Offer"':''}>${hasImg?`<span itemprop="price" content="${p.price}">$${p.price}</span><meta itemprop="priceCurrency" content="USD"><meta itemprop="availability" content="https://schema.org/InStock">`:`$${p.price}`}</div><a href="${p.url}" target="_blank" rel="noopener sponsored" class="card-cta"${hasImg?' itemprop="url"':''}>Shop Now →</a></div></div></div>`;
+  const prodUrl=`/product/${prodSlug(p)}`;
+  return`<div class="product-card" ${itemAttrs} style="cursor:pointer" onclick="goto('product','${prodSlug(p)}')"><div class="card-img">${imgHtml}${p.badge?`<div class="card-badge">${p.badge}</div>`:''}</div><div class="card-body"><div class="card-source"${hasImg?' itemprop="brand"':''}>${p.src}</div><div class="card-name"${hasImg?' itemprop="name"':''}>${p.name}</div><div class="card-desc"${hasImg?' itemprop="description"':''}>${p.desc||p.description}</div><div class="card-footer"><div class="card-price"${hasImg?' itemprop="offers" itemscope itemtype="https://schema.org/Offer"':''}>${hasImg?`<span itemprop="price" content="${p.price}">$${p.price}</span><meta itemprop="priceCurrency" content="USD"><meta itemprop="availability" content="https://schema.org/InStock">`:`$${p.price}`}</div><span class="card-cta">View Find →</span></div></div></div>`;
 }
 
 function renderBlogCardHtml(post){
@@ -1671,7 +1750,112 @@ async function renderPostPage(id){
   renderFooterInto('post-ft');
 }
 
-let _catId=null;
+let _currentProd=null;
+
+async function renderProductPage(id){
+  const prods=await getProds();
+  const p=prods.find(x=>prodSlug(x)===id)||prods.find(x=>x.id===id);
+  if(!p){
+    document.getElementById('prod-title').textContent='Product not found.';
+    return;
+  }
+  _currentProd=p;
+  const cats=await getCats();
+  const cat=cats.find(c=>c.id===p.cat);
+  const prodUrl=BASE_URL+'product/'+prodSlug(p);
+
+  // SEO
+  updateSEO({
+    title:p.name,
+    desc:p.desc||p.description||p.name,
+    url:'product/'+prodSlug(p),
+    type:'product',
+    img:p.img||DEFAULT_IMG,
+    schema:{
+      '@context':'https://schema.org',
+      '@type':'Product',
+      'name':p.name,
+      'image':p.img||DEFAULT_IMG,
+      'description':p.desc||p.description||p.name,
+      'brand':{'@type':'Brand','name':p.src||'Amazon'},
+      'offers':{
+        '@type':'Offer',
+        'price':String(p.price),
+        'priceCurrency':'USD',
+        'priceValidUntil':new Date(new Date().getFullYear()+1,11,31).toISOString().split('T')[0],
+        'availability':'https://schema.org/InStock',
+        'url':p.url||prodUrl,
+        'shippingDetails':{
+          '@type':'OfferShippingDetails',
+          'shippingRate':{'@type':'MonetaryAmount','value':'0','currency':'USD'},
+          'shippingDestination':{'@type':'DefinedRegion','addressCountry':'US'},
+          'deliveryTime':{
+            '@type':'ShippingDeliveryTime',
+            'handlingTime':{'@type':'QuantitativeValue','minValue':0,'maxValue':1,'unitCode':'DAY'},
+            'transitTime':{'@type':'QuantitativeValue','minValue':2,'maxValue':7,'unitCode':'DAY'},
+            'businessDays':{'@type':'OpeningHoursSpecification','dayOfWeek':['Monday','Tuesday','Wednesday','Thursday','Friday']}
+          }
+        },
+        'hasMerchantReturnPolicy':{
+          '@type':'MerchantReturnPolicy',
+          'applicableCountry':'US',
+          'returnPolicyCategory':'https://schema.org/MerchantReturnFiniteReturnWindow',
+          'merchantReturnDays':30,
+          'returnMethod':'https://schema.org/ReturnByMail',
+          'returnFees':'https://schema.org/FreeReturn'
+        }
+      }
+    }
+  });
+
+  // Breadcrumb
+  document.getElementById('prod-bc').textContent=p.name.substring(0,35)+'…';
+
+  // Image
+  const imgWrap=document.getElementById('prod-img-wrap');
+  imgWrap.innerHTML=p.img
+    ?`<img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">`
+    :`<span class="prod-img-placeholder">${cat?cat.name:'Home Find'}</span>`;
+  if(p.badge)imgWrap.insertAdjacentHTML('beforeend',`<div class="card-badge" style="position:absolute;top:1rem;left:1rem">${p.badge}</div>`);
+
+  // Info
+  document.getElementById('prod-source').textContent='Available on '+p.src;
+  document.getElementById('prod-title').textContent=p.name;
+  document.getElementById('prod-price').textContent='$'+p.price;
+  document.getElementById('prod-cat-name').textContent=cat?cat.name:'—';
+  document.getElementById('prod-desc').textContent=p.desc||p.description||'';
+  const cta=document.getElementById('prod-cta');
+  cta.href=p.url||'#';
+  cta.textContent='Shop Now on '+(p.src||'Amazon')+' →';
+
+  // Related products — same category, exclude current
+  const related=(await getProds({status:'published',cat:p.cat}))
+    .filter(x=>x.id!==p.id)
+    .slice(0,3);
+  document.getElementById('prod-related-grid').innerHTML=related.length
+    ?related.map((r,i)=>renderProdCard(r,i)).join('')
+    :`<p style="color:var(--warm-gray);font-style:italic">More finds coming soon.</p>`;
+
+  renderNLInto('prod-nl');
+  renderFooterInto('prod-ft');
+}
+
+function shareProdPinterest(){
+  if(!_currentProd)return;
+  const url=encodeURIComponent(BASE_URL+'product/'+prodSlug(_currentProd));
+  const desc=encodeURIComponent(_currentProd.name+' — via Hearthpick');
+  const img=encodeURIComponent(_currentProd.img||'');
+  window.open(`https://pinterest.com/pin/create/button/?url=${url}&description=${desc}&media=${img}`,'_blank');
+}
+
+function shareProdCopy(){
+  if(!_currentProd)return;
+  const url=BASE_URL+'product/'+prodSlug(_currentProd);
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.querySelector('.prod-share-btn:last-child');
+    if(btn){btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy Link',2000);}
+  });
+}
 async function renderCategoryPage(id){
   _catId=id;
   const cats=await getCats();
