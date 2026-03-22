@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/", "destination": "/api/prerender" },
+    { "source": "/product/:slug", "destination": "/index.html" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
