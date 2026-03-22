@@ -42,10 +42,10 @@ export default async function handler(req, res) {
 
   try {
     const [prodsRes, postsRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/products?select=id,name,slug,date,status&status=eq.published&order=date.desc`, {
+      fetch(`${SUPABASE_URL}/rest/v1/products?select=id,name,slug,date&status=eq.published&order=date.desc`, {
         headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
       }),
-      fetch(`${SUPABASE_URL}/rest/v1/posts?select=slug,date,status&status=eq.published&order=date.desc`, {
+      fetch(`${SUPABASE_URL}/rest/v1/posts?select=slug,date&status=eq.published&order=date.desc`, {
         headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
       })
     ]);
