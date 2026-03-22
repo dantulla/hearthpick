@@ -38,62 +38,44 @@ export default async function handler(req, res) {
   let postXml = '';
   let productXml = '';
 
+  const headers = {
+    apikey: SUPABASE_KEY,
+    Authorization: `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  };
+
   try {
-    // Fetch ALL products first, filter manually
-    const prodsRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/products?select=id,name,slug,date,status`,
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    );
+    const [prodsRes, postsRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/products?select=id,name,slug,date,status&limit=1000`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/posts?select=slug,date,status&limit=1000`, { headers })
+    ]);
 
     if (prodsRes.ok) {
       const allProds = await prodsRes.json();
-      if (Array.isArray(allProds)) {
+      if (Array.isArray(allProds) && allProds.length > 0) {
         const prods = allProds.filter(p => p.status === 'published');
-        if (prods.length > 0) {
-          productXml = prods.map(p => `
+        productXml = prods.map(p => `
   <url>
     <loc>${BASE}/product/${prodSlug(p)}</loc>
     <lastmod>${p.date || today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>`).join('');
-        }
       }
     }
 
-    // Fetch ALL posts, filter manually
-    const postsRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/posts?select=slug,date,status`,
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    );
-
     if (postsRes.ok) {
       const allPosts = await postsRes.json();
-      if (Array.isArray(allPosts)) {
+      if (Array.isArray(allPosts) && allPosts.length > 0) {
         const posts = allPosts.filter(p => p.status === 'published');
-        if (posts.length > 0) {
-          postXml = posts.map(p => `
+        postXml = posts.map(p => `
   <url>
     <loc>${BASE}/post/${p.slug}</loc>
     <lastmod>${p.date || today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>`).join('');
-        }
       }
     }
 
