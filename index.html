@@ -62,6 +62,12 @@
 
 /* ── RESET & ROOT ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* Hide all pages on initial load — JS will show correct one */
+.page{display:none!important}
+#initial-loader{position:fixed;inset:0;background:var(--linen);z-index:9999;display:flex;align-items:center;justify-content:center;}
+#initial-loader .il-logo{font-family:'Playfair Display',Georgia,serif;font-size:1.8rem;font-weight:700;color:var(--charcoal);opacity:0;animation:ilFade .3s ease .1s forwards;}
+#initial-loader .il-logo span{color:#C1603A;}
+@keyframes ilFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 :root{
   --terra:#C1603A;--terra-l:#E8957A;--terra-d:#8B3E22;
   --ivory:#F5EFE6;--ivory-d:#EDE3D5;
@@ -497,6 +503,8 @@ body.dark-mode .mob-nav{background:#1A1814;}
 
 </head>
 <body>
+<!-- Initial loader — prevents homepage flash on direct URL visits -->
+<div id="initial-loader"><div class="il-logo">Hearth<span>pick</span></div></div>
 
 <!-- ══ ANNOUNCEMENT BAR ══ -->
 <div id="ann-bar">
@@ -1447,9 +1455,17 @@ let currentPostId=null;
 let currentBlogFilter='all';
 
 function goto(page,extra){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  // Remove initial loader on first navigation
+  const loader=document.getElementById('initial-loader');
+  if(loader)loader.remove();
+  // Remove display:none override from all pages
+  document.querySelectorAll('.page').forEach(p=>{
+    p.style.display='none';
+    p.classList.remove('active');
+  });
   const el=document.getElementById('page-'+page);
   if(!el)return;
+  el.style.display='block';
   el.classList.add('active');
   currentPage=page;
   window.scrollTo(0,0);
