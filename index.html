@@ -1272,7 +1272,9 @@ const DEFAULT_IMG=BASE_URL+'og-image.jpg';
 function updateSEO({title, desc, url, img, type='website', schema=null}={}){
   const fullTitle=title?title+' — Hearthpick':'Hearthpick — Curated Home Finds';
   const fullDesc=desc||'Handpicked home finds from Amazon. Honest curation, real prices.';
-  const fullUrl=url?BASE_URL+url:BASE_URL;
+  // Fix canonical — home page should be BASE_URL not BASE_URL+'home'
+  const cleanUrl=(!url||url==='home'||url==='/')?'':url.replace(/^\//,'');
+  const fullUrl=cleanUrl?BASE_URL+cleanUrl:BASE_URL;
   const fullImg=img||DEFAULT_IMG;
 
   // Basic
