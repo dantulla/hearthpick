@@ -1,15 +1,21 @@
 // ══════════════════════════════════════════
 // HEARTHPICK — api/sitemap.js
-// Dynamic sitemap — queries Supabase live
+// Dynamic sitemap — includes product pages
 // Always returns 200 so Google never gets an error
 // ══════════════════════════════════════════
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const BASE = 'https://hearthpick.vercel.app';
 
+function prodSlug(p){
+  const s = (p.slug || p.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''));
+  return s + '-' + p.id;
+}
+
 export default async function handler(req, res) {
 
-  // Static pages — always included
+  const today = new Date().toISOString().split('T')[0];
+
   const staticPages = [
     { url: '/',            priority: '1.0', changefreq: 'weekly'  },
     { url: '/shop',        priority: '0.9', changefreq: 'weekly'  },
@@ -23,8 +29,6 @@ export default async function handler(req, res) {
     { url: '/category/c6', priority: '0.7', changefreq: 'weekly'  },
   ];
 
-  const today = new Date().toISOString().split('T')[0];
-
   const staticXml = staticPages.map(p => `
   <url>
     <loc>${BASE}${p.url}</loc>
@@ -33,22 +37,34 @@ export default async function handler(req, res) {
     <priority>${p.priority}</priority>
   </url>`).join('');
 
-  // Dynamic blog posts — fetched from Supabase
   let postXml = '';
-  try {
-    const response = await fetch(
-      `${SUPABASE_URL}/rest/v1/posts?select=slug,date,status&status=eq.published&order=date.desc`,
-      {
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+  let productXml = '';
 
-    if (response.ok) {
-      const posts = await response.json();
+  try {
+    const [prodsRes, postsRes] = await Promise.all([
+      fetch(`${SUPABASE_URL}/rest/v1/products?select=id,name,slug,date,status&status=eq.published&order=date.desc`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
+      }),
+      fetch(`${SUPABASE_URL}/rest/v1/posts?select=slug,date,status&status=eq.published&order=date.desc`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
+      })
+    ]);
+
+    if (prodsRes.ok) {
+      const prods = await prodsRes.json();
+      if (Array.isArray(prods) && prods.length > 0) {
+        productXml = prods.map(p => `
+  <url>
+    <loc>${BASE}/product/${prodSlug(p)}</loc>
+    <lastmod>${p.date || today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`).join('');
+      }
+    }
+
+    if (postsRes.ok) {
+      const posts = await postsRes.json();
       if (Array.isArray(posts) && posts.length > 0) {
         postXml = posts.map(p => `
   <url>
@@ -59,15 +75,15 @@ export default async function handler(req, res) {
   </url>`).join('');
       }
     }
+
   } catch (err) {
-    // Supabase unavailable — serve static-only sitemap
-    // Never return 500 — Google marks sitemap as broken
-    console.error('Sitemap Supabase error:', err);
+    console.error('Sitemap error:', err);
   }
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${staticXml}
+${productXml}
 ${postXml}
 </urlset>`;
 
