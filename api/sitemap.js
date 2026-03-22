@@ -1,7 +1,5 @@
 // ══════════════════════════════════════════
 // HEARTHPICK — api/sitemap.js
-// Dynamic sitemap — includes product pages
-// Always returns 200 so Google never gets an error
 // ══════════════════════════════════════════
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -41,38 +39,61 @@ export default async function handler(req, res) {
   let productXml = '';
 
   try {
-    const [prodsRes, postsRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/products?select=id,name,slug,date&status=eq.published&order=date.desc`, {
-        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
-      }),
-      fetch(`${SUPABASE_URL}/rest/v1/posts?select=slug,date&status=eq.published&order=date.desc`, {
-        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' }
-      })
-    ]);
+    // Fetch ALL products first, filter manually
+    const prodsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/products?select=id,name,slug,date,status`,
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }
+    );
 
     if (prodsRes.ok) {
-      const prods = await prodsRes.json();
-      if (Array.isArray(prods) && prods.length > 0) {
-        productXml = prods.map(p => `
+      const allProds = await prodsRes.json();
+      if (Array.isArray(allProds)) {
+        const prods = allProds.filter(p => p.status === 'published');
+        if (prods.length > 0) {
+          productXml = prods.map(p => `
   <url>
     <loc>${BASE}/product/${prodSlug(p)}</loc>
     <lastmod>${p.date || today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>`).join('');
+        }
       }
     }
 
+    // Fetch ALL posts, filter manually
+    const postsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/posts?select=slug,date,status`,
+      {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }
+    );
+
     if (postsRes.ok) {
-      const posts = await postsRes.json();
-      if (Array.isArray(posts) && posts.length > 0) {
-        postXml = posts.map(p => `
+      const allPosts = await postsRes.json();
+      if (Array.isArray(allPosts)) {
+        const posts = allPosts.filter(p => p.status === 'published');
+        if (posts.length > 0) {
+          postXml = posts.map(p => `
   <url>
     <loc>${BASE}/post/${p.slug}</loc>
     <lastmod>${p.date || today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>`).join('');
+        }
       }
     }
 
