@@ -6,8 +6,7 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const BASE = 'https://hearthpick.vercel.app';
 
 function prodSlug(p){
-  const s = (p.slug || p.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''));
-  return s + '-' + p.id;
+  return p.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '-' + p.id;
 }
 
 export default async function handler(req, res) {
@@ -46,10 +45,11 @@ export default async function handler(req, res) {
   };
 
   try {
-    const [prodsRes, postsRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/products?select=id,name,slug,date,status&limit=1000`, { headers }),
-      fetch(`${SUPABASE_URL}/rest/v1/posts?select=slug,date,status&limit=1000`, { headers })
-    ]);
+    // No slug column — only fetch id, name, date, status
+    const prodsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/products?select=id,name,date,status&limit=1000`,
+      { headers }
+    );
 
     if (prodsRes.ok) {
       const allProds = await prodsRes.json();
@@ -65,13 +65,19 @@ export default async function handler(req, res) {
       }
     }
 
+    // Posts
+    const postsRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/posts?select=id,slug,date,status&limit=1000`,
+      { headers }
+    );
+
     if (postsRes.ok) {
       const allPosts = await postsRes.json();
       if (Array.isArray(allPosts) && allPosts.length > 0) {
         const posts = allPosts.filter(p => p.status === 'published');
         postXml = posts.map(p => `
   <url>
-    <loc>${BASE}/post/${p.slug}</loc>
+    <loc>${BASE}/post/${p.slug || p.id}</loc>
     <lastmod>${p.date || today}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
