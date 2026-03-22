@@ -2325,7 +2325,18 @@ function eImg(){
   const url=prompt('Enter image URL:');
   if(url){ document.getElementById('bm-editor').focus(); document.execCommand('insertHTML',false,`<img src="${url}" style="max-width:100%;margin:1rem 0;border-radius:4px" alt="">`); syncEditor(); }
 }
+let _savedRange=null;
+
 async function eProduct(){
+  // Save cursor position BEFORE picker opens and steals focus
+  const editor=document.getElementById('bm-editor');
+  editor.focus();
+  const sel=window.getSelection();
+  if(sel&&sel.rangeCount>0){
+    _savedRange=sel.getRangeAt(0).cloneRange();
+  } else {
+    _savedRange=null;
+  }
   const prods=await getProds({status:'published'});
   let existing=document.getElementById('prod-picker');
   if(existing)existing.remove();
@@ -2351,17 +2362,18 @@ async function insertProduct(id){
   const p=prods.find(x=>x.id===id);
   if(!p)return;
   const editor=document.getElementById('bm-editor');
-  // Card — contentEditable false so cursor cannot get stuck inside
   const card=document.createElement('div');
   card.contentEditable='false';
   card.style.cssText='border:1px solid #EDE3D5;border-radius:4px;padding:1rem;margin:1.5rem 0;display:flex;gap:1rem;align-items:flex-start;background:#FAF7F2;user-select:none';
   card.innerHTML=`${p.img?`<img src="${p.img}" style="width:64px;height:64px;object-fit:cover;border-radius:3px;flex-shrink:0" alt="${p.name}">`:`<div style="width:64px;height:64px;background:#C5B5A0;border-radius:3px;flex-shrink:0"></div>`}<div style="flex:1"><div style="font-weight:600;font-size:.9rem;margin-bottom:.25rem">${p.name}</div><div style="font-size:.8rem;color:#9B8F85;margin-bottom:.6rem">${p.description||p.desc||''}</div><a href="${p.url}" target="_blank" rel="noopener sponsored" style="display:inline-block;background:#C1603A;color:white;padding:.3rem .85rem;border-radius:3px;font-size:.75rem;font-weight:600;text-decoration:none">Shop on Amazon — $${p.price}</a></div>`;
-  // Empty paragraph after card — cursor lands here
   const after=document.createElement('p');
   after.innerHTML='&#8203;';
   editor.focus();
   const sel=window.getSelection();
-  if(sel&&sel.rangeCount>0){
+  // Restore saved cursor position
+  if(_savedRange){
+    sel.removeAllRanges();
+    sel.addRange(_savedRange);
     const range=sel.getRangeAt(0);
     range.collapse(false);
     range.insertNode(after);
@@ -2370,12 +2382,13 @@ async function insertProduct(id){
     editor.appendChild(card);
     editor.appendChild(after);
   }
-  // Move cursor to after paragraph
+  // Move cursor after the inserted card
   const newRange=document.createRange();
   newRange.setStartAfter(after);
   newRange.collapse(true);
   sel.removeAllRanges();
   sel.addRange(newRange);
+  _savedRange=null;
   syncEditor();
 }
 
