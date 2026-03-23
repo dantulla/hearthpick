@@ -1391,7 +1391,7 @@ function gs(k){try{return JSON.parse(localStorage.getItem('hp_'+k))}catch{return
 function ss(k,v){localStorage.setItem('hp_'+k,JSON.stringify(v))}
 
 // Seed localStorage fallback once
-function initFallback(){if(!gs('ok')){ss('cats',SEED.cats);ss('prods',SEED.prods);ss('posts',SEED.posts);ss('cfg',SEED.cfg);ss('subs',SEED.subs);ss('ok',1);}}
+function initFallback(){ss('cats',SEED.cats);ss('prods',SEED.prods);ss('posts',SEED.posts);ss('cfg',SEED.cfg);if(!gs('subs'))ss('subs',[]);ss('ok',1);}
 initFallback();
 
 async function getCats(){
@@ -1402,7 +1402,7 @@ async function getCats(){
   return CACHE.cats;
 }
 async function getProds(f={}){
-  if(!USE_SUPA){let p=gs('prods')||SEED.prods;if(f.cat)p=p.filter(x=>x.cat===f.cat);if(f.status)p=p.filter(x=>x.status===f.status);if(f.feat)p=p.filter(x=>x.feat);return p}
+  if(!USE_SUPA){let p=SEED.prods;if(f.cat)p=p.filter(x=>x.cat===f.cat);if(f.status)p=p.filter(x=>x.status===f.status);if(f.feat)p=p.filter(x=>x.feat);return p}
   if(!CACHE.prods){const d=await sb.q('products','*');CACHE.prods=Array.isArray(d)?d:SEED.prods;}
   let p=[...CACHE.prods];
   if(f.cat)p=p.filter(x=>x.cat===f.cat);
@@ -1411,7 +1411,7 @@ async function getProds(f={}){
   return p;
 }
 async function getPosts(f={}){
-  if(!USE_SUPA){let p=gs('posts')||SEED.posts;if(f.status)p=p.filter(x=>x.status===f.status);if(f.feat)p=p.filter(x=>x.feat);return p}
+  if(!USE_SUPA){let p=SEED.posts;if(f.status)p=p.filter(x=>x.status===f.status);if(f.feat)p=p.filter(x=>x.feat);return p}
   if(!CACHE.posts){const d=await sb.q('posts','*');CACHE.posts=Array.isArray(d)?d:SEED.posts;}
   let p=[...CACHE.posts];
   if(f.status)p=p.filter(x=>x.status===f.status);
