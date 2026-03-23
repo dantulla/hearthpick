@@ -1391,7 +1391,7 @@ function gs(k){try{return JSON.parse(localStorage.getItem('hp_'+k))}catch{return
 function ss(k,v){localStorage.setItem('hp_'+k,JSON.stringify(v))}
 
 // Seed localStorage fallback once
-function initFallback(){ss('cats',SEED.cats);ss('prods',SEED.prods);ss('posts',SEED.posts);ss('cfg',SEED.cfg);if(!gs('subs'))ss('subs',[]);ss('ok',1);}
+function initFallback(){localStorage.removeItem('hp_ok');ss('cats',SEED.cats);ss('prods',SEED.prods);ss('posts',SEED.posts);ss('cfg',SEED.cfg);if(!gs('subs'))ss('subs',[]);ss('ok',1);}
 initFallback();
 
 async function getCats(){
